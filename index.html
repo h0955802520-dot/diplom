@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Інтернет магазин дитячих іграшок ToyShop</title>
+    <title>БудМайстер — Будівельні матеріали та інструменти</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -12,18 +12,15 @@
 <body>
     <header>
         <div class="container">
-            <a href="index.html" class="logo" style="text-decoration: none;">ToyShop</a>
+            <a href="index.html" class="logo">Буд<span>Майстер</span></a>
 
             <nav id="menu">
                 <form class="search-box" onsubmit="handleSearch(event)">
-                    <input type="text" placeholder="Пошук..." required>
-                    <button type="submit"
-                        style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #555; cursor: pointer; font-size: 16px;">
-                        <i class="fa fa-search"></i>
-                    </button>
+                    <input type="text" placeholder="Пошук матеріалів..." required>
+                    <button type="submit"><i class="fa fa-search"></i></button>
                 </form>
 
-                <a href="cart.html" class="cart" style="text-decoration: none;">
+                <a href="cart.html" class="cart">
                     <i class="fa fa-shopping-cart"></i>
                     <span class="cart-count">0</span>
                 </a>
@@ -31,7 +28,7 @@
                 <ul>
                     <li><a href="index.html">Головна</a></li>
                     <li><a href="about.html">Про нас</a></li>
-                    <li><a href="shop.html">Магазин</a></li>
+                    <li><a href="shop.html">Каталог</a></li>
                     <li><a href="contacts.html">Контакти</a></li>
                 </ul>
             </nav>
@@ -46,9 +43,10 @@
     <div id="home-page">
         <section class="hero">
             <div class="hero-content">
-                <h1 class="fade-in">Світ дитячих іграшок</h1>
-                <p class="fade-in delay">Знайди ідеальну іграшку для радості та розвитку</p>
-                <a href="shop.html" class="btn-primary fade-in delay2">До каталогу</a>
+                <span class="hero-tag fade-in">№1 на ринку будматеріалів</span>
+                <h1 class="fade-in">Будівельні матеріали <span>та інструменти</span></h1>
+                <p class="fade-in delay">Все для будівництва, ремонту та облаштування — від фундаменту до фінішної обробки</p>
+                <a href="shop.html" class="btn-primary fade-in delay2">Перейти до каталогу</a>
             </div>
         </section>
 
@@ -57,19 +55,19 @@
             <div class="container">
                 <div class="adv-item"><i class="fa fa-truck"></i>
                     <h3>Швидка доставка</h3>
-                    <p>Доставляємо по всій країні за 1-3 дні</p>
+                    <p>Доставка по всій Україні від 24 годин. Власний автопарк</p>
                 </div>
-                <div class="adv-item"><i class="fa fa-gift"></i>
-                    <h3>Якісні іграшки</h3>
-                    <p>Тільки перевірені та безпечні товари</p>
+                <div class="adv-item"><i class="fa fa-shield-alt"></i>
+                    <h3>Гарантія якості</h3>
+                    <p>Тільки сертифіковані матеріали від перевірених виробників</p>
                 </div>
-                <div class="adv-item"><i class="fa fa-credit-card"></i>
-                    <h3>Зручна оплата</h3>
-                    <p>Оплата онлайн або при отриманні</p>
+                <div class="adv-item"><i class="fa fa-tags"></i>
+                    <h3>Оптові ціни</h3>
+                    <p>Гнучка система знижок для будівельних бригад та забудовників</p>
                 </div>
-                <div class="adv-item"><i class="fa fa-smile"></i>
-                    <h3>Для всіх вікових груп</h3>
-                    <p>Іграшки для дітей будь-якого віку</p>
+                <div class="adv-item"><i class="fa fa-headset"></i>
+                    <h3>Консультація 24/7</h3>
+                    <p>Наші інженери допоможуть розрахувати кількість матеріалу</p>
                 </div>
             </div>
         </section>
@@ -77,82 +75,75 @@
         <section id="about" class="about">
             <div class="container">
                 <div class="about-text">
-                    <h2 class="section-title" style="text-align: left;">Про нас</h2>
-                    <p><strong>ToyShop</strong> — це не просто інтернет-магазин, це справжня країна щасливого дитинства!
-                        Ми працюємо вже понад 5 років, щоб дарувати радість дітям та спокій батькам.</p>
-                    <p>У нашому асортименті ви знайдете лише сертифіковані та безпечні іграшки від найкращих світових
-                        виробників. Від перших брязкалець до складних конструкторів — ми маємо все для гармонійного
-                        розвитку вашої дитини.</p>
-                    <p>Наша місія: робити кожну дитину щасливішою, пропонуючи іграшки, які надихають на творчість,
-                        навчання та веселі ігри.</p>
+                    <h2 class="section-title" style="text-align: left;">Про компанію</h2>
+                    <p><strong>БудМайстер</strong> — провідний постачальник будівельних матеріалів та професійного інструменту в Україні. Понад 12 років ми допомагаємо будівельним компаніям, бригадам та приватним замовникам реалізовувати проєкти будь-якої складності.</p>
+                    <p>У нашому каталозі — більше 5000 найменувань: цемент, цегла, газоблоки, сухі суміші, металопрокат, лакофарбові матеріали, електро- та ручний інструмент від світових брендів Knauf, Bosch, Makita, Henkel, Sniezka.</p>
+                    <p>Власні склади у Києві, Львові та Дніпрі дозволяють відвантажувати замовлення в день оформлення. Працюємо з юридичними та фізичними особами.</p>
                 </div>
                 <div class="about-image">
-                    <img src="https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?auto=format&fit=crop&w=800&q=80"
-                        alt="Щаслива дитина з іграшками">
+                    <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=900&q=80"
+                        alt="Будівельний майданчик">
                 </div>
             </div>
         </section>
 
         <section class="categories">
-            <h2 class="section-title">Категорії дитячих іграшок</h2>
+            <h2 class="section-title">Категорії товарів</h2>
             <div class="container">
-                <div class="category-item" onclick="window.location.href='shop.html'">
-                    <img src="img/konstruktor.jpg"
-                        alt="Конструктори">
-                    <h3>Конструктори</h3>
+                <div class="category-item" onclick="window.location.href='shop.html?type=cement'">
+                    <img src="https://images.unsplash.com/photo-1607582544501-71f5b3ce3a4e?auto=format&fit=crop&w=600&q=80"
+                        alt="Цемент та суміші">
+                    <h3>Цемент та суміші</h3>
                 </div>
-                <div class="category-item" onclick="window.location.href='shop.html'">
-                    <img src="img/girl.jpg"
-                        alt="Ляльки">
-                    <h3>Ляльки</h3>
+                <div class="category-item" onclick="window.location.href='shop.html?type=brick'">
+                    <img src="https://images.unsplash.com/photo-1530686577008-d6dd54e83b40?auto=format&fit=crop&w=600&q=80"
+                        alt="Цегла та блоки">
+                    <h3>Цегла та блоки</h3>
                 </div>
-                <div class="category-item" onclick="window.location.href='shop.html'">
-                    <img src="img/cars.jpg"
-                        alt="Машинки">
-                    <h3>Машинки</h3>
+                <div class="category-item" onclick="window.location.href='shop.html?type=tool'">
+                    <img src="https://images.unsplash.com/photo-1581244277943-fe4a9c777189?auto=format&fit=crop&w=600&q=80"
+                        alt="Інструменти">
+                    <h3>Інструменти</h3>
                 </div>
-                <div class="category-item" onclick="window.location.href='shop.html'">
-                    <img src="img/games.jpg"
-                        alt="Розвиваючі ігри">
-                    <h3>Розвиваючі ігри</h3>
+                <div class="category-item" onclick="window.location.href='shop.html?type=paint'">
+                    <img src="https://images.unsplash.com/photo-1562259949-e8e7689d7828?auto=format&fit=crop&w=600&q=80"
+                        alt="Фарби та лаки">
+                    <h3>Фарби та лаки</h3>
                 </div>
             </div>
         </section>
 
         <section id="popular" class="popular-products">
-            <h2 class="section-title">Популярні товари</h2>
-            
+            <h2 class="section-title">Хіти продажів</h2>
+
             <div class="container products-grid" id="popular-grid">
-                </div>
+            </div>
 
             <div style="text-align: center; margin-top: 20px;">
-                <a href="shop.html" class="btn-primary">Перейти в магазин</a>
+                <a href="shop.html" class="btn-primary">Перейти в каталог</a>
             </div>
         </section>
 
         <section id="reviews" class="reviews">
-            <h2 class="section-title">Відгуки наших клієнтів</h2>
+            <h2 class="section-title">Відгуки клієнтів</h2>
             <div class="container">
                 <div class="review-card">
                     <div class="stars"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
                             class="fa fa-star"></i><i class="fa fa-star"></i></div>
-                    <p>"Дуже задоволені покупкою! Замовляли конструктор на день народження сина. Доставили швидко,
-                        якість на вищому рівні. Будемо замовляти ще!"</p>
-                    <h4>Олена Коваленко</h4>
+                    <p>"Замовляли цемент і газоблок на будівництво будинку. Привезли точно у строк, ціни нижчі за конкурентів. Менеджер допоміг з розрахунком кількості. Рекомендую!"</p>
+                    <h4>Андрій Коваленко, бригадир</h4>
                 </div>
                 <div class="review-card">
                     <div class="stars"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
                             class="fa fa-star"></i><i class="fa fa-star-half-alt"></i></div>
-                    <p>"Класний магазин з великим вибором. Менеджер швидко зв'язався та допоміг підібрати розвиваючий
-                        килимок для малечі. Рекомендую всім знайомим."</p>
-                    <h4>Дмитро Шевченко</h4>
+                    <p>"Купував перфоратор Bosch і набір інструменту. Все оригінальне, з гарантією. Доставили наступного дня в Львів. Працюю вже півроку — нарікань немає."</p>
+                    <h4>Дмитро Шевченко, майстер</h4>
                 </div>
                 <div class="review-card">
                     <div class="stars"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
                             class="fa fa-star"></i><i class="fa fa-star"></i></div>
-                    <p>"Купували настільну гру для всієї родини. Граємо вже тиждень кожного вечора! Ціни приємні, а
-                        обслуговування просто чудове."</p>
-                    <h4>Ірина Мельник</h4>
+                    <p>"Робили ремонт квартири. Замовили фарби Sniezka, шпаклівку Knauf і ламінат — все доставлено акуратно. Якість на висоті, ціни приємні."</p>
+                    <h4>Ірина Мельник, замовниця</h4>
                 </div>
             </div>
         </section>
@@ -163,13 +154,16 @@
                 <div class="contact-info">
                     <h3>Наші контакти</h3>
                     <div class="info-item"><i class="fa fa-map-marker-alt"></i>
-                        <p>м. Київ, вул. Хрещатик, 1</p>
+                        <p>м. Київ, вул. Промислова, 25</p>
                     </div>
                     <div class="info-item"><i class="fa fa-phone-alt"></i>
-                        <p>+380 (99) 123 45 67</p>
+                        <p>+380 (44) 555 12 34</p>
                     </div>
                     <div class="info-item"><i class="fa fa-envelope"></i>
-                        <p>info@toyshop.ua</p>
+                        <p>info@budmaster.ua</p>
+                    </div>
+                    <div class="info-item"><i class="fa fa-clock"></i>
+                        <p>Пн-Сб: 8:00 - 20:00, Нд: 9:00 - 17:00</p>
                     </div>
                 </div>
 
@@ -179,12 +173,12 @@
                         <input type="text" placeholder="Прізвище" required>
                     </div>
                     <div class="form-row">
-                        <input type="email" placeholder="Пошта" required>
+                        <input type="email" placeholder="Email" required>
                         <input type="tel" class="phone-mask" placeholder="+380" required>
                     </div>
-                    <textarea placeholder="Ваш коментар... (необов'язково)"></textarea>
+                    <textarea placeholder="Опишіть ваш запит або потрібний матеріал..."></textarea>
                     <button type="submit" class="btn-primary"
-                        style="width: auto; align-self: flex-start;">Відправити</button>
+                        style="width: auto; align-self: flex-start;">Відправити заявку</button>
                 </form>
             </div>
         </section>
@@ -194,7 +188,7 @@
         <div class="modal-content">
             <i class="fa fa-check-circle"></i>
             <h2>Дякуємо!</h2>
-            <p class="modal-desc">Ми отримали ваше повідомлення. Наш менеджер скоро зв'яжеться з вами.</p>
+            <p class="modal-desc">Ми отримали вашу заявку. Менеджер зв'яжеться з вами протягом 30 хвилин.</p>
             <button class="btn-primary btn-full" onclick="closeModal()">Закрити</button>
         </div>
     </div>
@@ -204,10 +198,10 @@
             <ul class="footer-links">
                 <li><a href="index.html">Головна</a></li>
                 <li><a href="about.html">Про нас</a></li>
-                <li><a href="shop.html">Магазин</a></li>
+                <li><a href="shop.html">Каталог</a></li>
                 <li><a href="contacts.html">Контакти</a></li>
             </ul>
-            <p class="copyright">&copy; 2026 ToyShop. Всі права захищені.</p>
+            <p class="copyright">&copy; 2026 БудМайстер. Будівельні матеріали та інструменти. Всі права захищені.</p>
         </div>
     </footer>
 

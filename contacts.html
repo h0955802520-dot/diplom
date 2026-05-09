@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Контакти - ToyShop</title>
+    <title>Контакти — БудМайстер</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
@@ -12,18 +12,15 @@
 <body>
     <header>
         <div class="container">
-            <a href="index.html" class="logo" style="text-decoration: none;">ToyShop</a>
+            <a href="index.html" class="logo">Буд<span>Майстер</span></a>
 
             <nav id="menu">
                 <form class="search-box" onsubmit="handleSearch(event)">
-                    <input type="text" placeholder="Пошук..." required>
-                    <button type="submit"
-                        style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #555; cursor: pointer; font-size: 16px;">
-                        <i class="fa fa-search"></i>
-                    </button>
+                    <input type="text" placeholder="Пошук матеріалів..." required>
+                    <button type="submit"><i class="fa fa-search"></i></button>
                 </form>
 
-                <a href="cart.html" class="cart" style="text-decoration: none;">
+                <a href="cart.html" class="cart">
                     <i class="fa fa-shopping-cart"></i>
                     <span class="cart-count">0</span>
                 </a>
@@ -31,7 +28,7 @@
                 <ul>
                     <li><a href="index.html">Головна</a></li>
                     <li><a href="about.html">Про нас</a></li>
-                    <li><a href="shop.html">Магазин</a></li>
+                    <li><a href="shop.html">Каталог</a></li>
                     <li><a href="contacts.html">Контакти</a></li>
                 </ul>
             </nav>
@@ -49,13 +46,19 @@
             <div class="contact-info">
                 <h3>Наші контакти</h3>
                 <div class="info-item"><i class="fa fa-map-marker-alt"></i>
-                    <p>м. Київ, вул. Хрещатик, 1</p>
+                    <p>м. Київ, вул. Промислова, 25</p>
                 </div>
                 <div class="info-item"><i class="fa fa-phone-alt"></i>
-                    <p>+380 (99) 123 45 67</p>
+                    <p>+380 (44) 555 12 34</p>
                 </div>
                 <div class="info-item"><i class="fa fa-envelope"></i>
-                    <p>info@toyshop.ua</p>
+                    <p>info@budmaster.ua</p>
+                </div>
+                <div class="info-item"><i class="fa fa-clock"></i>
+                    <p>Пн-Сб: 8:00 - 20:00, Нд: 9:00 - 17:00</p>
+                </div>
+                <div class="info-item"><i class="fa fa-warehouse"></i>
+                    <p>Склади: Київ, Львів, Дніпро</p>
                 </div>
             </div>
 
@@ -65,12 +68,12 @@
                     <input type="text" placeholder="Прізвище" required>
                 </div>
                 <div class="form-row">
-                    <input type="email" placeholder="Пошта" required>
+                    <input type="email" placeholder="Email" required>
                     <input type="tel" class="phone-mask" placeholder="+380" required>
                 </div>
-                <textarea placeholder="Ваш коментар... (необов'язково)"></textarea>
+                <textarea placeholder="Опишіть ваш запит або потрібний матеріал..."></textarea>
                 <button type="submit" class="btn-primary"
-                    style="width: auto; align-self: flex-start;">Відправити</button>
+                    style="width: auto; align-self: flex-start;">Відправити заявку</button>
             </form>
         </div>
     </section>
@@ -79,7 +82,7 @@
         <div class="modal-content">
             <i class="fa fa-check-circle"></i>
             <h2>Дякуємо!</h2>
-            <p class="modal-desc">Ми отримали ваше повідомлення. Наш менеджер скоро зв'яжеться з вами.</p>
+            <p class="modal-desc">Ми отримали вашу заявку. Менеджер зв'яжеться з вами протягом 30 хвилин.</p>
             <button class="btn-primary btn-full" onclick="closeModal()">Закрити</button>
         </div>
     </div>
@@ -89,10 +92,10 @@
             <ul class="footer-links">
                 <li><a href="index.html">Головна</a></li>
                 <li><a href="about.html">Про нас</a></li>
-                <li><a href="shop.html">Магазин</a></li>
+                <li><a href="shop.html">Каталог</a></li>
                 <li><a href="contacts.html">Контакти</a></li>
             </ul>
-            <p class="copyright">&copy; 2026 ToyShop. Всі права захищені.</p>
+            <p class="copyright">&copy; 2026 БудМайстер. Будівельні матеріали та інструменти. Всі права захищені.</p>
         </div>
     </footer>
 

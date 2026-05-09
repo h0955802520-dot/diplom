@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ukr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Інтернет магазин дитячих іграшок ToyShop</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <a href="index.html" class="logo" style="text-decoration: none;">ToyShop</a>
+
+            <nav id="menu">
+                <form class="search-box" onsubmit="handleSearch(event)">
+                    <input type="text" placeholder="Пошук..." required>
+                    <button type="submit"
+                        style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #555; cursor: pointer; font-size: 16px;">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </form>
+
+                <a href="cart.html" class="cart" style="text-decoration: none;">
+                    <i class="fa fa-shopping-cart"></i>
+                    <span class="cart-count">0</span>
+                </a>
+
+                <ul>
+                    <li><a href="index.html">Головна</a></li>
+                    <li><a href="about.html">Про нас</a></li>
+                    <li><a href="shop.html">Магазин</a></li>
+                    <li><a href="contacts.html">Контакти</a></li>
+                </ul>
+            </nav>
+
+            <div class="burger" onclick="toggleMenu()">
+                <i class="fa fa-bars"></i>
+                <i class="fa fa-times"></i>
+            </div>
+        </div>
+    </header>
+
+    <div id="home-page">
+        <section class="hero">
+            <div class="hero-content">
+                <h1 class="fade-in">Світ дитячих іграшок</h1>
+                <p class="fade-in delay">Знайди ідеальну іграшку для радості та розвитку</p>
+                <a href="shop.html" class="btn-primary fade-in delay2">До каталогу</a>
+            </div>
+        </section>
+
+        <section class="advantages">
+            <h2 class="section-title">Наші переваги</h2>
+            <div class="container">
+                <div class="adv-item"><i class="fa fa-truck"></i>
+                    <h3>Швидка доставка</h3>
+                    <p>Доставляємо по всій країні за 1-3 дні</p>
+                </div>
+                <div class="adv-item"><i class="fa fa-gift"></i>
+                    <h3>Якісні іграшки</h3>
+                    <p>Тільки перевірені та безпечні товари</p>
+                </div>
+                <div class="adv-item"><i class="fa fa-credit-card"></i>
+                    <h3>Зручна оплата</h3>
+                    <p>Оплата онлайн або при отриманні</p>
+                </div>
+                <div class="adv-item"><i class="fa fa-smile"></i>
+                    <h3>Для всіх вікових груп</h3>
+                    <p>Іграшки для дітей будь-якого віку</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="about">
+            <div class="container">
+                <div class="about-text">
+                    <h2 class="section-title" style="text-align: left;">Про нас</h2>
+                    <p><strong>ToyShop</strong> — це не просто інтернет-магазин, це справжня країна щасливого дитинства!
+                        Ми працюємо вже понад 5 років, щоб дарувати радість дітям та спокій батькам.</p>
+                    <p>У нашому асортименті ви знайдете лише сертифіковані та безпечні іграшки від найкращих світових
+                        виробників. Від перших брязкалець до складних конструкторів — ми маємо все для гармонійного
+                        розвитку вашої дитини.</p>
+                    <p>Наша місія: робити кожну дитину щасливішою, пропонуючи іграшки, які надихають на творчість,
+                        навчання та веселі ігри.</p>
+                </div>
+                <div class="about-image">
+                    <img src="https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?auto=format&fit=crop&w=800&q=80"
+                        alt="Щаслива дитина з іграшками">
+                </div>
+            </div>
+        </section>
+
+        <section class="categories">
+            <h2 class="section-title">Категорії дитячих іграшок</h2>
+            <div class="container">
+                <div class="category-item" onclick="window.location.href='shop.html'">
+                    <img src="img/konstruktor.jpg"
+                        alt="Конструктори">
+                    <h3>Конструктори</h3>
+                </div>
+                <div class="category-item" onclick="window.location.href='shop.html'">
+                    <img src="img/girl.jpg"
+                        alt="Ляльки">
+                    <h3>Ляльки</h3>
+                </div>
+                <div class="category-item" onclick="window.location.href='shop.html'">
+                    <img src="img/cars.jpg"
+                        alt="Машинки">
+                    <h3>Машинки</h3>
+                </div>
+                <div class="category-item" onclick="window.location.href='shop.html'">
+                    <img src="img/games.jpg"
+                        alt="Розвиваючі ігри">
+                    <h3>Розвиваючі ігри</h3>
+                </div>
+            </div>
+        </section>
+
+        <section id="popular" class="popular-products">
+            <h2 class="section-title">Популярні товари</h2>
+            
+            <div class="container products-grid" id="popular-grid">
+                </div>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="shop.html" class="btn-primary">Перейти в магазин</a>
+            </div>
+        </section>
+
+        <section id="reviews" class="reviews">
+            <h2 class="section-title">Відгуки наших клієнтів</h2>
+            <div class="container">
+                <div class="review-card">
+                    <div class="stars"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
+                            class="fa fa-star"></i><i class="fa fa-star"></i></div>
+                    <p>"Дуже задоволені покупкою! Замовляли конструктор на день народження сина. Доставили швидко,
+                        якість на вищому рівні. Будемо замовляти ще!"</p>
+                    <h4>Олена Коваленко</h4>
+                </div>
+                <div class="review-card">
+                    <div class="stars"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
+                            class="fa fa-star"></i><i class="fa fa-star-half-alt"></i></div>
+                    <p>"Класний магазин з великим вибором. Менеджер швидко зв'язався та допоміг підібрати розвиваючий
+                        килимок для малечі. Рекомендую всім знайомим."</p>
+                    <h4>Дмитро Шевченко</h4>
+                </div>
+                <div class="review-card">
+                    <div class="stars"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
+                            class="fa fa-star"></i><i class="fa fa-star"></i></div>
+                    <p>"Купували настільну гру для всієї родини. Граємо вже тиждень кожного вечора! Ціни приємні, а
+                        обслуговування просто чудове."</p>
+                    <h4>Ірина Мельник</h4>
+                </div>
+            </div>
+        </section>
+
+        <section id="contacts" class="contacts">
+            <h2 class="section-title">Зв'яжіться з нами</h2>
+            <div class="container">
+                <div class="contact-info">
+                    <h3>Наші контакти</h3>
+                    <div class="info-item"><i class="fa fa-map-marker-alt"></i>
+                        <p>м. Київ, вул. Хрещатик, 1</p>
+                    </div>
+                    <div class="info-item"><i class="fa fa-phone-alt"></i>
+                        <p>+380 (99) 123 45 67</p>
+                    </div>
+                    <div class="info-item"><i class="fa fa-envelope"></i>
+                        <p>info@toyshop.ua</p>
+                    </div>
+                </div>
+
+                <form class="custom-form" onsubmit="processContactForm(event)">
+                    <div class="form-row">
+                        <input type="text" placeholder="Ім'я" required>
+                        <input type="text" placeholder="Прізвище" required>
+                    </div>
+                    <div class="form-row">
+                        <input type="email" placeholder="Пошта" required>
+                        <input type="tel" class="phone-mask" placeholder="+380" required>
+                    </div>
+                    <textarea placeholder="Ваш коментар... (необов'язково)"></textarea>
+                    <button type="submit" class="btn-primary"
+                        style="width: auto; align-self: flex-start;">Відправити</button>
+                </form>
+            </div>
+        </section>
+    </div>
+
+    <div id="successModal" class="modal-overlay">
+        <div class="modal-content">
+            <i class="fa fa-check-circle"></i>
+            <h2>Дякуємо!</h2>
+            <p class="modal-desc">Ми отримали ваше повідомлення. Наш менеджер скоро зв'яжеться з вами.</p>
+            <button class="btn-primary btn-full" onclick="closeModal()">Закрити</button>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container" style="flex-direction: column;">
+            <ul class="footer-links">
+                <li><a href="index.html">Головна</a></li>
+                <li><a href="about.html">Про нас</a></li>
+                <li><a href="shop.html">Магазин</a></li>
+                <li><a href="contacts.html">Контакти</a></li>
+            </ul>
+            <p class="copyright">&copy; 2026 ToyShop. Всі права захищені.</p>
+        </div>
+    </footer>
+
+    <script src="js/js.js"></script>
+</body>
+
+</html>

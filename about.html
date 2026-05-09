@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ukr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Про нас - ToyShop</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <a href="index.html" class="logo" style="text-decoration: none;">ToyShop</a>
+
+            <nav id="menu">
+                <form class="search-box" onsubmit="handleSearch(event)">
+                    <input type="text" placeholder="Пошук..." required>
+                    <button type="submit"
+                        style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #555; cursor: pointer; font-size: 16px;">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </form>
+
+                <a href="cart.html" class="cart" style="text-decoration: none;">
+                    <i class="fa fa-shopping-cart"></i>
+                    <span class="cart-count">0</span>
+                </a>
+
+                <ul>
+                    <li><a href="index.html">Головна</a></li>
+                    <li><a href="about.html">Про нас</a></li>
+                    <li><a href="shop.html">Магазин</a></li>
+                    <li><a href="contacts.html">Контакти</a></li>
+                </ul>
+            </nav>
+
+            <div class="burger" onclick="toggleMenu()">
+                <i class="fa fa-bars"></i>
+                <i class="fa fa-times"></i>
+            </div>
+        </div>
+    </header>
+
+    <section id="about" class="about" style="padding: 100px 20px; min-height: 70vh;">
+        <div class="container">
+            <div class="about-text">
+                <h2 class="section-title" style="text-align: left; font-size: 40px;">Про нас</h2>
+                <p style="font-size: 18px; margin-bottom: 20px;"><strong>ToyShop</strong> — це не просто
+                    інтернет-магазин, це справжня країна щасливого дитинства! Ми працюємо вже понад 5 років, щоб
+                    дарувати радість дітям та спокій батькам.</p>
+                <p style="font-size: 18px; margin-bottom: 20px;">У нашому асортименті ви знайдете лише сертифіковані та
+                    безпечні іграшки від найкращих світових виробників. Від перших брязкалець до складних конструкторів
+                    — ми маємо все для гармонійного розвитку вашої дитини.</p>
+                <p style="font-size: 18px; margin-bottom: 20px;">Наша місія: робити кожну дитину щасливішою, пропонуючи
+                    іграшки, які надихають на творчість, навчання та веселі ігри.</p>
+            </div>
+            <div class="about-image">
+                <img src="https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?auto=format&fit=crop&w=800&q=80"
+                    alt="Щаслива дитина з іграшками">
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container" style="flex-direction: column;">
+            <ul class="footer-links">
+                <li><a href="index.html">Головна</a></li>
+                <li><a href="about.html">Про нас</a></li>
+                <li><a href="shop.html">Магазин</a></li>
+                <li><a href="contacts.html">Контакти</a></li>
+            </ul>
+            <p class="copyright">&copy; 2026 ToyShop. Всі права захищені.</p>
+        </div>
+    </footer>
+
+    <script src="js/js.js"></script>
+</body>
+
+</html>

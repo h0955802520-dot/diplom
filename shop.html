@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ukr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Магазин - ToyShop</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <a href="index.html" class="logo" style="text-decoration: none;">ToyShop</a>
+
+            <nav id="menu">
+                <form class="search-box" onsubmit="handleSearch(event)">
+                    <input type="text" placeholder="Пошук..." required>
+                    <button type="submit"
+                        style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #555; cursor: pointer; font-size: 16px;">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </form>
+
+                <a href="cart.html" class="cart" style="text-decoration: none;">
+                    <i class="fa fa-shopping-cart"></i>
+                    <span class="cart-count">0</span>
+                </a>
+
+                <ul>
+                    <li><a href="index.html">Головна</a></li>
+                    <li><a href="about.html">Про нас</a></li>
+                    <li><a href="shop.html">Магазин</a></li>
+                    <li><a href="contacts.html">Контакти</a></li>
+                </ul>
+            </nav>
+
+            <div class="burger" onclick="toggleMenu()">
+                <i class="fa fa-bars"></i>
+                <i class="fa fa-times"></i>
+            </div>
+        </div>
+    </header>
+
+    <div class="shop-layout">
+        <aside class="sidebar-filters custom-form">
+            <h3 style="margin-bottom: 20px;">Фільтри</h3>
+
+            <div class="filter-group">
+                <label>Пошук по назві:</label>
+                <input type="text" id="sidebar-search" placeholder="Введіть назву іграшки..." oninput="renderShop()">
+            </div>
+
+            <div class="filter-group">
+                <label>Категорія товару:</label>
+                <select id="f-type" onchange="renderShop()">
+                    <option value="all">Всі товари</option>
+                    <option value="constructor">Конструктори</option>
+                    <option value="doll">Ляльки</option>
+                    <option value="car">Машинки</option>
+                    <option value="educational">Розвиваючі ігри</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Для кого:</label>
+                <select id="f-category" onchange="renderShop()">
+                    <option value="all">Всі</option>
+                    <option value="girls">Для дівчаток</option>
+                    <option value="boys">Для хлопчиків</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Сортування ціни:</label>
+                <select id="f-price" onchange="renderShop()">
+                    <option value="default">За замовчуванням</option>
+                    <option value="low">Від дешевих до дорогих</option>
+                    <option value="high">Від дорогих до дешевих</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Бренд:</label>
+                <select id="f-brand" onchange="renderShop()">
+                    <option value="all">Всі бренди</option>
+                    <option value="lego">LEGO</option>
+                    <option value="lol">L.O.L.</option>
+                    <option value="hotwheels">Hot Wheels</option>
+                    <option value="barbie">Barbie</option>
+                    <option value="fisherprice">Fisher-Price</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Вік:</label>
+                <select id="f-age" onchange="renderShop()">
+                    <option value="all">Будь-який</option>
+                    <option value="0-3">0-3 роки</option>
+                    <option value="3-6">3-6 років</option>
+                    <option value="6+">6+ років</option>
+                </select>
+            </div>
+
+            <div class="filter-group" style="gap: 15px;">
+                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                    <input type="checkbox" id="f-promo" onchange="renderShop()" style="width: auto;"> Акційні товари
+                </label>
+                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                    <input type="checkbox" id="f-popular" onchange="renderShop()" style="width: auto;"> Популярні
+                </label>
+            </div>
+        </aside>
+
+        <div class="shop-content">
+            <div class="products-grid" id="shop-grid" style="padding: 0; margin: 0;"></div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container" style="flex-direction: column;">
+            <ul class="footer-links">
+                <li><a href="index.html">Головна</a></li>
+                <li><a href="about.html">Про нас</a></li>
+                <li><a href="shop.html">Магазин</a></li>
+                <li><a href="contacts.html">Контакти</a></li>
+            </ul>
+            <p class="copyright">&copy; 2026 ToyShop. Всі права захищені.</p>
+        </div>
+    </footer>
+
+    <script src="js/js.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ukr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Контакти - ToyShop</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <a href="index.html" class="logo" style="text-decoration: none;">ToyShop</a>
+
+            <nav id="menu">
+                <form class="search-box" onsubmit="handleSearch(event)">
+                    <input type="text" placeholder="Пошук..." required>
+                    <button type="submit"
+                        style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #555; cursor: pointer; font-size: 16px;">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </form>
+
+                <a href="cart.html" class="cart" style="text-decoration: none;">
+                    <i class="fa fa-shopping-cart"></i>
+                    <span class="cart-count">0</span>
+                </a>
+
+                <ul>
+                    <li><a href="index.html">Головна</a></li>
+                    <li><a href="about.html">Про нас</a></li>
+                    <li><a href="shop.html">Магазин</a></li>
+                    <li><a href="contacts.html">Контакти</a></li>
+                </ul>
+            </nav>
+
+            <div class="burger" onclick="toggleMenu()">
+                <i class="fa fa-bars"></i>
+                <i class="fa fa-times"></i>
+            </div>
+        </div>
+    </header>
+
+    <section id="contacts" class="contacts" style="min-height: 70vh; padding-top: 100px;">
+        <h2 class="section-title">Зв'яжіться з нами</h2>
+        <div class="container">
+            <div class="contact-info">
+                <h3>Наші контакти</h3>
+                <div class="info-item"><i class="fa fa-map-marker-alt"></i>
+                    <p>м. Київ, вул. Хрещатик, 1</p>
+                </div>
+                <div class="info-item"><i class="fa fa-phone-alt"></i>
+                    <p>+380 (99) 123 45 67</p>
+                </div>
+                <div class="info-item"><i class="fa fa-envelope"></i>
+                    <p>info@toyshop.ua</p>
+                </div>
+            </div>
+
+            <form class="custom-form" onsubmit="processContactForm(event)">
+                <div class="form-row">
+                    <input type="text" placeholder="Ім'я" required>
+                    <input type="text" placeholder="Прізвище" required>
+                </div>
+                <div class="form-row">
+                    <input type="email" placeholder="Пошта" required>
+                    <input type="tel" class="phone-mask" placeholder="+380" required>
+                </div>
+                <textarea placeholder="Ваш коментар... (необов'язково)"></textarea>
+                <button type="submit" class="btn-primary"
+                    style="width: auto; align-self: flex-start;">Відправити</button>
+            </form>
+        </div>
+    </section>
+
+    <div id="successModal" class="modal-overlay">
+        <div class="modal-content">
+            <i class="fa fa-check-circle"></i>
+            <h2>Дякуємо!</h2>
+            <p class="modal-desc">Ми отримали ваше повідомлення. Наш менеджер скоро зв'яжеться з вами.</p>
+            <button class="btn-primary btn-full" onclick="closeModal()">Закрити</button>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container" style="flex-direction: column;">
+            <ul class="footer-links">
+                <li><a href="index.html">Головна</a></li>
+                <li><a href="about.html">Про нас</a></li>
+                <li><a href="shop.html">Магазин</a></li>
+                <li><a href="contacts.html">Контакти</a></li>
+            </ul>
+            <p class="copyright">&copy; 2026 ToyShop. Всі права захищені.</p>
+        </div>
+    </footer>
+
+    <script src="js/js.js"></script>
+</body>
+
+</html>

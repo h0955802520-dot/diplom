@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ukr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кошик - ToyShop</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <a href="index.html" class="logo" style="text-decoration: none;">ToyShop</a>
+
+            <nav id="menu">
+                <form class="search-box" onsubmit="handleSearch(event)">
+                    <input type="text" placeholder="Пошук..." required>
+                    <button type="submit"
+                        style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #555; cursor: pointer; font-size: 16px;">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </form>
+
+                <a href="cart.html" class="cart" style="text-decoration: none;">
+                    <i class="fa fa-shopping-cart"></i>
+                    <span class="cart-count">0</span>
+                </a>
+
+                <ul>
+                    <li><a href="index.html">Головна</a></li>
+                    <li><a href="about.html">Про нас</a></li>
+                    <li><a href="shop.html">Магазин</a></li>
+                    <li><a href="contacts.html">Контакти</a></li>
+                </ul>
+            </nav>
+
+            <div class="burger" onclick="toggleMenu()">
+                <i class="fa fa-bars"></i>
+                <i class="fa fa-times"></i>
+            </div>
+        </div>
+    </header>
+
+    <div class="container cart-page-container">
+
+        <div id="cart-items-container" class="cart-items-wrapper">
+        </div>
+
+        <div class="cart-checkout-wrapper">
+            <form class="custom-form cart-checkout-form" onsubmit="processCheckout(event)">
+                <h3 class="checkout-title">Оформлення замовлення</h3>
+                <div class="form-row">
+                    <input type="text" placeholder="Ім'я" required>
+                    <input type="text" placeholder="Прізвище" required>
+                </div>
+                <div class="form-row">
+                    <input type="email" placeholder="Email" required>
+                    <input type="tel" id="checkoutPhone" class="phone-mask" placeholder="+380" required>
+                </div>
+                <input type="text" placeholder="Місто та відділення Нової Пошти" required>
+                <textarea placeholder="Коментар до замовлення... (необов'язково)"></textarea>
+
+                <h3 id="cart-total" class="cart-total-title">Разом: <span class="cart-total-price">0 грн</span></h3>
+
+                <button type="submit" class="btn-primary btn-full checkout-submit-btn">Оформити замовлення</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="successModal" class="modal-overlay">
+        <div class="modal-content">
+            <i class="fa fa-check-circle"></i>
+            <h2>Дякуємо за замовлення!</h2>
+            <p class="modal-desc">Ми отримали вашу заявку. Наш менеджер скоро зв'яжеться з вами для уточнення деталей.
+            </p>
+            <button class="btn-primary btn-full" onclick="window.location.href='index.html'">На головну</button>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container footer-container">
+            <ul class="footer-links">
+                <li><a href="index.html">Головна</a></li>
+                <li><a href="about.html">Про нас</a></li>
+                <li><a href="shop.html">Магазин</a></li>
+                <li><a href="contacts.html">Контакти</a></li>
+            </ul>
+            <p class="copyright">&copy; 2026 ToyShop. Всі права захищені.</p>
+        </div>
+    </footer>
+
+    <script src="js/js.js"></script>
+    <script>
+        function renderCartPage() {
+            const container = document.getElementById('cart-items-container');
+            const totalEl = document.getElementById('cart-total');
+
+            cart = JSON.parse(localStorage.getItem('toyShopCart')) || [];
+
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-cart-container">
+                        <h3 class="empty-cart-title">Ваш кошик порожній 🛒</h3>
+                        <a href="shop.html" class="btn-primary">До покупок</a>
+                    </div>`;
+                totalEl.innerHTML = 'Разом: <span class="cart-total-price">0 грн</span>';
+                return;
+            }
+
+            let html = '<h3 class="cart-items-title">Ваші товари</h3>';
+            let sum = 0;
+
+            cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                sum += itemTotal;
+
+                // Перевірка на акційні та популярні товари
+                let promoBadge = item.promo ? '<span class="cart-promo-badge">Знижка</span>' : '';
+                let popBadge = item.popular ? '<span class="cart-popular-badge">Популярне</span>' : '';
+                let oldPriceHtml = item.oldPrice ? `<span class="cart-item-old-price">${item.oldPrice} грн</span>` : '';
+
+                html += `
+                <div class="cart-item-row">
+                    <img src="${item.img}" class="cart-item-img">
+                    
+                    <div class="cart-item-info">
+                        <div style="margin-bottom: 5px;">${promoBadge} ${popBadge}</div>
+                        <h4 class="cart-item-title">${item.name}</h4>
+                        <p class="cart-item-price">${oldPriceHtml}${item.price} грн / шт</p>
+                    </div>
+                    
+                    <div class="cart-controls">
+                        <button class="cart-control-btn" onclick="changeQty('${item.id}', -1)">-</button>
+                        <span class="cart-control-qty">${item.quantity}</span>
+                        <button class="cart-control-btn" onclick="changeQty('${item.id}', 1)">+</button>
+                    </div>
+
+                    <div class="cart-item-total">
+                        ${itemTotal} грн
+                    </div>
+
+                    <i class="fa fa-trash cart-delete-icon" onclick="removeFromCart('${item.id}')" title="Видалити"></i>
+                </div>`;
+            });
+
+            container.innerHTML = html;
+            totalEl.innerHTML = `Разом: <span class="cart-total-price">${sum} грн</span>`;
+        }
+
+        function removeFromCart(id) {
+            cart = cart.filter(c => c.id !== id);
+            localStorage.setItem('toyShopCart', JSON.stringify(cart));
+            updateCartBadge();
+            renderCartPage();
+        }
+
+        function changeQty(id, delta) {
+            const item = cart.find(c => c.id === id);
+            if (item) {
+                item.quantity += delta;
+                if (item.quantity <= 0) {
+                    removeFromCart(id);
+                } else {
+                    localStorage.setItem('toyShopCart', JSON.stringify(cart));
+                    updateCartBadge();
+                    renderCartPage();
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCartPage();
+        });
+    </script>
+</body>
+
+</html>

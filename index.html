@@ -10,6 +10,17 @@
 </head>
 
 <body>
+    <div class="top-bar">
+        <div class="container">
+            <div class="top-info">
+                <span><i class="fa fa-phone"></i> +380 (44) 555 12 34</span>
+                <span><i class="fa fa-clock"></i> Пн-Сб 8:00-20:00, Нд 9:00-17:00</span>
+                <span><i class="fa fa-warehouse"></i> Склади: Київ · Львів · Дніпро</span>
+                <span class="free-delivery"><i class="fa fa-truck"></i> Безкоштовна доставка від 5000 грн</span>
+            </div>
+        </div>
+    </div>
+
     <header>
         <div class="container">
             <a href="index.html" class="logo">Буд<span>Майстер</span></a>
@@ -19,6 +30,11 @@
                     <input type="text" placeholder="Пошук матеріалів..." required>
                     <button type="submit"><i class="fa fa-search"></i></button>
                 </form>
+
+                <a href="shop.html?wish=1" class="wishlist-header" title="Обране">
+                    <i class="fa fa-heart"></i>
+                    <span class="wishlist-count">0</span>
+                </a>
 
                 <a href="cart.html" class="cart">
                     <i class="fa fa-shopping-cart"></i>
@@ -46,29 +62,170 @@
                 <span class="hero-tag fade-in">№1 на ринку будматеріалів</span>
                 <h1 class="fade-in">Будівельні матеріали <span>та інструменти</span></h1>
                 <p class="fade-in delay">Все для будівництва, ремонту та облаштування — від фундаменту до фінішної обробки</p>
-                <a href="shop.html" class="btn-primary fade-in delay2">Перейти до каталогу</a>
+                <div class="hero-buttons fade-in delay2">
+                    <a href="shop.html" class="btn-primary">Перейти до каталогу</a>
+                    <a href="#calc" class="btn-secondary">Розрахувати матеріали</a>
+                </div>
             </div>
         </section>
 
-        <section class="advantages">
-            <h2 class="section-title">Наші переваги</h2>
-            <div class="container">
-                <div class="adv-item"><i class="fa fa-truck"></i>
+        <section class="services-section">
+            <h2 class="section-title">Чому обирають нас</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <span class="service-num">01</span>
+                    <i class="fa fa-truck-fast"></i>
                     <h3>Швидка доставка</h3>
-                    <p>Доставка по всій Україні від 24 годин. Власний автопарк</p>
+                    <p>Доставка по Україні від 24 годин. Власний автопарк</p>
                 </div>
-                <div class="adv-item"><i class="fa fa-shield-alt"></i>
+                <div class="service-card">
+                    <span class="service-num">02</span>
+                    <i class="fa fa-shield-alt"></i>
                     <h3>Гарантія якості</h3>
-                    <p>Тільки сертифіковані матеріали від перевірених виробників</p>
+                    <p>Сертифіковані матеріали від офіційних дистриб'юторів</p>
                 </div>
-                <div class="adv-item"><i class="fa fa-tags"></i>
+                <div class="service-card">
+                    <span class="service-num">03</span>
+                    <i class="fa fa-tags"></i>
                     <h3>Оптові ціни</h3>
-                    <p>Гнучка система знижок для будівельних бригад та забудовників</p>
+                    <p>Гнучка система знижок для бригад та забудовників</p>
                 </div>
-                <div class="adv-item"><i class="fa fa-headset"></i>
+                <div class="service-card">
+                    <span class="service-num">04</span>
+                    <i class="fa fa-headset"></i>
                     <h3>Консультація 24/7</h3>
-                    <p>Наші інженери допоможуть розрахувати кількість матеріалу</p>
+                    <p>Інженери допоможуть з вибором та розрахунком</p>
                 </div>
+                <div class="service-card">
+                    <span class="service-num">05</span>
+                    <i class="fa fa-credit-card"></i>
+                    <h3>Зручна оплата</h3>
+                    <p>Готівка, картка, безготівковий розрахунок</p>
+                </div>
+                <div class="service-card">
+                    <span class="service-num">06</span>
+                    <i class="fa fa-undo"></i>
+                    <h3>Повернення товару</h3>
+                    <p>Можливість повернення протягом 14 днів</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="categories">
+            <h2 class="section-title">Категорії товарів</h2>
+            <div class="container">
+                <div class="category-item" onclick="window.location.href='shop.html?type=cement'">
+                    <img src="https://images.unsplash.com/photo-1607582544501-71f5b3ce3a4e?auto=format&fit=crop&w=600&q=80" alt="Цемент та суміші">
+                    <h3>Цемент та суміші</h3>
+                </div>
+                <div class="category-item" onclick="window.location.href='shop.html?type=brick'">
+                    <img src="https://images.unsplash.com/photo-1530686577008-d6dd54e83b40?auto=format&fit=crop&w=600&q=80" alt="Цегла та блоки">
+                    <h3>Цегла та блоки</h3>
+                </div>
+                <div class="category-item" onclick="window.location.href='shop.html?type=tool'">
+                    <img src="https://images.unsplash.com/photo-1581244277943-fe4a9c777189?auto=format&fit=crop&w=600&q=80" alt="Інструменти">
+                    <h3>Інструменти</h3>
+                </div>
+                <div class="category-item" onclick="window.location.href='shop.html?type=paint'">
+                    <img src="https://images.unsplash.com/photo-1562259949-e8e7689d7828?auto=format&fit=crop&w=600&q=80" alt="Фарби та лаки">
+                    <h3>Фарби та лаки</h3>
+                </div>
+            </div>
+        </section>
+
+        <section class="promo-banners">
+            <div class="container">
+                <a href="shop.html?promo=1" class="banner-card banner-big" style="background-image: url('https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1200&q=80');">
+                    <span class="banner-tag">Акція тижня</span>
+                    <h3>Знижки до 30% на весь<br>будівельний інструмент</h3>
+                    <p>Bosch, Makita, DeWalt — обмежений час</p>
+                    <span class="banner-link">Перейти до акції <i class="fa fa-arrow-right"></i></span>
+                </a>
+                <a href="shop.html?type=cement" class="banner-card" style="background-image: url('https://images.unsplash.com/photo-1607582544501-71f5b3ce3a4e?auto=format&fit=crop&w=800&q=80');">
+                    <span class="banner-tag">Опт</span>
+                    <h3>Цемент від 10 тонн</h3>
+                    <p>Спецціни для забудовників</p>
+                    <span class="banner-link">Замовити <i class="fa fa-arrow-right"></i></span>
+                </a>
+                <a href="shop.html?type=paint" class="banner-card" style="background-image: url('https://images.unsplash.com/photo-1562259949-e8e7689d7828?auto=format&fit=crop&w=800&q=80');">
+                    <span class="banner-tag">-15%</span>
+                    <h3>Фарби Sniezka</h3>
+                    <p>Промокод <strong>NEW2026</strong></p>
+                    <span class="banner-link">Купити <i class="fa fa-arrow-right"></i></span>
+                </a>
+            </div>
+        </section>
+
+        <section id="popular" class="popular-products">
+            <div class="section-header">
+                <h2>Хіти продажів</h2>
+                <a href="shop.html?popular=1" class="view-all">Усі хіти <i class="fa fa-arrow-right"></i></a>
+            </div>
+            <div class="container products-grid" id="popular-grid"></div>
+        </section>
+
+        <section class="new-arrivals">
+            <div class="section-header">
+                <h2>Новинки</h2>
+                <a href="shop.html?sort=new" class="view-all">Усі новинки <i class="fa fa-arrow-right"></i></a>
+            </div>
+            <div class="container products-grid" id="new-grid"></div>
+        </section>
+
+        <section class="promo-section">
+            <div class="section-header">
+                <h2>Акційні товари</h2>
+                <a href="shop.html?promo=1" class="view-all">Усі акції <i class="fa fa-arrow-right"></i></a>
+            </div>
+            <div class="container products-grid" id="promo-grid"></div>
+        </section>
+
+        <section id="calc" class="calc-section">
+            <h2 class="section-title">Калькулятор матеріалів</h2>
+            <div class="calc-wrap">
+                <p style="margin-bottom: 20px; color: var(--steel);">Введіть площу або об'єм робіт — і отримайте орієнтовну кількість матеріалу:</p>
+                <div class="calc-form">
+                    <div class="calc-field">
+                        <label>Тип робіт</label>
+                        <select id="calc-type">
+                            <option value="wall">Кладка стіни (1 цегла, м²)</option>
+                            <option value="screed">Стяжка підлоги (м²)</option>
+                            <option value="paint">Фарбування стін (м²)</option>
+                            <option value="tile">Укладка плитки (м²)</option>
+                        </select>
+                    </div>
+                    <div class="calc-field">
+                        <label>Площа, м²</label>
+                        <input type="number" id="calc-area" placeholder="напр. 50" min="0" step="0.1">
+                    </div>
+                    <button class="btn-primary" onclick="calcMaterials()" style="height: 48px;">
+                        <i class="fa fa-calculator"></i> Розрахувати
+                    </button>
+                </div>
+                <div id="calc-result"></div>
+            </div>
+        </section>
+
+        <section id="recent-section" class="recent-section">
+            <div class="section-header">
+                <h2>Ви нещодавно дивились</h2>
+            </div>
+            <div class="container products-grid" id="recent-grid"></div>
+        </section>
+
+        <section class="brands-section">
+            <h2 class="section-title">Наші бренди</h2>
+            <div class="brands-grid">
+                <a href="shop.html?brand=knauf" class="brand-card">Knauf</a>
+                <a href="shop.html?brand=bosch" class="brand-card">Bosch</a>
+                <a href="shop.html?brand=makita" class="brand-card">Makita</a>
+                <a href="shop.html?brand=dewalt" class="brand-card">DeWalt</a>
+                <a href="shop.html?brand=henkel" class="brand-card">Henkel</a>
+                <a href="shop.html?brand=ceresit" class="brand-card">Ceresit</a>
+                <a href="shop.html?brand=sniezka" class="brand-card">Sniezka</a>
+                <a href="shop.html?brand=stanley" class="brand-card">Stanley</a>
+                <a href="shop.html?brand=hilti" class="brand-card">Hilti</a>
+                <a href="shop.html?brand=schneider" class="brand-card">Schneider</a>
             </div>
         </section>
 
@@ -81,46 +238,44 @@
                     <p>Власні склади у Києві, Львові та Дніпрі дозволяють відвантажувати замовлення в день оформлення. Працюємо з юридичними та фізичними особами.</p>
                 </div>
                 <div class="about-image">
-                    <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=900&q=80"
-                        alt="Будівельний майданчик">
+                    <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=900&q=80" alt="Будівельний майданчик">
                 </div>
             </div>
         </section>
 
-        <section class="categories">
-            <h2 class="section-title">Категорії товарів</h2>
-            <div class="container">
-                <div class="category-item" onclick="window.location.href='shop.html?type=cement'">
-                    <img src="https://images.unsplash.com/photo-1607582544501-71f5b3ce3a4e?auto=format&fit=crop&w=600&q=80"
-                        alt="Цемент та суміші">
-                    <h3>Цемент та суміші</h3>
-                </div>
-                <div class="category-item" onclick="window.location.href='shop.html?type=brick'">
-                    <img src="https://images.unsplash.com/photo-1530686577008-d6dd54e83b40?auto=format&fit=crop&w=600&q=80"
-                        alt="Цегла та блоки">
-                    <h3>Цегла та блоки</h3>
-                </div>
-                <div class="category-item" onclick="window.location.href='shop.html?type=tool'">
-                    <img src="https://images.unsplash.com/photo-1581244277943-fe4a9c777189?auto=format&fit=crop&w=600&q=80"
-                        alt="Інструменти">
-                    <h3>Інструменти</h3>
-                </div>
-                <div class="category-item" onclick="window.location.href='shop.html?type=paint'">
-                    <img src="https://images.unsplash.com/photo-1562259949-e8e7689d7828?auto=format&fit=crop&w=600&q=80"
-                        alt="Фарби та лаки">
-                    <h3>Фарби та лаки</h3>
-                </div>
+        <section class="blog-section">
+            <div class="section-header">
+                <h2>Корисні статті</h2>
+                <a href="#" class="view-all">Усі статті <i class="fa fa-arrow-right"></i></a>
             </div>
-        </section>
-
-        <section id="popular" class="popular-products">
-            <h2 class="section-title">Хіти продажів</h2>
-
-            <div class="container products-grid" id="popular-grid">
-            </div>
-
-            <div style="text-align: center; margin-top: 20px;">
-                <a href="shop.html" class="btn-primary">Перейти в каталог</a>
+            <div class="blog-grid">
+                <a href="#" class="blog-card">
+                    <img src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=600&q=80" alt="">
+                    <div class="blog-card-body">
+                        <span class="blog-date">15 січня 2026</span>
+                        <h3>Як вибрати цемент для фундаменту</h3>
+                        <p>Розглядаємо марки цементу, рекомендації виробників та лайфхаки досвідчених прорабів.</p>
+                        <span class="blog-link">Читати <i class="fa fa-arrow-right"></i></span>
+                    </div>
+                </a>
+                <a href="#" class="blog-card">
+                    <img src="https://images.unsplash.com/photo-1581094288338-2314dddb7ece?auto=format&fit=crop&w=600&q=80" alt="">
+                    <div class="blog-card-body">
+                        <span class="blog-date">10 січня 2026</span>
+                        <h3>Шпаклівка стін: 7 типових помилок</h3>
+                        <p>Покрокова інструкція для якісного шпаклювання та поради, як уникнути дефектів.</p>
+                        <span class="blog-link">Читати <i class="fa fa-arrow-right"></i></span>
+                    </div>
+                </a>
+                <a href="#" class="blog-card">
+                    <img src="https://images.unsplash.com/photo-1581244277943-fe4a9c777189?auto=format&fit=crop&w=600&q=80" alt="">
+                    <div class="blog-card-body">
+                        <span class="blog-date">3 січня 2026</span>
+                        <h3>Топ-5 перфораторів 2026 року</h3>
+                        <p>Огляд найкращих моделей Bosch, Makita, DeWalt — характеристики, ціни, плюси та мінуси.</p>
+                        <span class="blog-link">Читати <i class="fa fa-arrow-right"></i></span>
+                    </div>
+                </a>
             </div>
         </section>
 
@@ -128,23 +283,33 @@
             <h2 class="section-title">Відгуки клієнтів</h2>
             <div class="container">
                 <div class="review-card">
-                    <div class="stars"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
-                            class="fa fa-star"></i><i class="fa fa-star"></i></div>
+                    <div class="stars"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></div>
                     <p>"Замовляли цемент і газоблок на будівництво будинку. Привезли точно у строк, ціни нижчі за конкурентів. Менеджер допоміг з розрахунком кількості. Рекомендую!"</p>
                     <h4>Андрій Коваленко, бригадир</h4>
                 </div>
                 <div class="review-card">
-                    <div class="stars"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
-                            class="fa fa-star"></i><i class="fa fa-star-half-alt"></i></div>
+                    <div class="stars"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-alt"></i></div>
                     <p>"Купував перфоратор Bosch і набір інструменту. Все оригінальне, з гарантією. Доставили наступного дня в Львів. Працюю вже півроку — нарікань немає."</p>
                     <h4>Дмитро Шевченко, майстер</h4>
                 </div>
                 <div class="review-card">
-                    <div class="stars"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
-                            class="fa fa-star"></i><i class="fa fa-star"></i></div>
+                    <div class="stars"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></div>
                     <p>"Робили ремонт квартири. Замовили фарби Sniezka, шпаклівку Knauf і ламінат — все доставлено акуратно. Якість на висоті, ціни приємні."</p>
                     <h4>Ірина Мельник, замовниця</h4>
                 </div>
+            </div>
+        </section>
+
+        <section class="newsletter-section">
+            <div class="newsletter-wrap">
+                <div class="newsletter-text">
+                    <h2><i class="fa fa-envelope"></i> Підпишіться на новини</h2>
+                    <p>Знижки, нові надходження та корисні статті — раз на тиждень, без спаму</p>
+                </div>
+                <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+                    <input type="email" placeholder="Ваш email" required>
+                    <button type="submit">Підписатись</button>
+                </form>
             </div>
         </section>
 
@@ -153,18 +318,10 @@
             <div class="container">
                 <div class="contact-info">
                     <h3>Наші контакти</h3>
-                    <div class="info-item"><i class="fa fa-map-marker-alt"></i>
-                        <p>м. Київ, вул. Промислова, 25</p>
-                    </div>
-                    <div class="info-item"><i class="fa fa-phone-alt"></i>
-                        <p>+380 (44) 555 12 34</p>
-                    </div>
-                    <div class="info-item"><i class="fa fa-envelope"></i>
-                        <p>info@budmaster.ua</p>
-                    </div>
-                    <div class="info-item"><i class="fa fa-clock"></i>
-                        <p>Пн-Сб: 8:00 - 20:00, Нд: 9:00 - 17:00</p>
-                    </div>
+                    <div class="info-item"><i class="fa fa-map-marker-alt"></i><p>м. Київ, вул. Промислова, 25</p></div>
+                    <div class="info-item"><i class="fa fa-phone-alt"></i><p>+380 (44) 555 12 34</p></div>
+                    <div class="info-item"><i class="fa fa-envelope"></i><p>info@budmaster.ua</p></div>
+                    <div class="info-item"><i class="fa fa-clock"></i><p>Пн-Сб: 8:00 - 20:00, Нд: 9:00 - 17:00</p></div>
                 </div>
 
                 <form class="custom-form" onsubmit="processContactForm(event)">
@@ -177,8 +334,7 @@
                         <input type="tel" class="phone-mask" placeholder="+380" required>
                     </div>
                     <textarea placeholder="Опишіть ваш запит або потрібний матеріал..."></textarea>
-                    <button type="submit" class="btn-primary"
-                        style="width: auto; align-self: flex-start;">Відправити заявку</button>
+                    <button type="submit" class="btn-primary" style="width: auto; align-self: flex-start;">Відправити заявку</button>
                 </form>
             </div>
         </section>

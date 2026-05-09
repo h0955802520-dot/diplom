@@ -1,31 +1,162 @@
-// БАЗА ТОВАРІВ
+// ============================================
+// БАЗА ТОВАРІВ (100 позицій)
+// ============================================
+const IMG = {
+    cement:   'https://images.unsplash.com/photo-1607582544501-71f5b3ce3a4e?auto=format&fit=crop&w=600&q=80',
+    brick:    'https://images.unsplash.com/photo-1530686577008-d6dd54e83b40?auto=format&fit=crop&w=600&q=80',
+    block:    'https://images.unsplash.com/photo-1581244277943-fe4a9c777189?auto=format&fit=crop&w=600&q=80',
+    tool:     'https://images.unsplash.com/photo-1530124566582-a618bc2615dc?auto=format&fit=crop&w=600&q=80',
+    drill:    'https://images.unsplash.com/photo-1426927308491-6380b6a9936f?auto=format&fit=crop&w=600&q=80',
+    grinder:  'https://images.unsplash.com/photo-1572981779307-38b8cabb2407?auto=format&fit=crop&w=600&q=80',
+    paint:    'https://images.unsplash.com/photo-1562259949-e8e7689d7828?auto=format&fit=crop&w=600&q=80',
+    primer:   'https://images.unsplash.com/photo-1599619351208-3e6c839d6828?auto=format&fit=crop&w=600&q=80',
+    putty:    'https://images.unsplash.com/photo-1581094288338-2314dddb7ece?auto=format&fit=crop&w=600&q=80',
+    metal:    'https://images.unsplash.com/photo-1517232117160-a51e4c1d3275?auto=format&fit=crop&w=600&q=80',
+    rebar:    'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=600&q=80',
+    electric: 'https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&w=600&q=80',
+    cable:    'https://images.unsplash.com/photo-1565008576549-57569a49371d?auto=format&fit=crop&w=600&q=80',
+    drywall:  'https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?auto=format&fit=crop&w=600&q=80',
+    site:     'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=600&q=80',
+    vacuum:   'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?auto=format&fit=crop&w=600&q=80',
+    measure:  'https://images.unsplash.com/photo-1581092335397-9583eb92d232?auto=format&fit=crop&w=600&q=80',
+    glue:     'https://images.unsplash.com/photo-1581092249320-1e8c2c2d9d99?auto=format&fit=crop&w=600&q=80'
+};
+
 const productsData = [
-    { id: '1',  name: 'Цемент Knauf ПЦ-500 Д0, 25 кг',                price: 220,  category: 'construction', type: 'cement',   age: 'medium', brand: 'knauf',   promo: false, popular: true,  img: 'https://images.unsplash.com/photo-1607582544501-71f5b3ce3a4e?auto=format&fit=crop&w=600&q=80' },
-    { id: '2',  name: 'Перфоратор Bosch GBH 2-26 SDS-plus',            price: 5499, oldPrice: 6299, category: 'construction', type: 'tool',     age: 'medium', brand: 'bosch',   promo: true,  popular: true,  img: 'https://images.unsplash.com/photo-1426927308491-6380b6a9936f?auto=format&fit=crop&w=600&q=80' },
-    { id: '3',  name: 'Цегла червона повнотіла М-150',                 price: 18,   category: 'construction', type: 'brick',    age: 'medium', brand: 'other',   promo: false, popular: true,  img: 'https://images.unsplash.com/photo-1530686577008-d6dd54e83b40?auto=format&fit=crop&w=600&q=80' },
-    { id: '4',  name: 'Шпаклівка Knauf Rotband Pasta, 18 кг',          price: 580,  category: 'finishing',    type: 'paint',    age: 'medium', brand: 'knauf',   promo: false, popular: false, img: 'https://images.unsplash.com/photo-1581094288338-2314dddb7ece?auto=format&fit=crop&w=600&q=80' },
-    { id: '5',  name: 'Дриль ударний Makita HP1631, 710 Вт',           price: 2899, oldPrice: 3450, category: 'construction', type: 'tool',     age: 'small',  brand: 'makita',  promo: true,  popular: false, img: 'https://images.unsplash.com/photo-1530124566582-a618bc2615dc?auto=format&fit=crop&w=600&q=80' },
-    { id: '6',  name: 'Газоблок AEROC EcoTerm 400x200x600',            price: 95,   category: 'construction', type: 'brick',    age: 'large',  brand: 'other',   promo: false, popular: false, img: 'https://images.unsplash.com/photo-1581244277943-fe4a9c777189?auto=format&fit=crop&w=600&q=80' },
-    { id: '7',  name: 'Клей плитковий Ceresit CM 11, 25 кг',           price: 320,  category: 'finishing',    type: 'cement',   age: 'medium', brand: 'henkel',  promo: false, popular: false, img: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=600&q=80' },
-    { id: '8',  name: 'Болгарка DeWalt DWE4257, 1500 Вт',              price: 4250, oldPrice: 4900, category: 'construction', type: 'tool',     age: 'medium', brand: 'dewalt',  promo: true,  popular: true,  img: 'https://images.unsplash.com/photo-1572981779307-38b8cabb2407?auto=format&fit=crop&w=600&q=80' },
-    { id: '9',  name: 'Фарба інтер\'єрна Sniezka Eco, 10 л',           price: 850,  category: 'finishing',    type: 'paint',    age: 'medium', brand: 'sniezka', promo: false, popular: false, img: 'https://images.unsplash.com/photo-1562259949-e8e7689d7828?auto=format&fit=crop&w=600&q=80' },
-    { id: '10', name: 'Шуруповерт акумуляторний Bosch GSR 12V-15',     price: 3199, category: 'construction', type: 'tool',     age: 'small',  brand: 'bosch',   promo: false, popular: false, img: 'https://images.unsplash.com/photo-1581244249295-7a4f2cd5cd3a?auto=format&fit=crop&w=600&q=80' },
-    { id: '11', name: 'Грунтовка глибокого проникнення Henkel, 10 л',  price: 480,  category: 'finishing',    type: 'paint',    age: 'medium', brand: 'henkel',  promo: false, popular: false, img: 'https://images.unsplash.com/photo-1599619351208-3e6c839d6828?auto=format&fit=crop&w=600&q=80' },
-    { id: '12', name: 'Лак паркетний Sniezka Supermal, 5 л',           price: 1100, oldPrice: 1300, category: 'finishing',    type: 'paint',    age: 'medium', brand: 'sniezka', promo: true,  popular: false, img: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=600&q=80' },
-    { id: '13', name: 'Набір ключів комбінованих, 12 шт',              price: 650,  category: 'construction', type: 'tool',     age: 'small',  brand: 'other',   promo: false, popular: false, img: 'https://images.unsplash.com/photo-1530124566582-a618bc2615dc?auto=format&fit=crop&w=600&q=80' },
-    { id: '14', name: 'Профіль металевий CD-60 Knauf, 3 м',            price: 145,  category: 'finishing',    type: 'metal',    age: 'medium', brand: 'knauf',   promo: false, popular: false, img: 'https://images.unsplash.com/photo-1517232117160-a51e4c1d3275?auto=format&fit=crop&w=600&q=80' },
-    { id: '15', name: 'Гіпсокартон Knauf вологостійкий 12.5 мм',       price: 380,  category: 'finishing',    type: 'finishing', age: 'large', brand: 'knauf',   promo: false, popular: false, img: 'https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?auto=format&fit=crop&w=600&q=80' },
-    { id: '16', name: 'Кабель силовий ВВГ 3х2.5, 100 м',               price: 2400, oldPrice: 2750, category: 'construction', type: 'electric', age: 'large',  brand: 'other',   promo: true,  popular: false, img: 'https://images.unsplash.com/photo-1565008576549-57569a49371d?auto=format&fit=crop&w=600&q=80' },
-    { id: '17', name: 'Молоток слюсарний 500 г, фіберглас',            price: 280,  category: 'construction', type: 'tool',     age: 'small',  brand: 'other',   promo: false, popular: false, img: 'https://images.unsplash.com/photo-1426927308491-6380b6a9936f?auto=format&fit=crop&w=600&q=80' },
-    { id: '18', name: 'Арматура А500С, 12 мм, 11.7 м',                 price: 320,  category: 'construction', type: 'metal',    age: 'large',  brand: 'other',   promo: false, popular: false, img: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=600&q=80' },
-    { id: '19', name: 'Розетка Schneider Electric з заземленням',      price: 165,  oldPrice: 210, category: 'finishing',    type: 'electric', age: 'small',  brand: 'other',   promo: true,  popular: false, img: 'https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&w=600&q=80' },
-    { id: '20', name: 'Пилосос будівельний Makita VC2512L, 1000 Вт',   price: 5499, category: 'construction', type: 'tool',     age: 'large',  brand: 'makita',  promo: false, popular: false, img: 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?auto=format&fit=crop&w=600&q=80' },
-    { id: '21', name: 'Рулетка вимірювальна Stanley FatMax, 5 м',      price: 320,  category: 'construction', type: 'tool',     age: 'small',  brand: 'other',   promo: false, popular: false, img: 'https://images.unsplash.com/photo-1581092335397-9583eb92d232?auto=format&fit=crop&w=600&q=80' }
+    // ЦЕМЕНТ ТА СУМІШІ (1-15)
+    { id:'1',  name:'Цемент ПЦ-500 Д0 Knauf, 25 кг',           price:220,  oldPrice:260, type:'cement', category:'construction', age:'medium', brand:'knauf',   stock:340, promo:true,  popular:true,  isNew:false, img:IMG.cement },
+    { id:'2',  name:'Цемент ПЦ-400 Д20 Heidelberg, 25 кг',     price:185,  type:'cement', category:'construction', age:'medium', brand:'other',   stock:520, promo:false, popular:true,  isNew:false, img:IMG.cement },
+    { id:'3',  name:'Білий цемент Aalborg, 25 кг',             price:480,  type:'cement', category:'finishing',    age:'medium', brand:'other',   stock:80,  promo:false, popular:false, isNew:false, img:IMG.cement },
+    { id:'4',  name:'Клей плитковий Ceresit CM 11, 25 кг',     price:320,  type:'cement', category:'finishing',    age:'medium', brand:'ceresit', stock:210, promo:false, popular:true,  isNew:false, img:IMG.glue },
+    { id:'5',  name:'Клей плитковий Ceresit CM 17, 25 кг',     price:480,  oldPrice:560, type:'cement', category:'finishing',    age:'medium', brand:'ceresit', stock:140, promo:true,  popular:false, isNew:false, img:IMG.glue },
+    { id:'6',  name:'Шпаклівка Knauf Rotband Pasta, 18 кг',    price:580,  type:'cement', category:'finishing',    age:'medium', brand:'knauf',   stock:95,  promo:false, popular:false, isNew:true,  img:IMG.putty },
+    { id:'7',  name:'Шпаклівка стартова Knauf HP Start, 30 кг',price:340,  type:'cement', category:'finishing',    age:'large',  brand:'knauf',   stock:160, promo:false, popular:false, isNew:false, img:IMG.putty },
+    { id:'8',  name:'Шпаклівка фінішна Knauf HP Finish, 25 кг',price:380,  type:'cement', category:'finishing',    age:'medium', brand:'knauf',   stock:175, promo:false, popular:true,  isNew:false, img:IMG.putty },
+    { id:'9',  name:'Гіпсова штукатурка Knauf Rotband, 30 кг', price:420,  oldPrice:490, type:'cement', category:'finishing',    age:'large',  brand:'knauf',   stock:230, promo:true,  popular:true,  isNew:false, img:IMG.putty },
+    { id:'10', name:'Цементно-піщана суміш Ceresit, 25 кг',    price:180,  type:'cement', category:'construction', age:'medium', brand:'ceresit', stock:400, promo:false, popular:false, isNew:false, img:IMG.cement },
+    { id:'11', name:'Самовирівнююча підлога Henkel, 25 кг',    price:520,  type:'cement', category:'finishing',    age:'medium', brand:'henkel',  stock:110, promo:false, popular:false, isNew:true,  img:IMG.cement },
+    { id:'12', name:'Розчинна суміш для кладки М-100, 25 кг',  price:165,  type:'cement', category:'construction', age:'medium', brand:'other',   stock:380, promo:false, popular:false, isNew:false, img:IMG.cement },
+    { id:'13', name:'Гідроізоляція цементна Ceresit CR 65',    price:680,  type:'cement', category:'construction', age:'medium', brand:'ceresit', stock:60,  promo:false, popular:false, isNew:false, img:IMG.cement },
+    { id:'14', name:'Декоративна штукатурка короїд Sniezka',   price:850,  type:'cement', category:'finishing',    age:'medium', brand:'sniezka', stock:75,  promo:false, popular:false, isNew:true,  img:IMG.putty },
+    { id:'15', name:'Клей для газоблоку Knauf, 25 кг',         price:295,  type:'cement', category:'construction', age:'medium', brand:'knauf',   stock:185, promo:false, popular:false, isNew:false, img:IMG.cement },
+
+    // ЦЕГЛА ТА БЛОКИ (16-28)
+    { id:'16', name:'Цегла червона повнотіла М-150',           price:18,   type:'brick',  category:'construction', age:'medium', brand:'other', stock:12500, promo:false, popular:true,  isNew:false, img:IMG.brick },
+    { id:'17', name:'Цегла силікатна біла М-200',              price:14,   type:'brick',  category:'construction', age:'medium', brand:'other', stock:8800,  promo:false, popular:false, isNew:false, img:IMG.brick },
+    { id:'18', name:'Цегла лицьова клінкерна Roben',           price:42,   oldPrice:52,  type:'brick', category:'finishing',    age:'medium', brand:'other', stock:3200,  promo:true,  popular:false, isNew:false, img:IMG.brick },
+    { id:'19', name:'Газоблок AEROC EcoTerm 400x200x600',      price:95,   type:'brick',  category:'construction', age:'large',  brand:'other', stock:2400,  promo:false, popular:true,  isNew:false, img:IMG.block },
+    { id:'20', name:'Газоблок UDK 300x200x600',                price:78,   type:'brick',  category:'construction', age:'large',  brand:'other', stock:3100,  promo:false, popular:false, isNew:false, img:IMG.block },
+    { id:'21', name:'Газоблок Стоунлайт 200x200x600',          price:62,   oldPrice:72,  type:'brick', category:'construction', age:'large',  brand:'other', stock:4500,  promo:true,  popular:false, isNew:false, img:IMG.block },
+    { id:'22', name:'Шлакоблок 390x190x190',                   price:28,   type:'brick',  category:'construction', age:'large',  brand:'other', stock:6800,  promo:false, popular:false, isNew:false, img:IMG.block },
+    { id:'23', name:'Керамоблок Porotherm 38 P+W',             price:165,  type:'brick',  category:'construction', age:'large',  brand:'other', stock:1850,  promo:false, popular:false, isNew:false, img:IMG.brick },
+    { id:'24', name:'Керамоблок Porotherm 25 P+W',             price:128,  type:'brick',  category:'construction', age:'large',  brand:'other', stock:2300,  promo:false, popular:false, isNew:true,  img:IMG.brick },
+    { id:'25', name:'Цегла вогнетривка ШБ-5',                  price:48,   type:'brick',  category:'construction', age:'medium', brand:'other', stock:1450,  promo:false, popular:false, isNew:false, img:IMG.brick },
+    { id:'26', name:'Цегла декоративна гіперпресована',        price:22,   type:'brick',  category:'finishing',    age:'medium', brand:'other', stock:5600,  promo:false, popular:false, isNew:true,  img:IMG.brick },
+    { id:'27', name:'Пінобетонний блок D500 200x300x600',      price:58,   type:'brick',  category:'construction', age:'large',  brand:'other', stock:4200,  promo:false, popular:false, isNew:false, img:IMG.block },
+    { id:'28', name:'Цегла рваний камінь, рустікальна',        price:35,   oldPrice:42,  type:'brick', category:'finishing',    age:'medium', brand:'other', stock:2800,  promo:true,  popular:false, isNew:false, img:IMG.brick },
+
+    // ІНСТРУМЕНТ (29-55)
+    { id:'29', name:'Перфоратор Bosch GBH 2-26 SDS-plus',      price:5499, oldPrice:6299, type:'tool', category:'construction', age:'medium', brand:'bosch',  stock:18,  promo:true,  popular:true,  isNew:false, img:IMG.drill },
+    { id:'30', name:'Перфоратор Makita HR2470, 780 Вт',        price:4850, type:'tool',   category:'construction', age:'medium', brand:'makita',  stock:24,  promo:false, popular:true,  isNew:false, img:IMG.drill },
+    { id:'31', name:'Перфоратор DeWalt D25133K, SDS-plus',     price:5899, type:'tool',   category:'construction', age:'medium', brand:'dewalt',  stock:12,  promo:false, popular:false, isNew:true,  img:IMG.drill },
+    { id:'32', name:'Дриль ударний Makita HP1631, 710 Вт',     price:2899, oldPrice:3450, type:'tool', category:'construction', age:'small',  brand:'makita',  stock:36,  promo:true,  popular:false, isNew:false, img:IMG.drill },
+    { id:'33', name:'Дриль безударний Bosch GBM 6 RE',         price:1850, type:'tool',   category:'construction', age:'small',  brand:'bosch',   stock:48,  promo:false, popular:false, isNew:false, img:IMG.drill },
+    { id:'34', name:'Шуруповерт акум. Bosch GSR 12V-15',       price:3199, type:'tool',   category:'construction', age:'small',  brand:'bosch',   stock:42,  promo:false, popular:true,  isNew:false, img:IMG.drill },
+    { id:'35', name:'Шуруповерт акум. Makita DDF482',          price:4250, oldPrice:4990, type:'tool', category:'construction', age:'small',  brand:'makita',  stock:28,  promo:true,  popular:false, isNew:false, img:IMG.drill },
+    { id:'36', name:'Шуруповерт DeWalt DCD771, 18V',           price:5599, type:'tool',   category:'construction', age:'small',  brand:'dewalt',  stock:15,  promo:false, popular:false, isNew:true,  img:IMG.drill },
+    { id:'37', name:'Болгарка DeWalt DWE4257, 1500 Вт',        price:4250, oldPrice:4900, type:'tool', category:'construction', age:'medium', brand:'dewalt',  stock:22,  promo:true,  popular:true,  isNew:false, img:IMG.grinder },
+    { id:'38', name:'Болгарка Makita 9558HN, 840 Вт, 125 мм',  price:2150, type:'tool',   category:'construction', age:'small',  brand:'makita',  stock:55,  promo:false, popular:true,  isNew:false, img:IMG.grinder },
+    { id:'39', name:'Болгарка Bosch GWS 750-125',              price:2480, type:'tool',   category:'construction', age:'small',  brand:'bosch',   stock:38,  promo:false, popular:false, isNew:false, img:IMG.grinder },
+    { id:'40', name:'Болгарка Hilti AG 125-A22, акум.',        price:8950, type:'tool',   category:'construction', age:'medium', brand:'hilti',   stock:8,   promo:false, popular:false, isNew:true,  img:IMG.grinder },
+    { id:'41', name:'Лобзик Bosch PST 700 E, 500 Вт',          price:1850, type:'tool',   category:'construction', age:'small',  brand:'bosch',   stock:32,  promo:false, popular:false, isNew:false, img:IMG.tool },
+    { id:'42', name:'Циркулярна пила Makita 5008MG, 210 мм',   price:7299, oldPrice:8450, type:'tool', category:'construction', age:'medium', brand:'makita',  stock:14,  promo:true,  popular:false, isNew:false, img:IMG.tool },
+    { id:'43', name:'Пилосос будівельний Makita VC2512L',      price:5499, type:'tool',   category:'construction', age:'large',  brand:'makita',  stock:11,  promo:false, popular:false, isNew:false, img:IMG.vacuum },
+    { id:'44', name:'Пилосос Bosch GAS 18V-10 L, акум.',       price:7899, type:'tool',   category:'construction', age:'large',  brand:'bosch',   stock:9,   promo:false, popular:false, isNew:true,  img:IMG.vacuum },
+    { id:'45', name:'Молоток слюсарний 500 г, фіберглас',      price:280,  type:'tool',   category:'construction', age:'small',  brand:'stanley', stock:120, promo:false, popular:false, isNew:false, img:IMG.tool },
+    { id:'46', name:'Кувалда 3 кг з фіберглас. ручкою',        price:580,  type:'tool',   category:'construction', age:'medium', brand:'stanley', stock:65,  promo:false, popular:false, isNew:false, img:IMG.tool },
+    { id:'47', name:'Набір ключів комбінованих, 12 шт',        price:650,  type:'tool',   category:'construction', age:'small',  brand:'stanley', stock:78,  promo:false, popular:false, isNew:false, img:IMG.tool },
+    { id:'48', name:'Набір викруток Stanley FatMax, 8 шт',     price:780,  oldPrice:920,  type:'tool', category:'construction', age:'small',  brand:'stanley', stock:52,  promo:true,  popular:false, isNew:false, img:IMG.tool },
+    { id:'49', name:'Рулетка Stanley FatMax 5 м',              price:320,  type:'tool',   category:'construction', age:'small',  brand:'stanley', stock:140, promo:false, popular:false, isNew:false, img:IMG.measure },
+    { id:'50', name:'Рулетка Bosch Zamo III, лазерна 20 м',    price:2499, type:'tool',   category:'construction', age:'small',  brand:'bosch',   stock:38,  promo:false, popular:true,  isNew:true,  img:IMG.measure },
+    { id:'51', name:'Лазерний рівень Bosch GLL 2-15 G',        price:5899, oldPrice:6800, type:'tool', category:'construction', age:'small',  brand:'bosch',   stock:14,  promo:true,  popular:false, isNew:false, img:IMG.measure },
+    { id:'52', name:'Будівельний рівень Stanley FatMax, 60 см',price:480,  type:'tool',   category:'construction', age:'small',  brand:'stanley', stock:88,  promo:false, popular:false, isNew:false, img:IMG.measure },
+    { id:'53', name:'Степлер механічний Stanley TR250',        price:550,  type:'tool',   category:'construction', age:'small',  brand:'stanley', stock:72,  promo:false, popular:false, isNew:false, img:IMG.tool },
+    { id:'54', name:'Шліфмашина Bosch PSS 250 AE',             price:2399, type:'tool',   category:'finishing',    age:'small',  brand:'bosch',   stock:26,  promo:false, popular:false, isNew:false, img:IMG.tool },
+    { id:'55', name:'Тепловентилятор Hilti CT 10000',          price:8400, type:'tool',   category:'construction', age:'large',  brand:'hilti',   stock:6,   promo:false, popular:false, isNew:true,  img:IMG.tool },
+
+    // ФАРБИ ТА ЛАКИ (56-72)
+    { id:'56', name:'Фарба інтер\'єрна Sniezka Eco, 10 л',     price:850,  type:'paint', category:'finishing',    age:'medium', brand:'sniezka', stock:88,  promo:false, popular:true,  isNew:false, img:IMG.paint },
+    { id:'57', name:'Фарба фасадна Sniezka Acryl-Putz, 10 л',  price:1250, oldPrice:1450, type:'paint', category:'finishing',    age:'medium', brand:'sniezka', stock:64,  promo:true,  popular:false, isNew:false, img:IMG.paint },
+    { id:'58', name:'Фарба латексна Henkel Ceresit, 5 л',      price:680,  type:'paint', category:'finishing',    age:'medium', brand:'henkel',  stock:95,  promo:false, popular:false, isNew:false, img:IMG.paint },
+    { id:'59', name:'Емаль алкідна ПФ-115 біла, 2.8 кг',       price:340,  type:'paint', category:'finishing',    age:'small',  brand:'other',   stock:160, promo:false, popular:true,  isNew:false, img:IMG.paint },
+    { id:'60', name:'Лак паркетний Sniezka Supermal, 5 л',     price:1100, oldPrice:1300, type:'paint', category:'finishing',    age:'medium', brand:'sniezka', stock:42,  promo:true,  popular:false, isNew:false, img:IMG.paint },
+    { id:'61', name:'Лак яхтний Sniezka, 2.5 л',               price:780,  type:'paint', category:'finishing',    age:'small',  brand:'sniezka', stock:58,  promo:false, popular:false, isNew:false, img:IMG.paint },
+    { id:'62', name:'Грунтовка глибокого проникнення, 10 л',   price:480,  type:'paint', category:'finishing',    age:'medium', brand:'henkel',  stock:120, promo:false, popular:true,  isNew:false, img:IMG.primer },
+    { id:'63', name:'Грунтовка-концентрат Ceresit CT 17, 10 л',price:550,  type:'paint', category:'finishing',    age:'medium', brand:'ceresit', stock:98,  promo:false, popular:false, isNew:false, img:IMG.primer },
+    { id:'64', name:'Грунтовка адгезійна Knauf Betokontakt',   price:680,  type:'paint', category:'finishing',    age:'medium', brand:'knauf',   stock:74,  promo:false, popular:false, isNew:true,  img:IMG.primer },
+    { id:'65', name:'Антисептик деревозахисний Sniezka, 5 л',  price:580,  type:'paint', category:'finishing',    age:'medium', brand:'sniezka', stock:82,  promo:false, popular:false, isNew:false, img:IMG.paint },
+    { id:'66', name:'Колер-паста Sniezka, 100 мл',             price:65,   type:'paint', category:'finishing',    age:'small',  brand:'sniezka', stock:340, promo:false, popular:false, isNew:false, img:IMG.paint },
+    { id:'67', name:'Розчинник 646 ГОСТ, 1 л',                 price:85,   type:'paint', category:'finishing',    age:'small',  brand:'other',   stock:280, promo:false, popular:false, isNew:false, img:IMG.paint },
+    { id:'68', name:'Уайт-спірит Sniezka, 0.9 л',              price:75,   type:'paint', category:'finishing',    age:'small',  brand:'sniezka', stock:310, promo:false, popular:false, isNew:false, img:IMG.paint },
+    { id:'69', name:'Емаль молоткова Hammerite, 2.5 л',        price:1450, oldPrice:1690, type:'paint', category:'finishing',    age:'small',  brand:'other',   stock:48,  promo:true,  popular:false, isNew:true,  img:IMG.paint },
+    { id:'70', name:'Силіконова фарба фасадна Ceresit, 10 л',  price:1890, type:'paint', category:'finishing',    age:'medium', brand:'ceresit', stock:32,  promo:false, popular:false, isNew:true,  img:IMG.paint },
+    { id:'71', name:'Декоративна фарба під шовк Sniezka, 5 л', price:1280, type:'paint', category:'finishing',    age:'medium', brand:'sniezka', stock:38,  promo:false, popular:false, isNew:false, img:IMG.paint },
+    { id:'72', name:'Лак для каменю Ceresit CT 13, 5 л',       price:1150, type:'paint', category:'finishing',    age:'medium', brand:'ceresit', stock:44,  promo:false, popular:false, isNew:false, img:IMG.paint },
+
+    // МЕТАЛОПРОКАТ (73-83)
+    { id:'73', name:'Арматура А500С, 12 мм, 11.7 м',           price:320,  type:'metal',  category:'construction', age:'large',  brand:'other', stock:1240, promo:false, popular:true,  isNew:false, img:IMG.rebar },
+    { id:'74', name:'Арматура А500С, 10 мм, 11.7 м',           price:235,  type:'metal',  category:'construction', age:'large',  brand:'other', stock:1580, promo:false, popular:false, isNew:false, img:IMG.rebar },
+    { id:'75', name:'Арматура А500С, 14 мм, 11.7 м',           price:435,  type:'metal',  category:'construction', age:'large',  brand:'other', stock:980,  promo:false, popular:false, isNew:false, img:IMG.rebar },
+    { id:'76', name:'Профіль металевий CD-60 Knauf, 3 м',      price:145,  type:'metal',  category:'finishing',    age:'medium', brand:'knauf', stock:680,  promo:false, popular:true,  isNew:false, img:IMG.metal },
+    { id:'77', name:'Профіль UD-27 Knauf, 3 м',                price:95,   type:'metal',  category:'finishing',    age:'medium', brand:'knauf', stock:840,  promo:false, popular:false, isNew:false, img:IMG.metal },
+    { id:'78', name:'Куточок металевий 50x50x5, 6 м',          price:680,  type:'metal',  category:'construction', age:'large',  brand:'other', stock:160,  promo:false, popular:false, isNew:false, img:IMG.metal },
+    { id:'79', name:'Труба профільна 40x40x2, 6 м',            price:580,  oldPrice:680, type:'metal', category:'construction', age:'large',  brand:'other', stock:240,  promo:true,  popular:false, isNew:false, img:IMG.metal },
+    { id:'80', name:'Лист оцинкований 1x2 м, 0.5 мм',          price:780,  type:'metal',  category:'construction', age:'large',  brand:'other', stock:180,  promo:false, popular:false, isNew:false, img:IMG.metal },
+    { id:'81', name:'Сітка зварна 50x50, 1.5x2 м',             price:480,  type:'metal',  category:'construction', age:'large',  brand:'other', stock:320,  promo:false, popular:false, isNew:false, img:IMG.metal },
+    { id:'82', name:'Цвях будівельний 100 мм, 5 кг',           price:280,  type:'metal',  category:'construction', age:'medium', brand:'other', stock:420,  promo:false, popular:false, isNew:false, img:IMG.metal },
+    { id:'83', name:'Саморіз по металу 4.2x16, 1000 шт',       price:185,  type:'metal',  category:'finishing',    age:'small',  brand:'other', stock:560,  promo:false, popular:false, isNew:false, img:IMG.metal },
+
+    // ЕЛЕКТРИКА (84-94)
+    { id:'84', name:'Кабель ВВГ 3х2.5, 100 м',                 price:2400, oldPrice:2750, type:'electric', category:'construction', age:'large',  brand:'other',     stock:42,  promo:true,  popular:true,  isNew:false, img:IMG.cable },
+    { id:'85', name:'Кабель ВВГ 3х1.5, 100 м',                 price:1680, type:'electric', category:'construction', age:'large',  brand:'other',     stock:56,  promo:false, popular:true,  isNew:false, img:IMG.cable },
+    { id:'86', name:'Кабель ВВГ 3х4, 100 м',                   price:3850, type:'electric', category:'construction', age:'large',  brand:'other',     stock:28,  promo:false, popular:false, isNew:false, img:IMG.cable },
+    { id:'87', name:'Розетка з заземленням Schneider Electric',price:165,  oldPrice:210,  type:'electric', category:'finishing',    age:'small',  brand:'schneider', stock:340, promo:true,  popular:false, isNew:false, img:IMG.electric },
+    { id:'88', name:'Вимикач 1-кл. Schneider Sedna',           price:145,  type:'electric', category:'finishing',    age:'small',  brand:'schneider', stock:280, promo:false, popular:false, isNew:false, img:IMG.electric },
+    { id:'89', name:'Вимикач 2-кл. Schneider Asfora',          price:185,  type:'electric', category:'finishing',    age:'small',  brand:'schneider', stock:240, promo:false, popular:false, isNew:false, img:IMG.electric },
+    { id:'90', name:'Автомат 1P 16A Schneider Easy 9',         price:120,  type:'electric', category:'construction', age:'small',  brand:'schneider', stock:420, promo:false, popular:true,  isNew:false, img:IMG.electric },
+    { id:'91', name:'УЗО Schneider 2P 25A 30mA',               price:580,  type:'electric', category:'construction', age:'small',  brand:'schneider', stock:96,  promo:false, popular:false, isNew:true,  img:IMG.electric },
+    { id:'92', name:'Щит розподільчий на 12 модулів',          price:780,  type:'electric', category:'construction', age:'medium', brand:'schneider', stock:54,  promo:false, popular:false, isNew:false, img:IMG.electric },
+    { id:'93', name:'LED-світильник стельовий 18 Вт',          price:280,  type:'electric', category:'finishing',    age:'small',  brand:'other',     stock:185, promo:false, popular:false, isNew:true,  img:IMG.electric },
+    { id:'94', name:'Прожектор LED 50 Вт IP65',                price:680,  oldPrice:820,  type:'electric', category:'construction', age:'small',  brand:'other',     stock:78,  promo:true,  popular:false, isNew:true,  img:IMG.electric },
+
+    // ОЗДОБЛЕННЯ (95-100)
+    { id:'95',  name:'Гіпсокартон Knauf вологостійкий 12.5 мм', price:380,  type:'finishing', category:'finishing', age:'large',  brand:'knauf', stock:340, promo:false, popular:true,  isNew:false, img:IMG.drywall },
+    { id:'96',  name:'Гіпсокартон Knauf стандарт 9.5 мм',       price:280,  type:'finishing', category:'finishing', age:'large',  brand:'knauf', stock:520, promo:false, popular:false, isNew:false, img:IMG.drywall },
+    { id:'97',  name:'Утеплювач мінвата Knauf, 100 мм, 5 м²',   price:680,  oldPrice:780, type:'finishing', category:'finishing', age:'large',  brand:'knauf', stock:240, promo:true,  popular:true,  isNew:false, img:IMG.drywall },
+    { id:'98',  name:'Пінопласт ПСБ-С 25, 50 мм, 1x1 м',        price:185,  type:'finishing', category:'finishing', age:'medium', brand:'other', stock:680, promo:false, popular:false, isNew:false, img:IMG.drywall },
+    { id:'99',  name:'Сітка штукатурна склотканина, 50 м²',     price:480,  type:'finishing', category:'finishing', age:'medium', brand:'other', stock:160, promo:false, popular:false, isNew:false, img:IMG.drywall },
+    { id:'100', name:'Підвіс прямий для CD-профілю, 100 шт',    price:120,  type:'finishing', category:'finishing', age:'small',  brand:'knauf', stock:420, promo:false, popular:false, isNew:false, img:IMG.metal }
 ];
 
-// КОШИК
+// ============================================
+// СТАН: КОШИК / ВИБРАНІ / ПЕРЕГЛЯНУТІ
+// ============================================
 let cart = JSON.parse(localStorage.getItem('budMasterCart')) || [];
+let wishlist = JSON.parse(localStorage.getItem('budMasterWishlist')) || [];
+let recentlyViewed = JSON.parse(localStorage.getItem('budMasterRecent')) || [];
 
+const PROMO_CODES = {
+    'BUD10':    { type: 'percent', value: 10, label: '-10%' },
+    'BUD500':   { type: 'fixed',   value: 500, label: '-500 грн' },
+    'NEW2026':  { type: 'percent', value: 15, label: '-15%' }
+};
+
+const FREE_DELIVERY_THRESHOLD = 5000;
+const MIN_ORDER = 300;
+
+// ============================================
+// КОШИК
+// ============================================
 function updateCartBadge() {
     const counts = document.querySelectorAll('.cart-count');
     const total = cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -36,18 +167,100 @@ function updateCartBadge() {
     });
 }
 
-function addToCart(id) {
+function addToCart(id, qty) {
     const product = productsData.find(p => p.id === id);
     if (!product) return;
+    const quantity = qty || 1;
 
     const existingItem = cart.find(item => item.id === id);
-    if (existingItem) { existingItem.quantity += 1; }
-    else { cart.push({ ...product, quantity: 1 }); }
+    if (existingItem) { existingItem.quantity += quantity; }
+    else { cart.push({ ...product, quantity }); }
     localStorage.setItem('budMasterCart', JSON.stringify(cart));
     updateCartBadge();
+    showToast(`«${product.name}» додано в кошик`);
 }
 
-// ОБРОБКА ПОШУКУ (З ШАПКИ)
+// ============================================
+// ВИБРАНЕ
+// ============================================
+function updateWishlistBadge() {
+    const counts = document.querySelectorAll('.wishlist-count');
+    counts.forEach(c => c.textContent = wishlist.length);
+}
+
+function toggleWishlist(id, event) {
+    if (event) { event.stopPropagation(); event.preventDefault(); }
+    const idx = wishlist.indexOf(id);
+    if (idx > -1) { wishlist.splice(idx, 1); }
+    else { wishlist.push(id); }
+    localStorage.setItem('budMasterWishlist', JSON.stringify(wishlist));
+    updateWishlistBadge();
+    document.querySelectorAll(`.wish-btn[data-id="${id}"]`).forEach(btn => {
+        btn.classList.toggle('active', wishlist.includes(id));
+    });
+}
+
+// ============================================
+// НЕЩОДАВНО ПЕРЕГЛЯНУТІ
+// ============================================
+function addToRecent(id) {
+    recentlyViewed = recentlyViewed.filter(x => x !== id);
+    recentlyViewed.unshift(id);
+    if (recentlyViewed.length > 8) recentlyViewed = recentlyViewed.slice(0, 8);
+    localStorage.setItem('budMasterRecent', JSON.stringify(recentlyViewed));
+}
+
+// ============================================
+// TOAST
+// ============================================
+function showToast(text) {
+    let toast = document.getElementById('toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'toast';
+        toast.className = 'toast';
+        document.body.appendChild(toast);
+    }
+    toast.innerHTML = `<i class="fa fa-check-circle"></i> ${text}`;
+    toast.classList.add('show');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+// ============================================
+// КАРТКА ТОВАРУ (HTML)
+// ============================================
+function productCardHTML(p) {
+    const inWish = wishlist.includes(p.id);
+    const stockClass = p.stock > 50 ? 'in-stock' : (p.stock > 0 ? 'low-stock' : 'no-stock');
+    const stockLabel = p.stock > 50 ? `В наявності` : (p.stock > 0 ? `Закінчується (${p.stock} шт)` : 'Немає в наявності');
+    return `
+        <div class="product-card">
+            ${p.promo ? '<span class="discount-badge">ЗНИЖКА</span>' : ''}
+            ${p.popular ? '<span class="popular-badge">ХІТ</span>' : ''}
+            ${p.isNew && !p.popular ? '<span class="new-badge">НОВИНКА</span>' : ''}
+            <button class="wish-btn ${inWish ? 'active' : ''}" data-id="${p.id}" onclick="toggleWishlist('${p.id}', event)" title="В обране">
+                <i class="fa fa-heart"></i>
+            </button>
+            <a href="product.html?id=${p.id}" class="product-card-link">
+                <img src="${p.img}" alt="${p.name}" loading="lazy">
+                <h3>${p.name}</h3>
+            </a>
+            <p class="stock-line ${stockClass}"><i class="fa fa-circle"></i> ${stockLabel}</p>
+            <p class="price">
+                ${p.oldPrice ? `<span class="old-price">${p.oldPrice} грн</span>` : ''}
+                ${p.price} грн
+            </p>
+            <button class="btn-primary btn-full" onclick="addToCart('${p.id}')" ${p.stock === 0 ? 'disabled' : ''}>
+                <i class="fa fa-shopping-cart"></i> В кошик
+            </button>
+        </div>
+    `;
+}
+
+// ============================================
+// ПОШУК
+// ============================================
 function handleSearch(event) {
     event.preventDefault();
     const input = document.querySelector('.search-box input');
@@ -69,23 +282,29 @@ function handleSearch(event) {
     }
 }
 
-// ЗАКРИТТЯ МОДАЛЬНОГО ВІКНА
 function closeModal() {
     const modal = document.getElementById('successModal');
     if (modal) modal.style.display = 'none';
 }
 
-// ФОРМА КОНТАКТІВ
 function processContactForm(event) {
     event.preventDefault();
     document.getElementById('successModal').style.display = 'flex';
     event.target.reset();
 }
 
+// ============================================
 // ОФОРМЛЕННЯ ЗАМОВЛЕННЯ
+// ============================================
 function processCheckout(event) {
     event.preventDefault();
     if (cart.length === 0) { alert("Ваш кошик порожній!"); return; }
+
+    const subtotal = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+    if (subtotal < MIN_ORDER) {
+        alert(`Мінімальна сума замовлення: ${MIN_ORDER} грн`);
+        return;
+    }
 
     const phoneInput = document.getElementById('checkoutPhone');
     if (phoneInput && phoneInput.value.length < 13) {
@@ -96,36 +315,47 @@ function processCheckout(event) {
 
     cart = [];
     localStorage.setItem('budMasterCart', JSON.stringify(cart));
+    localStorage.removeItem('budMasterPromo');
     updateCartBadge();
     event.target.reset();
     if (typeof renderCartPage === 'function') renderCartPage();
 }
 
-// ПОПУЛЯРНІ ТОВАРИ НА ГОЛОВНІЙ
-function renderPopularProducts() {
-    const grid = document.getElementById('popular-grid');
+// ============================================
+// ХІТИ / НОВИНКИ / АКЦІЇ НА ГОЛОВНІЙ
+// ============================================
+function renderProductSection(gridId, items) {
+    const grid = document.getElementById(gridId);
     if (!grid) return;
-
-    const popularItems = productsData.filter(p => p.popular).slice(0, 4);
-
-    grid.innerHTML = popularItems.map(p => `
-        <div class="product-card">
-            ${p.promo ? '<span class="discount-badge">ЗНИЖКА</span>' : ''}
-            <span class="popular-badge">ХІТ</span>
-            <img src="${p.img}" alt="${p.name}">
-            <h3>${p.name}</h3>
-            <p class="price">
-                ${p.oldPrice ? `<span class="old-price">${p.oldPrice} грн</span>` : ''}
-                ${p.price} грн
-            </p>
-            <button class="btn-primary btn-full" onclick="addToCart('${p.id}')">
-                <i class="fa fa-shopping-cart"></i> В кошик
-            </button>
-        </div>
-    `).join('');
+    grid.innerHTML = items.map(productCardHTML).join('');
 }
 
-// РЕНДЕР ТОВАРІВ В КАТАЛОЗІ
+function renderHomeSections() {
+    const popularItems = productsData.filter(p => p.popular).slice(0, 8);
+    const newItems = productsData.filter(p => p.isNew).slice(0, 8);
+    const promoItems = productsData.filter(p => p.promo).slice(0, 8);
+
+    renderProductSection('popular-grid', popularItems);
+    renderProductSection('new-grid', newItems);
+    renderProductSection('promo-grid', promoItems);
+
+    const recent = recentlyViewed
+        .map(id => productsData.find(p => p.id === id))
+        .filter(Boolean)
+        .slice(0, 4);
+    if (recent.length > 0) {
+        renderProductSection('recent-grid', recent);
+        const sec = document.getElementById('recent-section');
+        if (sec) sec.style.display = 'block';
+    }
+}
+
+// ============================================
+// КАТАЛОГ З ПАГІНАЦІЄЮ
+// ============================================
+const PAGE_SIZE = 12;
+let currentPage = 1;
+
 function renderShop() {
     const grid = document.getElementById('shop-grid');
     if (!grid) return;
@@ -163,6 +393,9 @@ function renderShop() {
         const age = document.getElementById('f-age')?.value || 'all';
         const promo = document.getElementById('f-promo')?.checked || false;
         const popular = document.getElementById('f-popular')?.checked || false;
+        const onlyWish = document.getElementById('f-wish')?.checked || false;
+        const priceMin = parseFloat(document.getElementById('f-price-min')?.value) || 0;
+        const priceMax = parseFloat(document.getElementById('f-price-max')?.value) || Infinity;
 
         filtered = productsData.filter(p => {
             if (query && !p.name.toLowerCase().includes(query)) return false;
@@ -172,12 +405,19 @@ function renderShop() {
             if (age !== 'all' && p.age !== age) return false;
             if (promo && !p.promo) return false;
             if (popular && !p.popular) return false;
+            if (onlyWish && !wishlist.includes(p.id)) return false;
+            if (p.price < priceMin || p.price > priceMax) return false;
             return true;
         });
 
-        if (sort === 'low') filtered.sort((a, b) => a.price - b.price);
+        if (sort === 'low')  filtered.sort((a, b) => a.price - b.price);
         if (sort === 'high') filtered.sort((a, b) => b.price - a.price);
+        if (sort === 'new')  filtered.sort((a, b) => (b.isNew?1:0) - (a.isNew?1:0));
+        if (sort === 'popular') filtered.sort((a, b) => (b.popular?1:0) - (a.popular?1:0));
     }
+
+    const countEl = document.getElementById('shop-count');
+    if (countEl) countEl.textContent = `Знайдено: ${filtered.length} ${filtered.length === 1 ? 'товар' : 'товарів'}`;
 
     if (filtered.length === 0) {
         grid.innerHTML = `
@@ -188,27 +428,200 @@ function renderShop() {
                 <button class="btn-primary" onclick="resetFilters()">Скинути фільтри</button>
             </div>
         `;
+        const pag = document.getElementById('pagination');
+        if (pag) pag.innerHTML = '';
         return;
     }
 
-    grid.innerHTML = filtered.map(p => `
-        <div class="product-card">
-            ${p.promo ? '<span class="discount-badge">ЗНИЖКА</span>' : ''}
-            ${p.popular ? '<span class="popular-badge">ХІТ</span>' : ''}
-            <img src="${p.img}" alt="${p.name}">
-            <h3>${p.name}</h3>
-            <p class="price">
-                ${p.oldPrice ? `<span class="old-price">${p.oldPrice} грн</span>` : ''}
-                ${p.price} грн
-            </p>
-            <button class="btn-primary btn-full" onclick="addToCart('${p.id}')">
-                <i class="fa fa-shopping-cart"></i> В кошик
-            </button>
-        </div>
-    `).join('');
+    if (productId) {
+        grid.innerHTML = filtered.map(productCardHTML).join('');
+        const pag = document.getElementById('pagination');
+        if (pag) pag.innerHTML = '';
+        return;
+    }
+
+    const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+    if (currentPage > totalPages) currentPage = 1;
+    const start = (currentPage - 1) * PAGE_SIZE;
+    const pageItems = filtered.slice(start, start + PAGE_SIZE);
+
+    grid.innerHTML = pageItems.map(productCardHTML).join('');
+    renderPagination(totalPages);
 }
 
+function renderPagination(totalPages) {
+    const pag = document.getElementById('pagination');
+    if (!pag) return;
+    if (totalPages <= 1) { pag.innerHTML = ''; return; }
+
+    let html = `<button class="pag-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="goToPage(${currentPage - 1})"><i class="fa fa-chevron-left"></i></button>`;
+    for (let i = 1; i <= totalPages; i++) {
+        if (i === 1 || i === totalPages || Math.abs(i - currentPage) <= 1) {
+            html += `<button class="pag-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+        } else if (Math.abs(i - currentPage) === 2) {
+            html += `<span class="pag-dots">...</span>`;
+        }
+    }
+    html += `<button class="pag-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="goToPage(${currentPage + 1})"><i class="fa fa-chevron-right"></i></button>`;
+    pag.innerHTML = html;
+}
+
+function goToPage(p) {
+    currentPage = p;
+    renderShop();
+    const grid = document.getElementById('shop-grid');
+    if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ============================================
+// СТОРІНКА ТОВАРУ
+// ============================================
+function renderProductPage() {
+    const container = document.getElementById('product-page-container');
+    if (!container) return;
+
+    const id = new URLSearchParams(window.location.search).get('id');
+    const product = productsData.find(p => p.id === id);
+
+    if (!product) {
+        container.innerHTML = `
+            <div class="empty-shop-state">
+                <i class="fa fa-box-open empty-shop-icon"></i>
+                <h3 class="empty-shop-title">Товар не знайдено</h3>
+                <a href="shop.html" class="btn-primary">До каталогу</a>
+            </div>`;
+        return;
+    }
+
+    addToRecent(id);
+
+    const inWish = wishlist.includes(product.id);
+    const stockClass = product.stock > 50 ? 'in-stock' : (product.stock > 0 ? 'low-stock' : 'no-stock');
+    const stockLabel = product.stock > 50 ? `В наявності (${product.stock} шт)` : (product.stock > 0 ? `Закінчується (${product.stock} шт)` : 'Немає в наявності');
+
+    const typeLabels = { cement:'Цемент та суміші', brick:'Цегла та блоки', tool:'Інструменти', paint:'Фарби та лаки', metal:'Металопрокат', electric:'Електрика', finishing:'Оздоблення' };
+    const brandLabels = { knauf:'Knauf', bosch:'Bosch', makita:'Makita', henkel:'Henkel', sniezka:'Sniezka', dewalt:'DeWalt', ceresit:'Ceresit', stanley:'Stanley', hilti:'Hilti', schneider:'Schneider Electric', other:'—' };
+    const ageLabels = { small:'до 5 кг / шт', medium:'5-25 кг', large:'понад 25 кг' };
+
+    document.title = `${product.name} — БудМайстер`;
+
+    container.innerHTML = `
+        <nav class="breadcrumbs">
+            <a href="index.html">Головна</a> /
+            <a href="shop.html">Каталог</a> /
+            <a href="shop.html?type=${product.type}">${typeLabels[product.type] || ''}</a> /
+            <span>${product.name}</span>
+        </nav>
+
+        <div class="product-detail">
+            <div class="product-detail-img">
+                <img src="${product.img}" alt="${product.name}">
+                ${product.promo ? '<span class="discount-badge">ЗНИЖКА</span>' : ''}
+                ${product.popular ? '<span class="popular-badge">ХІТ</span>' : ''}
+                ${product.isNew && !product.popular ? '<span class="new-badge">НОВИНКА</span>' : ''}
+            </div>
+            <div class="product-detail-info">
+                <h1>${product.name}</h1>
+                <p class="prod-brand">Бренд: <strong>${brandLabels[product.brand] || '—'}</strong></p>
+                <p class="stock-line ${stockClass}"><i class="fa fa-circle"></i> ${stockLabel}</p>
+                <div class="prod-price-block">
+                    ${product.oldPrice ? `<span class="old-price">${product.oldPrice} грн</span>` : ''}
+                    <span class="prod-price">${product.price} грн</span>
+                </div>
+
+                <div class="prod-qty-row">
+                    <label>Кількість:</label>
+                    <div class="cart-controls">
+                        <button class="cart-control-btn" onclick="changeProdQty(-1)">-</button>
+                        <span class="cart-control-qty" id="prod-qty">1</span>
+                        <button class="cart-control-btn" onclick="changeProdQty(1)">+</button>
+                    </div>
+                </div>
+
+                <div class="prod-actions">
+                    <button class="btn-primary" onclick="addProductToCart('${product.id}')" ${product.stock === 0 ? 'disabled' : ''}>
+                        <i class="fa fa-shopping-cart"></i> Додати в кошик
+                    </button>
+                    <button class="btn-outline wish-btn-large ${inWish ? 'active' : ''}" data-id="${product.id}" onclick="toggleWishlist('${product.id}', event)">
+                        <i class="fa fa-heart"></i> В обране
+                    </button>
+                </div>
+
+                <ul class="prod-services">
+                    <li><i class="fa fa-truck"></i> Доставка від 24 годин по всій Україні</li>
+                    <li><i class="fa fa-shield-alt"></i> Гарантія якості, оригінальна продукція</li>
+                    <li><i class="fa fa-undo"></i> Повернення товару протягом 14 днів</li>
+                    <li><i class="fa fa-headset"></i> Безкоштовна консультація фахівця</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="prod-tabs">
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="switchTab(event, 'tab-desc')">Опис</button>
+                <button class="tab-btn" onclick="switchTab(event, 'tab-specs')">Характеристики</button>
+                <button class="tab-btn" onclick="switchTab(event, 'tab-delivery')">Доставка та оплата</button>
+            </div>
+            <div id="tab-desc" class="tab-content active">
+                <p>${product.name} — якісний матеріал від виробника <strong>${brandLabels[product.brand] || 'перевіреного бренду'}</strong>, який підходить як для професійного будівництва, так і для приватних робіт. Відповідає всім стандартам ДСТУ та має сертифікати якості.</p>
+                <p>Замовляйте з доставкою або забирайте з найближчого складу — Київ, Львів, Дніпро. На великі обсяги діє система оптових знижок.</p>
+            </div>
+            <div id="tab-specs" class="tab-content">
+                <table class="specs-table">
+                    <tr><td>Категорія</td><td>${typeLabels[product.type] || '—'}</td></tr>
+                    <tr><td>Бренд</td><td>${brandLabels[product.brand] || '—'}</td></tr>
+                    <tr><td>Фасування</td><td>${ageLabels[product.age] || '—'}</td></tr>
+                    <tr><td>Артикул</td><td>BM-${product.id.padStart(5, '0')}</td></tr>
+                    <tr><td>Сертифікат якості</td><td>Так, ДСТУ</td></tr>
+                    <tr><td>Гарантія</td><td>12 місяців</td></tr>
+                </table>
+            </div>
+            <div id="tab-delivery" class="tab-content">
+                <p><strong>Способи доставки:</strong></p>
+                <ul style="margin-left: 20px; line-height: 1.8;">
+                    <li>Самовивіз зі складу (Київ, Львів, Дніпро) — безкоштовно</li>
+                    <li>Нова Пошта — за тарифами перевізника</li>
+                    <li>Доставка вантажним авто по Києву та області — від 350 грн</li>
+                    <li>Безкоштовна доставка по Києву при замовленні від 5000 грн</li>
+                </ul>
+                <p style="margin-top: 15px;"><strong>Оплата:</strong> готівкою, картою, безготівковий розрахунок для юр. осіб.</p>
+            </div>
+        </div>
+
+        <section class="related-products">
+            <h2 class="section-title">Схожі товари</h2>
+            <div class="products-grid" id="related-grid"></div>
+        </section>
+    `;
+
+    const related = productsData.filter(p => p.type === product.type && p.id !== product.id).slice(0, 4);
+    renderProductSection('related-grid', related);
+}
+
+function changeProdQty(delta) {
+    const el = document.getElementById('prod-qty');
+    if (!el) return;
+    let q = parseInt(el.textContent) + delta;
+    if (q < 1) q = 1;
+    if (q > 999) q = 999;
+    el.textContent = q;
+}
+
+function addProductToCart(id) {
+    const qty = parseInt(document.getElementById('prod-qty').textContent) || 1;
+    addToCart(id, qty);
+}
+
+function switchTab(event, tabId) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+}
+
+// ============================================
 // СКИНУТИ ФІЛЬТРИ
+// ============================================
 function resetFilters() {
     const headerInput = document.querySelector('.search-box input');
     if (headerInput) headerInput.value = '';
@@ -221,22 +634,82 @@ function resetFilters() {
         if (el) el.value = el.options[0].value;
     });
 
-    ['f-promo', 'f-popular'].forEach(id => {
+    ['f-promo', 'f-popular', 'f-wish'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.checked = false;
+    });
+
+    ['f-price-min', 'f-price-max'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
     });
 
     if (window.location.pathname.includes('shop.html')) {
         window.history.pushState({}, '', 'shop.html');
     }
+    currentPage = 1;
     renderShop();
 }
 
-// СТАРТ
+// ============================================
+// КАЛЬКУЛЯТОР МАТЕРІАЛІВ
+// ============================================
+function calcMaterials() {
+    const result = document.getElementById('calc-result');
+    const type = document.getElementById('calc-type').value;
+    const area = parseFloat(document.getElementById('calc-area').value);
+
+    if (!area || area <= 0) {
+        result.innerHTML = '<p class="calc-error">Вкажіть площу більше 0</p>';
+        return;
+    }
+
+    let html = '<div class="calc-output"><h4>Орієнтовна потреба:</h4><ul>';
+
+    if (type === 'wall') {
+        const bricks = Math.ceil(area * 51);
+        const cement = Math.ceil(area * 0.05 * 25);
+        html += `<li>Цегла червона: <strong>${bricks} шт</strong></li>`;
+        html += `<li>Цементно-піщана суміш: <strong>~${cement} мішків (по 25 кг)</strong></li>`;
+    } else if (type === 'screed') {
+        const cement = Math.ceil(area * 0.05 * 1.6);
+        html += `<li>Самовирівнююча суміш або стяжка: <strong>~${cement} мішків (25 кг) на 5 см товщини</strong></li>`;
+    } else if (type === 'paint') {
+        const liters = Math.ceil(area * 0.18);
+        const layers = Math.ceil(area * 0.18 * 2);
+        html += `<li>Фарба (1 шар): <strong>~${liters} л</strong></li>`;
+        html += `<li>Фарба (2 шари): <strong>~${layers} л</strong></li>`;
+        html += `<li>Грунтовка: <strong>~${Math.ceil(area * 0.1)} л</strong></li>`;
+    } else if (type === 'tile') {
+        const tiles = Math.ceil(area * 1.1);
+        const glue = Math.ceil(area * 5 / 25);
+        html += `<li>Плитка з запасом 10%: <strong>~${tiles} м²</strong></li>`;
+        html += `<li>Клей плитковий (5 кг/м²): <strong>~${glue} мішків (25 кг)</strong></li>`;
+    }
+
+    html += '</ul><p class="calc-note">* Розрахунок приблизний. Для точного — зв\'яжіться з менеджером.</p></div>';
+    result.innerHTML = html;
+}
+
+// ============================================
+// NEWSLETTER
+// ============================================
+function subscribeNewsletter(event) {
+    event.preventDefault();
+    const input = event.target.querySelector('input');
+    showToast(`Дякуємо! ${input.value} підписано на новини.`);
+    event.target.reset();
+}
+
+// ============================================
+// ЗАПУСК
+// ============================================
 document.addEventListener('DOMContentLoaded', () => {
     updateCartBadge();
+    updateWishlistBadge();
     renderShop();
-    renderPopularProducts();
+    renderHomeSections();
+    renderProductPage();
 
     // ЖИВИЙ ПОШУК
     const searchForm = document.querySelector('.search-box');
@@ -258,7 +731,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            const matches = productsData.filter(p => p.name.toLowerCase().includes(query));
+            const matches = productsData.filter(p => p.name.toLowerCase().includes(query)).slice(0, 8);
 
             if (matches.length > 0) {
                 matches.forEach(match => {
@@ -266,10 +739,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     item.className = 'search-result-item';
                     item.innerHTML = `
                         <img src="${match.img}" alt="${match.name}">
-                        <span>${match.name}</span>
+                        <div>
+                            <div>${match.name}</div>
+                            <div style="color: var(--accent); font-weight: bold; font-size: 13px;">${match.price} грн</div>
+                        </div>
                     `;
                     item.onclick = () => {
-                        window.location.assign(`shop.html?id=${match.id}`);
+                        window.location.assign(`product.html?id=${match.id}`);
                     };
                     resultsBox.appendChild(item);
                 });
@@ -287,8 +763,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Маска телефону
-    const phoneInputs = document.querySelectorAll('.phone-mask');
-    phoneInputs.forEach(input => {
+    document.querySelectorAll('.phone-mask').forEach(input => {
         input.addEventListener('focus', function () { if (this.value === '') this.value = '+380'; });
         input.addEventListener('input', function () {
             let val = this.value.replace(/[^\d+]/g, '');
@@ -314,7 +789,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// Бургер меню mobile
 function toggleMenu() {
     document.getElementById('menu').classList.toggle('active');
     document.querySelector('.burger').classList.toggle('active');

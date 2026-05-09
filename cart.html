@@ -10,6 +10,17 @@
 </head>
 
 <body>
+    <div class="top-bar">
+        <div class="container">
+            <div class="top-info">
+                <span><i class="fa fa-phone"></i> +380 (44) 555 12 34</span>
+                <span><i class="fa fa-clock"></i> Пн-Сб 8:00-20:00, Нд 9:00-17:00</span>
+                <span><i class="fa fa-warehouse"></i> Склади: Київ · Львів · Дніпро</span>
+                <span class="free-delivery"><i class="fa fa-truck"></i> Безкоштовна доставка від 5000 грн</span>
+            </div>
+        </div>
+    </div>
+
     <header>
         <div class="container">
             <a href="index.html" class="logo">Буд<span>Майстер</span></a>
@@ -19,6 +30,11 @@
                     <input type="text" placeholder="Пошук матеріалів..." required>
                     <button type="submit"><i class="fa fa-search"></i></button>
                 </form>
+
+                <a href="shop.html?wish=1" class="wishlist-header" title="Обране">
+                    <i class="fa fa-heart"></i>
+                    <span class="wishlist-count">0</span>
+                </a>
 
                 <a href="cart.html" class="cart">
                     <i class="fa fa-shopping-cart"></i>
@@ -42,8 +58,7 @@
 
     <div class="container cart-page-container">
 
-        <div id="cart-items-container" class="cart-items-wrapper">
-        </div>
+        <div id="cart-items-container" class="cart-items-wrapper"></div>
 
         <div class="cart-checkout-wrapper">
             <form class="custom-form cart-checkout-form" onsubmit="processCheckout(event)">
@@ -57,9 +72,44 @@
                     <input type="tel" id="checkoutPhone" class="phone-mask" placeholder="+380" required>
                 </div>
                 <input type="text" placeholder="Місто та відділення Нової Пошти" required>
-                <textarea placeholder="Коментар до замовлення... (необов'язково)"></textarea>
 
-                <h3 id="cart-total" class="cart-total-title">Разом: <span class="cart-total-price">0 грн</span></h3>
+                <div class="delivery-block">
+                    <h4><i class="fa fa-truck"></i> Спосіб доставки</h4>
+                    <div class="delivery-options">
+                        <label>
+                            <input type="radio" name="delivery" value="pickup" checked onchange="updateCartTotals()">
+                            <span>Самовивіз зі складу</span>
+                            <span class="delivery-price">безкоштовно</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="delivery" value="np" onchange="updateCartTotals()">
+                            <span>Нова Пошта</span>
+                            <span class="delivery-price">~80 грн</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="delivery" value="courier" onchange="updateCartTotals()">
+                            <span>Кур'єр по Києву</span>
+                            <span class="delivery-price">350 грн</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="delivery" value="truck" onchange="updateCartTotals()">
+                            <span>Вантажне авто</span>
+                            <span class="delivery-price">від 800 грн</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="promo-row">
+                    <input type="text" id="promo-input" placeholder="Промокод (BUD10, NEW2026...)">
+                    <button type="button" onclick="applyPromo()">Застосувати</button>
+                </div>
+                <div id="promo-status"></div>
+
+                <div class="cart-summary" id="cart-summary"></div>
+
+                <div id="min-order-warn"></div>
+
+                <textarea placeholder="Коментар до замовлення... (необов'язково)"></textarea>
 
                 <button type="submit" class="btn-primary btn-full checkout-submit-btn">Оформити замовлення</button>
             </form>
@@ -70,8 +120,7 @@
         <div class="modal-content">
             <i class="fa fa-check-circle"></i>
             <h2>Замовлення прийнято!</h2>
-            <p class="modal-desc">Ми отримали вашу заявку. Менеджер зв'яжеться з вами протягом 30 хвилин для уточнення деталей доставки.
-            </p>
+            <p class="modal-desc">Ми отримали вашу заявку. Менеджер зв'яжеться з вами протягом 30 хвилин для уточнення деталей доставки.</p>
             <button class="btn-primary btn-full" onclick="window.location.href='index.html'">На головну</button>
         </div>
     </div>
@@ -90,10 +139,89 @@
 
     <script src="js/js.js"></script>
     <script>
+        let appliedPromo = JSON.parse(localStorage.getItem('budMasterPromo')) || null;
+
+        function getDeliveryCost() {
+            const opt = document.querySelector('input[name="delivery"]:checked');
+            if (!opt) return 0;
+            const v = opt.value;
+            const subtotal = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+            if (v === 'pickup') return 0;
+            if (v === 'np') return subtotal >= 5000 ? 0 : 80;
+            if (v === 'courier') return subtotal >= 5000 ? 0 : 350;
+            if (v === 'truck') return 800;
+            return 0;
+        }
+
+        function applyPromo() {
+            const code = document.getElementById('promo-input').value.trim().toUpperCase();
+            const status = document.getElementById('promo-status');
+            if (!code) { status.innerHTML = ''; return; }
+            const promo = PROMO_CODES[code];
+            if (!promo) {
+                status.innerHTML = '<div class="min-order-warning"><i class="fa fa-exclamation-circle"></i> Промокод не знайдено</div>';
+                return;
+            }
+            appliedPromo = { code, ...promo };
+            localStorage.setItem('budMasterPromo', JSON.stringify(appliedPromo));
+            document.getElementById('promo-input').value = '';
+            renderPromoStatus();
+            updateCartTotals();
+        }
+
+        function removePromo() {
+            appliedPromo = null;
+            localStorage.removeItem('budMasterPromo');
+            renderPromoStatus();
+            updateCartTotals();
+        }
+
+        function renderPromoStatus() {
+            const status = document.getElementById('promo-status');
+            if (!status) return;
+            if (!appliedPromo) { status.innerHTML = ''; return; }
+            status.innerHTML = `
+                <div class="promo-applied">
+                    <span><i class="fa fa-tag"></i> Промокод <strong>${appliedPromo.code}</strong> (${appliedPromo.label})</span>
+                    <button type="button" onclick="removePromo()" title="Скасувати"><i class="fa fa-times"></i></button>
+                </div>`;
+        }
+
+        function updateCartTotals() {
+            const summary = document.getElementById('cart-summary');
+            const warn = document.getElementById('min-order-warn');
+            const submitBtn = document.querySelector('.checkout-submit-btn');
+            if (!summary) return;
+
+            const subtotal = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+            const delivery = getDeliveryCost();
+
+            let discount = 0;
+            if (appliedPromo) {
+                if (appliedPromo.type === 'percent') discount = Math.round(subtotal * appliedPromo.value / 100);
+                else discount = Math.min(appliedPromo.value, subtotal);
+            }
+
+            const total = Math.max(0, subtotal - discount + delivery);
+
+            summary.innerHTML = `
+                <div class="summary-row"><span>Товарів:</span><span>${subtotal} грн</span></div>
+                ${discount > 0 ? `<div class="summary-row" style="color:#16a34a;"><span>Знижка:</span><span>−${discount} грн</span></div>` : ''}
+                <div class="summary-row"><span>Доставка:</span><span>${delivery === 0 ? 'безкоштовно' : delivery + ' грн'}</span></div>
+                <div class="summary-row total"><span>Разом:</span><span class="cart-total-price">${total} грн</span></div>
+            `;
+
+            if (subtotal > 0 && subtotal < MIN_ORDER) {
+                warn.innerHTML = `<div class="min-order-warning"><i class="fa fa-exclamation-circle"></i> Мінімальна сума замовлення: ${MIN_ORDER} грн. Додайте ще на ${MIN_ORDER - subtotal} грн.</div>`;
+                if (submitBtn) submitBtn.disabled = true;
+            } else {
+                warn.innerHTML = '';
+                if (submitBtn) submitBtn.disabled = false;
+            }
+        }
+
         function renderCartPage() {
             const container = document.getElementById('cart-items-container');
-            const totalEl = document.getElementById('cart-total');
-
             cart = JSON.parse(localStorage.getItem('budMasterCart')) || [];
 
             if (cart.length === 0) {
@@ -103,47 +231,39 @@
                         <h3 class="empty-cart-title">Ваш кошик порожній</h3>
                         <a href="shop.html" class="btn-primary">До каталогу</a>
                     </div>`;
-                totalEl.innerHTML = 'Разом: <span class="cart-total-price">0 грн</span>';
+                document.getElementById('cart-summary').innerHTML = '';
+                document.getElementById('min-order-warn').innerHTML = '';
                 return;
             }
 
             let html = '<h3 class="cart-items-title">Ваші товари</h3>';
-            let sum = 0;
 
             cart.forEach(item => {
                 const itemTotal = item.price * item.quantity;
-                sum += itemTotal;
-
-                let promoBadge = item.promo ? '<span class="cart-promo-badge">Знижка</span>' : '';
-                let popBadge = item.popular ? '<span class="cart-popular-badge">Хіт</span>' : '';
-                let oldPriceHtml = item.oldPrice ? `<span class="cart-item-old-price">${item.oldPrice} грн</span>` : '';
+                const promoBadge = item.promo ? '<span class="cart-promo-badge">Знижка</span>' : '';
+                const popBadge = item.popular ? '<span class="cart-popular-badge">Хіт</span>' : '';
+                const oldPriceHtml = item.oldPrice ? `<span class="cart-item-old-price">${item.oldPrice} грн</span>` : '';
 
                 html += `
                 <div class="cart-item-row">
                     <img src="${item.img}" class="cart-item-img">
-
                     <div class="cart-item-info">
                         <div style="margin-bottom: 5px;">${promoBadge} ${popBadge}</div>
                         <h4 class="cart-item-title">${item.name}</h4>
                         <p class="cart-item-price">${oldPriceHtml}${item.price} грн / шт</p>
                     </div>
-
                     <div class="cart-controls">
                         <button class="cart-control-btn" onclick="changeQty('${item.id}', -1)">-</button>
                         <span class="cart-control-qty">${item.quantity}</span>
                         <button class="cart-control-btn" onclick="changeQty('${item.id}', 1)">+</button>
                     </div>
-
-                    <div class="cart-item-total">
-                        ${itemTotal} грн
-                    </div>
-
+                    <div class="cart-item-total">${itemTotal} грн</div>
                     <i class="fa fa-trash cart-delete-icon" onclick="removeFromCart('${item.id}')" title="Видалити"></i>
                 </div>`;
             });
 
             container.innerHTML = html;
-            totalEl.innerHTML = `Разом: <span class="cart-total-price">${sum} грн</span>`;
+            updateCartTotals();
         }
 
         function removeFromCart(id) {
@@ -169,6 +289,7 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             renderCartPage();
+            renderPromoStatus();
         });
     </script>
 </body>

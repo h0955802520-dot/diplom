@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Магазин - ToyShop</title>
+    <title>Каталог — БудМайстер</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
@@ -12,18 +12,15 @@
 <body>
     <header>
         <div class="container">
-            <a href="index.html" class="logo" style="text-decoration: none;">ToyShop</a>
+            <a href="index.html" class="logo">Буд<span>Майстер</span></a>
 
             <nav id="menu">
                 <form class="search-box" onsubmit="handleSearch(event)">
-                    <input type="text" placeholder="Пошук..." required>
-                    <button type="submit"
-                        style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #555; cursor: pointer; font-size: 16px;">
-                        <i class="fa fa-search"></i>
-                    </button>
+                    <input type="text" placeholder="Пошук матеріалів..." required>
+                    <button type="submit"><i class="fa fa-search"></i></button>
                 </form>
 
-                <a href="cart.html" class="cart" style="text-decoration: none;">
+                <a href="cart.html" class="cart">
                     <i class="fa fa-shopping-cart"></i>
                     <span class="cart-count">0</span>
                 </a>
@@ -31,7 +28,7 @@
                 <ul>
                     <li><a href="index.html">Головна</a></li>
                     <li><a href="about.html">Про нас</a></li>
-                    <li><a href="shop.html">Магазин</a></li>
+                    <li><a href="shop.html">Каталог</a></li>
                     <li><a href="contacts.html">Контакти</a></li>
                 </ul>
             </nav>
@@ -49,26 +46,28 @@
 
             <div class="filter-group">
                 <label>Пошук по назві:</label>
-                <input type="text" id="sidebar-search" placeholder="Введіть назву іграшки..." oninput="renderShop()">
+                <input type="text" id="sidebar-search" placeholder="Введіть назву товару..." oninput="renderShop()">
             </div>
 
             <div class="filter-group">
-                <label>Категорія товару:</label>
+                <label>Категорія:</label>
                 <select id="f-type" onchange="renderShop()">
-                    <option value="all">Всі товари</option>
-                    <option value="constructor">Конструктори</option>
-                    <option value="doll">Ляльки</option>
-                    <option value="car">Машинки</option>
-                    <option value="educational">Розвиваючі ігри</option>
+                    <option value="all">Всі категорії</option>
+                    <option value="cement">Цемент та суміші</option>
+                    <option value="brick">Цегла та блоки</option>
+                    <option value="tool">Інструменти</option>
+                    <option value="paint">Фарби та лаки</option>
+                    <option value="metal">Металопрокат</option>
+                    <option value="electric">Електрика</option>
                 </select>
             </div>
 
             <div class="filter-group">
-                <label>Для кого:</label>
+                <label>Тип робіт:</label>
                 <select id="f-category" onchange="renderShop()">
                     <option value="all">Всі</option>
-                    <option value="girls">Для дівчаток</option>
-                    <option value="boys">Для хлопчиків</option>
+                    <option value="construction">Будівництво</option>
+                    <option value="finishing">Оздоблення</option>
                 </select>
             </div>
 
@@ -85,30 +84,31 @@
                 <label>Бренд:</label>
                 <select id="f-brand" onchange="renderShop()">
                     <option value="all">Всі бренди</option>
-                    <option value="lego">LEGO</option>
-                    <option value="lol">L.O.L.</option>
-                    <option value="hotwheels">Hot Wheels</option>
-                    <option value="barbie">Barbie</option>
-                    <option value="fisherprice">Fisher-Price</option>
+                    <option value="knauf">Knauf</option>
+                    <option value="bosch">Bosch</option>
+                    <option value="makita">Makita</option>
+                    <option value="henkel">Henkel</option>
+                    <option value="sniezka">Sniezka</option>
+                    <option value="dewalt">DeWalt</option>
                 </select>
             </div>
 
             <div class="filter-group">
-                <label>Вік:</label>
+                <label>Фасування:</label>
                 <select id="f-age" onchange="renderShop()">
-                    <option value="all">Будь-який</option>
-                    <option value="0-3">0-3 роки</option>
-                    <option value="3-6">3-6 років</option>
-                    <option value="6+">6+ років</option>
+                    <option value="all">Будь-яке</option>
+                    <option value="small">До 5 кг / шт</option>
+                    <option value="medium">5-25 кг</option>
+                    <option value="large">Понад 25 кг</option>
                 </select>
             </div>
 
             <div class="filter-group" style="gap: 15px;">
-                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; text-transform: none;">
                     <input type="checkbox" id="f-promo" onchange="renderShop()" style="width: auto;"> Акційні товари
                 </label>
-                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-                    <input type="checkbox" id="f-popular" onchange="renderShop()" style="width: auto;"> Популярні
+                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; text-transform: none;">
+                    <input type="checkbox" id="f-popular" onchange="renderShop()" style="width: auto;"> Хіти продажів
                 </label>
             </div>
         </aside>
@@ -123,10 +123,10 @@
             <ul class="footer-links">
                 <li><a href="index.html">Головна</a></li>
                 <li><a href="about.html">Про нас</a></li>
-                <li><a href="shop.html">Магазин</a></li>
+                <li><a href="shop.html">Каталог</a></li>
                 <li><a href="contacts.html">Контакти</a></li>
             </ul>
-            <p class="copyright">&copy; 2026 ToyShop. Всі права захищені.</p>
+            <p class="copyright">&copy; 2026 БудМайстер. Будівельні матеріали та інструменти. Всі права захищені.</p>
         </div>
     </footer>
 

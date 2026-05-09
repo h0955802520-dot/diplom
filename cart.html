@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Кошик - ToyShop</title>
+    <title>Кошик — БудМайстер</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
@@ -12,18 +12,15 @@
 <body>
     <header>
         <div class="container">
-            <a href="index.html" class="logo" style="text-decoration: none;">ToyShop</a>
+            <a href="index.html" class="logo">Буд<span>Майстер</span></a>
 
             <nav id="menu">
                 <form class="search-box" onsubmit="handleSearch(event)">
-                    <input type="text" placeholder="Пошук..." required>
-                    <button type="submit"
-                        style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #555; cursor: pointer; font-size: 16px;">
-                        <i class="fa fa-search"></i>
-                    </button>
+                    <input type="text" placeholder="Пошук матеріалів..." required>
+                    <button type="submit"><i class="fa fa-search"></i></button>
                 </form>
 
-                <a href="cart.html" class="cart" style="text-decoration: none;">
+                <a href="cart.html" class="cart">
                     <i class="fa fa-shopping-cart"></i>
                     <span class="cart-count">0</span>
                 </a>
@@ -31,7 +28,7 @@
                 <ul>
                     <li><a href="index.html">Головна</a></li>
                     <li><a href="about.html">Про нас</a></li>
-                    <li><a href="shop.html">Магазин</a></li>
+                    <li><a href="shop.html">Каталог</a></li>
                     <li><a href="contacts.html">Контакти</a></li>
                 </ul>
             </nav>
@@ -72,8 +69,8 @@
     <div id="successModal" class="modal-overlay">
         <div class="modal-content">
             <i class="fa fa-check-circle"></i>
-            <h2>Дякуємо за замовлення!</h2>
-            <p class="modal-desc">Ми отримали вашу заявку. Наш менеджер скоро зв'яжеться з вами для уточнення деталей.
+            <h2>Замовлення прийнято!</h2>
+            <p class="modal-desc">Ми отримали вашу заявку. Менеджер зв'яжеться з вами протягом 30 хвилин для уточнення деталей доставки.
             </p>
             <button class="btn-primary btn-full" onclick="window.location.href='index.html'">На головну</button>
         </div>
@@ -84,10 +81,10 @@
             <ul class="footer-links">
                 <li><a href="index.html">Головна</a></li>
                 <li><a href="about.html">Про нас</a></li>
-                <li><a href="shop.html">Магазин</a></li>
+                <li><a href="shop.html">Каталог</a></li>
                 <li><a href="contacts.html">Контакти</a></li>
             </ul>
-            <p class="copyright">&copy; 2026 ToyShop. Всі права захищені.</p>
+            <p class="copyright">&copy; 2026 БудМайстер. Будівельні матеріали та інструменти. Всі права захищені.</p>
         </div>
     </footer>
 
@@ -97,13 +94,14 @@
             const container = document.getElementById('cart-items-container');
             const totalEl = document.getElementById('cart-total');
 
-            cart = JSON.parse(localStorage.getItem('toyShopCart')) || [];
+            cart = JSON.parse(localStorage.getItem('budMasterCart')) || [];
 
             if (cart.length === 0) {
                 container.innerHTML = `
                     <div class="empty-cart-container">
-                        <h3 class="empty-cart-title">Ваш кошик порожній 🛒</h3>
-                        <a href="shop.html" class="btn-primary">До покупок</a>
+                        <i class="fa fa-shopping-cart" style="font-size: 60px; color: var(--primary); margin-bottom: 20px;"></i>
+                        <h3 class="empty-cart-title">Ваш кошик порожній</h3>
+                        <a href="shop.html" class="btn-primary">До каталогу</a>
                     </div>`;
                 totalEl.innerHTML = 'Разом: <span class="cart-total-price">0 грн</span>';
                 return;
@@ -116,21 +114,20 @@
                 const itemTotal = item.price * item.quantity;
                 sum += itemTotal;
 
-                // Перевірка на акційні та популярні товари
                 let promoBadge = item.promo ? '<span class="cart-promo-badge">Знижка</span>' : '';
-                let popBadge = item.popular ? '<span class="cart-popular-badge">Популярне</span>' : '';
+                let popBadge = item.popular ? '<span class="cart-popular-badge">Хіт</span>' : '';
                 let oldPriceHtml = item.oldPrice ? `<span class="cart-item-old-price">${item.oldPrice} грн</span>` : '';
 
                 html += `
                 <div class="cart-item-row">
                     <img src="${item.img}" class="cart-item-img">
-                    
+
                     <div class="cart-item-info">
                         <div style="margin-bottom: 5px;">${promoBadge} ${popBadge}</div>
                         <h4 class="cart-item-title">${item.name}</h4>
                         <p class="cart-item-price">${oldPriceHtml}${item.price} грн / шт</p>
                     </div>
-                    
+
                     <div class="cart-controls">
                         <button class="cart-control-btn" onclick="changeQty('${item.id}', -1)">-</button>
                         <span class="cart-control-qty">${item.quantity}</span>
@@ -151,7 +148,7 @@
 
         function removeFromCart(id) {
             cart = cart.filter(c => c.id !== id);
-            localStorage.setItem('toyShopCart', JSON.stringify(cart));
+            localStorage.setItem('budMasterCart', JSON.stringify(cart));
             updateCartBadge();
             renderCartPage();
         }
@@ -163,7 +160,7 @@
                 if (item.quantity <= 0) {
                     removeFromCart(id);
                 } else {
-                    localStorage.setItem('toyShopCart', JSON.stringify(cart));
+                    localStorage.setItem('budMasterCart', JSON.stringify(cart));
                     updateCartBadge();
                     renderCartPage();
                 }

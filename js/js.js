@@ -1,30 +1,30 @@
 // БАЗА ТОВАРІВ
 const productsData = [
-    { id: '1', name: 'LEGO City Поліцейська дільниця', price: 1500, category: 'boys', type: 'constructor', age: '6+', brand: 'lego', promo: false, popular: true, img: 'img/lego-1.jpg' },
-    { id: '2', name: 'Лялька L.O.L. Surprise O.M.G.', price: 999, oldPrice: 1250, category: 'girls', type: 'doll', age: '3-6', brand: 'lol', promo: true, popular: true, img: 'img/lol.jpg' },
-    { id: '3', name: 'Машинка Hot Wheels Базовий набір', price: 450, category: 'boys', type: 'car', age: '3-6', brand: 'hotwheels', promo: false, popular: true, img: 'img/HotWheels.jpg' },
-    { id: '4', name: 'Інтерактивний Песик Fisher-Price', price: 1200, category: 'girls', type: 'educational', age: '0-3', brand: 'fisherprice', promo: false, popular: false, img: 'img/dog.jpg' },
-    { id: '5', name: 'Барбі Будинок Мрії', price: 3500, oldPrice: 4000, category: 'girls', type: 'doll', age: '6+', brand: 'barbie', promo: true, popular: false, img: 'img/barbi.jpg' },
-    { id: '6', name: 'LEGO Friends Кафе', price: 850, category: 'girls', type: 'constructor', age: '6+', brand: 'lego', promo: false, popular: false, img: 'img/lego-2.jpg' },
-    { id: '7', name: 'Трек Hot Wheels Подвійна петля', price: 1800, category: 'boys', type: 'car', age: '6+', brand: 'hotwheels', promo: false, popular: false, img: 'img/wheels.jpg' },
-    { id: '8', name: 'Екскаватор на радіокеруванні', price: 950, oldPrice: 1100, category: 'boys', type: 'car', age: '3-6', brand: 'other', promo: true, popular: true, img: 'img/toy-1.jpg' },
-    { id: '9', name: 'Розвиваючий килимок Fisher-Price', price: 1400, category: 'boys', type: 'educational', age: '0-3', brand: 'fisherprice', promo: false, popular: false, img: 'img/toys.jpg' },
-    { id: '10', name: 'Конструктор LEGO Ninjago', price: 1100, category: 'boys', type: 'constructor', age: '6+', brand: 'lego', promo: false, popular: false, img: 'img/lego-3.jpg' },
-    { id: '11', name: 'Набір для ліплення Play-Doh', price: 550, category: 'girls', type: 'educational', age: '3-6', brand: 'other', promo: false, popular: false, img: 'img/nabor.jpg' },
-    { id: '12', name: 'Лялька L.O.L. Tweens', price: 750, oldPrice: 900, category: 'girls', type: 'doll', age: '6+', brand: 'lol', promo: true, popular: false, img: 'img/lol-2.jpg' },
-    { id: '13', name: 'Набір лікаря', price: 400, category: 'girls', type: 'educational', age: '3-6', brand: 'other', promo: false, popular: false, img: 'img/nabor.jpg' },
-    { id: '14', name: 'Спортивна RC Машинка', price: 1600, category: 'boys', type: 'car', age: '6+', brand: 'other', promo: false, popular: false, img: 'img/car.jpg' },
-    { id: '15', name: 'Барбі Русалонька', price: 650, category: 'girls', type: 'doll', age: '3-6', brand: 'barbie', promo: false, popular: false, img: 'img/barbie.jpg' },
-    { id: '16', name: 'LEGO Duplo Поїзд', price: 1300, oldPrice: 1600, category: 'boys', type: 'constructor', age: '0-3', brand: 'lego', promo: true, popular: false, img: 'img/lego-4.jpg' },
-    { id: '17', name: 'Пірамідка дерев\'яна', price: 250, category: 'girls', type: 'educational', age: '0-3', brand: 'fisherprice', promo: false, popular: false, img: 'img/piramida.jpg' },
-    { id: '18', name: 'Колекційна модель Porsche', price: 500, category: 'boys', type: 'car', age: '6+', brand: 'other', promo: false, popular: false, img: 'img/porshe.jpg' },
-    { id: '19', name: 'Ляльковий візочок', price: 800, oldPrice: 1000, category: 'girls', type: 'doll', age: '3-6', brand: 'other', promo: true, popular: false, img: 'img/wos.jpg' },
-    { id: '20', name: 'Дитячий набір інструментів', price: 650, category: 'boys', type: 'educational', age: '3-6', brand: 'other', promo: false, popular: false, img: 'img/tools.jpg' },
-    { id: '21', name: 'Головоломка Кубик Рубіка', price: 350, category: 'boys', type: 'educational', age: '6+', brand: 'other', promo: false, popular: false, img: 'img/kub.jpg' }
+    { id: '1',  name: 'Цемент Knauf ПЦ-500 Д0, 25 кг',                price: 220,  category: 'construction', type: 'cement',   age: 'medium', brand: 'knauf',   promo: false, popular: true,  img: 'https://images.unsplash.com/photo-1607582544501-71f5b3ce3a4e?auto=format&fit=crop&w=600&q=80' },
+    { id: '2',  name: 'Перфоратор Bosch GBH 2-26 SDS-plus',            price: 5499, oldPrice: 6299, category: 'construction', type: 'tool',     age: 'medium', brand: 'bosch',   promo: true,  popular: true,  img: 'https://images.unsplash.com/photo-1426927308491-6380b6a9936f?auto=format&fit=crop&w=600&q=80' },
+    { id: '3',  name: 'Цегла червона повнотіла М-150',                 price: 18,   category: 'construction', type: 'brick',    age: 'medium', brand: 'other',   promo: false, popular: true,  img: 'https://images.unsplash.com/photo-1530686577008-d6dd54e83b40?auto=format&fit=crop&w=600&q=80' },
+    { id: '4',  name: 'Шпаклівка Knauf Rotband Pasta, 18 кг',          price: 580,  category: 'finishing',    type: 'paint',    age: 'medium', brand: 'knauf',   promo: false, popular: false, img: 'https://images.unsplash.com/photo-1581094288338-2314dddb7ece?auto=format&fit=crop&w=600&q=80' },
+    { id: '5',  name: 'Дриль ударний Makita HP1631, 710 Вт',           price: 2899, oldPrice: 3450, category: 'construction', type: 'tool',     age: 'small',  brand: 'makita',  promo: true,  popular: false, img: 'https://images.unsplash.com/photo-1530124566582-a618bc2615dc?auto=format&fit=crop&w=600&q=80' },
+    { id: '6',  name: 'Газоблок AEROC EcoTerm 400x200x600',            price: 95,   category: 'construction', type: 'brick',    age: 'large',  brand: 'other',   promo: false, popular: false, img: 'https://images.unsplash.com/photo-1581244277943-fe4a9c777189?auto=format&fit=crop&w=600&q=80' },
+    { id: '7',  name: 'Клей плитковий Ceresit CM 11, 25 кг',           price: 320,  category: 'finishing',    type: 'cement',   age: 'medium', brand: 'henkel',  promo: false, popular: false, img: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=600&q=80' },
+    { id: '8',  name: 'Болгарка DeWalt DWE4257, 1500 Вт',              price: 4250, oldPrice: 4900, category: 'construction', type: 'tool',     age: 'medium', brand: 'dewalt',  promo: true,  popular: true,  img: 'https://images.unsplash.com/photo-1572981779307-38b8cabb2407?auto=format&fit=crop&w=600&q=80' },
+    { id: '9',  name: 'Фарба інтер\'єрна Sniezka Eco, 10 л',           price: 850,  category: 'finishing',    type: 'paint',    age: 'medium', brand: 'sniezka', promo: false, popular: false, img: 'https://images.unsplash.com/photo-1562259949-e8e7689d7828?auto=format&fit=crop&w=600&q=80' },
+    { id: '10', name: 'Шуруповерт акумуляторний Bosch GSR 12V-15',     price: 3199, category: 'construction', type: 'tool',     age: 'small',  brand: 'bosch',   promo: false, popular: false, img: 'https://images.unsplash.com/photo-1581244249295-7a4f2cd5cd3a?auto=format&fit=crop&w=600&q=80' },
+    { id: '11', name: 'Грунтовка глибокого проникнення Henkel, 10 л',  price: 480,  category: 'finishing',    type: 'paint',    age: 'medium', brand: 'henkel',  promo: false, popular: false, img: 'https://images.unsplash.com/photo-1599619351208-3e6c839d6828?auto=format&fit=crop&w=600&q=80' },
+    { id: '12', name: 'Лак паркетний Sniezka Supermal, 5 л',           price: 1100, oldPrice: 1300, category: 'finishing',    type: 'paint',    age: 'medium', brand: 'sniezka', promo: true,  popular: false, img: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=600&q=80' },
+    { id: '13', name: 'Набір ключів комбінованих, 12 шт',              price: 650,  category: 'construction', type: 'tool',     age: 'small',  brand: 'other',   promo: false, popular: false, img: 'https://images.unsplash.com/photo-1530124566582-a618bc2615dc?auto=format&fit=crop&w=600&q=80' },
+    { id: '14', name: 'Профіль металевий CD-60 Knauf, 3 м',            price: 145,  category: 'finishing',    type: 'metal',    age: 'medium', brand: 'knauf',   promo: false, popular: false, img: 'https://images.unsplash.com/photo-1517232117160-a51e4c1d3275?auto=format&fit=crop&w=600&q=80' },
+    { id: '15', name: 'Гіпсокартон Knauf вологостійкий 12.5 мм',       price: 380,  category: 'finishing',    type: 'finishing', age: 'large', brand: 'knauf',   promo: false, popular: false, img: 'https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?auto=format&fit=crop&w=600&q=80' },
+    { id: '16', name: 'Кабель силовий ВВГ 3х2.5, 100 м',               price: 2400, oldPrice: 2750, category: 'construction', type: 'electric', age: 'large',  brand: 'other',   promo: true,  popular: false, img: 'https://images.unsplash.com/photo-1565008576549-57569a49371d?auto=format&fit=crop&w=600&q=80' },
+    { id: '17', name: 'Молоток слюсарний 500 г, фіберглас',            price: 280,  category: 'construction', type: 'tool',     age: 'small',  brand: 'other',   promo: false, popular: false, img: 'https://images.unsplash.com/photo-1426927308491-6380b6a9936f?auto=format&fit=crop&w=600&q=80' },
+    { id: '18', name: 'Арматура А500С, 12 мм, 11.7 м',                 price: 320,  category: 'construction', type: 'metal',    age: 'large',  brand: 'other',   promo: false, popular: false, img: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=600&q=80' },
+    { id: '19', name: 'Розетка Schneider Electric з заземленням',      price: 165,  oldPrice: 210, category: 'finishing',    type: 'electric', age: 'small',  brand: 'other',   promo: true,  popular: false, img: 'https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&w=600&q=80' },
+    { id: '20', name: 'Пилосос будівельний Makita VC2512L, 1000 Вт',   price: 5499, category: 'construction', type: 'tool',     age: 'large',  brand: 'makita',  promo: false, popular: false, img: 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?auto=format&fit=crop&w=600&q=80' },
+    { id: '21', name: 'Рулетка вимірювальна Stanley FatMax, 5 м',      price: 320,  category: 'construction', type: 'tool',     age: 'small',  brand: 'other',   promo: false, popular: false, img: 'https://images.unsplash.com/photo-1581092335397-9583eb92d232?auto=format&fit=crop&w=600&q=80' }
 ];
 
 // КОШИК
-let cart = JSON.parse(localStorage.getItem('toyShopCart')) || [];
+let cart = JSON.parse(localStorage.getItem('budMasterCart')) || [];
 
 function updateCartBadge() {
     const counts = document.querySelectorAll('.cart-count');
@@ -43,7 +43,7 @@ function addToCart(id) {
     const existingItem = cart.find(item => item.id === id);
     if (existingItem) { existingItem.quantity += 1; }
     else { cart.push({ ...product, quantity: 1 }); }
-    localStorage.setItem('toyShopCart', JSON.stringify(cart));
+    localStorage.setItem('budMasterCart', JSON.stringify(cart));
     updateCartBadge();
 }
 
@@ -55,14 +55,14 @@ function handleSearch(event) {
 
     if (window.location.pathname.includes('shop.html')) {
         const newUrl = new URL(window.location);
-        newUrl.searchParams.delete('id'); 
+        newUrl.searchParams.delete('id');
         if (query) newUrl.searchParams.set('search', query);
         else newUrl.searchParams.delete('search');
         window.history.pushState({}, '', newUrl);
-        
+
         const sidebarSearch = document.getElementById('sidebar-search');
-        if(sidebarSearch) sidebarSearch.value = query;
-        
+        if (sidebarSearch) sidebarSearch.value = query;
+
         renderShop();
     } else {
         window.location.assign('shop.html?search=' + encodeURIComponent(query));
@@ -82,7 +82,7 @@ function processContactForm(event) {
     event.target.reset();
 }
 
-// ОФОРМЛЕННЯ ЗАМОВЛЕННЯ (КОШИК)
+// ОФОРМЛЕННЯ ЗАМОВЛЕННЯ
 function processCheckout(event) {
     event.preventDefault();
     if (cart.length === 0) { alert("Ваш кошик порожній!"); return; }
@@ -95,13 +95,13 @@ function processCheckout(event) {
     document.getElementById('successModal').style.display = 'flex';
 
     cart = [];
-    localStorage.setItem('toyShopCart', JSON.stringify(cart));
+    localStorage.setItem('budMasterCart', JSON.stringify(cart));
     updateCartBadge();
     event.target.reset();
     if (typeof renderCartPage === 'function') renderCartPage();
 }
 
-// ВИВІД ПОПУЛЯРНИХ ТОВАРІВ НА ГОЛОВНІЙ
+// ПОПУЛЯРНІ ТОВАРИ НА ГОЛОВНІЙ
 function renderPopularProducts() {
     const grid = document.getElementById('popular-grid');
     if (!grid) return;
@@ -111,11 +111,11 @@ function renderPopularProducts() {
     grid.innerHTML = popularItems.map(p => `
         <div class="product-card">
             ${p.promo ? '<span class="discount-badge">ЗНИЖКА</span>' : ''}
-            <span class="popular-badge">ПОПУЛЯРНЕ</span>
+            <span class="popular-badge">ХІТ</span>
             <img src="${p.img}" alt="${p.name}">
             <h3>${p.name}</h3>
             <p class="price">
-                ${p.oldPrice ? `<span class="old-price">${p.oldPrice} грн</span>` : ''} 
+                ${p.oldPrice ? `<span class="old-price">${p.oldPrice} грн</span>` : ''}
                 ${p.price} грн
             </p>
             <button class="btn-primary btn-full" onclick="addToCart('${p.id}')">
@@ -125,15 +125,15 @@ function renderPopularProducts() {
     `).join('');
 }
 
-// РЕНДЕР ТОВАРІВ В МАГАЗИНІ
+// РЕНДЕР ТОВАРІВ В КАТАЛОЗІ
 function renderShop() {
     const grid = document.getElementById('shop-grid');
     if (!grid) return;
 
     const urlParams = new URLSearchParams(window.location.search);
-    const productId = urlParams.get('id'); 
+    const productId = urlParams.get('id');
     let searchQuery = urlParams.get('search')?.toLowerCase() || '';
-    let urlType = urlParams.get('type') || ''; 
+    let urlType = urlParams.get('type') || '';
 
     let filtered = [];
 
@@ -149,7 +149,7 @@ function renderShop() {
             sidebarSearch.dataset.synced = "true";
             if (headerSearch) headerSearch.value = urlParams.get('search');
         }
-        
+
         if (typeFilter && urlType && !typeFilter.dataset.synced) {
             typeFilter.value = urlType;
             typeFilter.dataset.synced = "true";
@@ -157,7 +157,7 @@ function renderShop() {
 
         const query = sidebarSearch ? sidebarSearch.value.toLowerCase().trim() : searchQuery;
         const cat = document.getElementById('f-category')?.value || 'all';
-        const type = typeFilter?.value || urlType || 'all'; 
+        const type = typeFilter?.value || urlType || 'all';
         const sort = document.getElementById('f-price')?.value || 'default';
         const brand = document.getElementById('f-brand')?.value || 'all';
         const age = document.getElementById('f-age')?.value || 'all';
@@ -167,7 +167,7 @@ function renderShop() {
         filtered = productsData.filter(p => {
             if (query && !p.name.toLowerCase().includes(query)) return false;
             if (cat !== 'all' && p.category !== cat) return false;
-            if (type !== 'all' && p.type !== type) return false; 
+            if (type !== 'all' && p.type !== type) return false;
             if (brand !== 'all' && p.brand !== brand) return false;
             if (age !== 'all' && p.age !== age) return false;
             if (promo && !p.promo) return false;
@@ -194,11 +194,11 @@ function renderShop() {
     grid.innerHTML = filtered.map(p => `
         <div class="product-card">
             ${p.promo ? '<span class="discount-badge">ЗНИЖКА</span>' : ''}
-            ${p.popular ? '<span class="popular-badge">ПОПУЛЯРНЕ</span>' : ''}
+            ${p.popular ? '<span class="popular-badge">ХІТ</span>' : ''}
             <img src="${p.img}" alt="${p.name}">
             <h3>${p.name}</h3>
             <p class="price">
-                ${p.oldPrice ? `<span class="old-price">${p.oldPrice} грн</span>` : ''} 
+                ${p.oldPrice ? `<span class="old-price">${p.oldPrice} грн</span>` : ''}
                 ${p.price} грн
             </p>
             <button class="btn-primary btn-full" onclick="addToCart('${p.id}')">
@@ -227,18 +227,18 @@ function resetFilters() {
     });
 
     if (window.location.pathname.includes('shop.html')) {
-        window.history.pushState({}, '', 'shop.html'); 
+        window.history.pushState({}, '', 'shop.html');
     }
     renderShop();
 }
 
-// ЗАПУСК СКРИПТІВ ТА ЛОГІКА ПОШУКУ
+// СТАРТ
 document.addEventListener('DOMContentLoaded', () => {
     updateCartBadge();
     renderShop();
     renderPopularProducts();
 
-    // СТВОРЕННЯ ВИПАДАЮЧОГО СПИСКУ ДЛЯ ПОШУКУ
+    // ЖИВИЙ ПОШУК
     const searchForm = document.querySelector('.search-box');
     const searchInput = document.querySelector('.search-box input');
 

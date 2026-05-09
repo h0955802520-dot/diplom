@@ -10,6 +10,17 @@
 </head>
 
 <body>
+    <div class="top-bar">
+        <div class="container">
+            <div class="top-info">
+                <span><i class="fa fa-phone"></i> +380 (44) 555 12 34</span>
+                <span><i class="fa fa-clock"></i> Пн-Сб 8:00-20:00, Нд 9:00-17:00</span>
+                <span><i class="fa fa-warehouse"></i> Склади: Київ · Львів · Дніпро</span>
+                <span class="free-delivery"><i class="fa fa-truck"></i> Безкоштовна доставка від 5000 грн</span>
+            </div>
+        </div>
+    </div>
+
     <header>
         <div class="container">
             <a href="index.html" class="logo">Буд<span>Майстер</span></a>
@@ -19,6 +30,11 @@
                     <input type="text" placeholder="Пошук матеріалів..." required>
                     <button type="submit"><i class="fa fa-search"></i></button>
                 </form>
+
+                <a href="shop.html?wish=1" class="wishlist-header" title="Обране">
+                    <i class="fa fa-heart"></i>
+                    <span class="wishlist-count">0</span>
+                </a>
 
                 <a href="cart.html" class="cart">
                     <i class="fa fa-shopping-cart"></i>
@@ -45,8 +61,8 @@
             <h3 style="margin-bottom: 20px;">Фільтри</h3>
 
             <div class="filter-group">
-                <label>Пошук по назві:</label>
-                <input type="text" id="sidebar-search" placeholder="Введіть назву товару..." oninput="renderShop()">
+                <label>Пошук:</label>
+                <input type="text" id="sidebar-search" placeholder="Введіть назву..." oninput="renderShop()">
             </div>
 
             <div class="filter-group">
@@ -59,6 +75,7 @@
                     <option value="paint">Фарби та лаки</option>
                     <option value="metal">Металопрокат</option>
                     <option value="electric">Електрика</option>
+                    <option value="finishing">Оздоблення</option>
                 </select>
             </div>
 
@@ -72,12 +89,22 @@
             </div>
 
             <div class="filter-group">
-                <label>Сортування ціни:</label>
+                <label>Сортування:</label>
                 <select id="f-price" onchange="renderShop()">
                     <option value="default">За замовчуванням</option>
-                    <option value="low">Від дешевих до дорогих</option>
-                    <option value="high">Від дорогих до дешевих</option>
+                    <option value="low">Дешевше</option>
+                    <option value="high">Дорожче</option>
+                    <option value="new">Спочатку новинки</option>
+                    <option value="popular">Спочатку хіти</option>
                 </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Ціна, грн:</label>
+                <div class="price-range-row">
+                    <input type="number" id="f-price-min" placeholder="від" oninput="renderShop()">
+                    <input type="number" id="f-price-max" placeholder="до" oninput="renderShop()">
+                </div>
             </div>
 
             <div class="filter-group">
@@ -87,9 +114,13 @@
                     <option value="knauf">Knauf</option>
                     <option value="bosch">Bosch</option>
                     <option value="makita">Makita</option>
-                    <option value="henkel">Henkel</option>
-                    <option value="sniezka">Sniezka</option>
                     <option value="dewalt">DeWalt</option>
+                    <option value="henkel">Henkel</option>
+                    <option value="ceresit">Ceresit</option>
+                    <option value="sniezka">Sniezka</option>
+                    <option value="stanley">Stanley</option>
+                    <option value="hilti">Hilti</option>
+                    <option value="schneider">Schneider Electric</option>
                 </select>
             </div>
 
@@ -103,18 +134,29 @@
                 </select>
             </div>
 
-            <div class="filter-group" style="gap: 15px;">
+            <div class="filter-group" style="gap: 12px;">
                 <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; text-transform: none;">
                     <input type="checkbox" id="f-promo" onchange="renderShop()" style="width: auto;"> Акційні товари
                 </label>
                 <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; text-transform: none;">
                     <input type="checkbox" id="f-popular" onchange="renderShop()" style="width: auto;"> Хіти продажів
                 </label>
+                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; text-transform: none;">
+                    <input type="checkbox" id="f-wish" onchange="renderShop()" style="width: auto;"> Лише обране
+                </label>
             </div>
+
+            <button type="button" class="btn-outline btn-full" onclick="resetFilters()" style="margin-top: 12px;">
+                <i class="fa fa-times"></i> Скинути фільтри
+            </button>
         </aside>
 
         <div class="shop-content">
+            <div class="shop-toolbar">
+                <span class="shop-count" id="shop-count">Знайдено: 0 товарів</span>
+            </div>
             <div class="products-grid" id="shop-grid" style="padding: 0; margin: 0;"></div>
+            <div class="pagination" id="pagination"></div>
         </div>
     </div>
 
@@ -131,6 +173,33 @@
     </footer>
 
     <script src="js/js.js"></script>
+    <script>
+        // URL params: ?wish=1, ?promo=1, ?popular=1, ?sort=new, ?brand=...
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(location.search);
+            if (params.get('wish') === '1') {
+                const cb = document.getElementById('f-wish');
+                if (cb) { cb.checked = true; }
+            }
+            if (params.get('promo') === '1') {
+                const cb = document.getElementById('f-promo');
+                if (cb) { cb.checked = true; }
+            }
+            if (params.get('popular') === '1') {
+                const cb = document.getElementById('f-popular');
+                if (cb) { cb.checked = true; }
+            }
+            if (params.get('sort')) {
+                const sel = document.getElementById('f-price');
+                if (sel) { sel.value = params.get('sort'); }
+            }
+            if (params.get('brand')) {
+                const sel = document.getElementById('f-brand');
+                if (sel) { sel.value = params.get('brand'); }
+            }
+            renderShop();
+        });
+    </script>
 </body>
 
 </html>

@@ -15,79 +15,19 @@
     <div id="header-placeholder"></div>
 
     <div class="cart-page-container">
-        <!-- Лівий блок — список товарів -->
+        <h2 class="cart-page-title">Кошик</h2>
+
         <div id="cart-items-container" class="cart-items-wrapper"></div>
 
-        <!-- Правий блок — оформлення -->
-        <div class="cart-checkout-wrapper">
-            <form class="cart-checkout-form" onsubmit="processCheckout(event)">
-                <h3 class="checkout-title">Оформлення замовлення</h3>
-                <input type="text" placeholder="Ім'я" required>
-                <input type="text" placeholder="Прізвище" required>
-                <input type="email" placeholder="Email" required>
-                <input type="tel" id="checkoutPhone" class="phone-mask" placeholder="+380" required>
-                <input type="text" placeholder="Місто та відділення Нової Пошти" required>
-
-                <div class="delivery-block">
-                    <h4><i class="fa fa-truck"></i> Спосіб доставки</h4>
-                    <div class="delivery-options">
-                        <label>
-                            <input type="radio" name="delivery" value="pickup" checked onchange="updateCartTotals()">
-                            <span>Самовивіз зі складу</span>
-                            <span class="delivery-price">безкоштовно</span>
-                        </label>
-                        <label>
-                            <input type="radio" name="delivery" value="np" onchange="updateCartTotals()">
-                            <span>Нова Пошта</span>
-                            <span class="delivery-price">~80 грн</span>
-                        </label>
-                        <label>
-                            <input type="radio" name="delivery" value="courier" onchange="updateCartTotals()">
-                            <span>Кур'єр по Києву</span>
-                            <span class="delivery-price">350 грн</span>
-                        </label>
-                        <label>
-                            <input type="radio" name="delivery" value="truck" onchange="updateCartTotals()">
-                            <span>Вантажне авто</span>
-                            <span class="delivery-price">від 800 грн</span>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="payment-block">
-                    <h4><i class="fa fa-credit-card"></i> Спосіб оплати</h4>
-                    <div class="payment-options">
-                        <label>
-                            <input type="radio" name="payment" value="cash" checked>
-                            <span><i class="fa fa-money-bill-wave"></i> Готівка при отриманні</span>
-                        </label>
-                        <label>
-                            <input type="radio" name="payment" value="card">
-                            <span><i class="fa fa-credit-card"></i> Картка (Visa / MasterCard)</span>
-                        </label>
-                        <label>
-                            <input type="radio" name="payment" value="cashless">
-                            <span><i class="fa fa-file-invoice"></i> Безготівковий розрахунок</span>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="promo-row">
-                    <input type="text" id="promo-input" placeholder="Промокод">
-                    <button type="button" onclick="applyPromo()">Застосувати</button>
-                </div>
-                <div id="promo-status"></div>
-
-                <div class="cart-summary" id="cart-summary"></div>
-
-                <div id="min-order-warn"></div>
-
-                <textarea placeholder="Коментар до замовлення... (необов'язково)" style="height: 80px; resize: vertical;"></textarea>
-
-                <button type="submit" class="btn-primary btn-full checkout-submit-btn">
-                    <i class="fa fa-check"></i> Оформити замовлення
-                </button>
-            </form>
+        <div id="cart-footer" class="cart-footer">
+            <div class="cart-subtotal-row">
+                <span class="cart-subtotal-label">До сплати (без доставки):</span>
+                <span id="cart-subtotal-value" class="cart-subtotal-value">0 грн</span>
+            </div>
+            <div class="cart-footer-buttons">
+                <a href="shop.html" class="btn-secondary"><i class="fa fa-arrow-left"></i> Продовжити покупки</a>
+                <a href="checkout.html" id="goto-checkout-btn" class="btn-primary"><i class="fa fa-check"></i> Перейти до оформлення</a>
+            </div>
         </div>
     </div>
 
@@ -95,99 +35,10 @@
 
     <script src="js/js.js"></script>
     <script>
-        // ============================================
-        // ЛОГІКА КОШИКА (тільки на цій сторінці)
-        // ============================================
-        let appliedPromo = JSON.parse(localStorage.getItem('budMasterPromo')) || null;
-
-        // Розрахунок вартості доставки залежно від способу та суми
-        function getDeliveryCost() {
-            const opt = document.querySelector('input[name="delivery"]:checked');
-            if (!opt) return 0;
-            const v = opt.value;
-            const subtotal = cart.reduce((s, i) => s + i.price * i.quantity, 0);
-            if (v === 'pickup') return 0;
-            if (v === 'np') return subtotal >= 5000 ? 0 : 80;
-            if (v === 'courier') return subtotal >= 5000 ? 0 : 350;
-            if (v === 'truck') return 800;
-            return 0;
-        }
-
-        // Застосувати промокод
-        function applyPromo() {
-            const code = document.getElementById('promo-input').value.trim().toUpperCase();
-            const status = document.getElementById('promo-status');
-            if (!code) { status.innerHTML = ''; return; }
-            const promo = PROMO_CODES[code];
-            if (!promo) {
-                status.innerHTML = '<div class="min-order-warning"><i class="fa fa-exclamation-circle"></i> Промокод не знайдено</div>';
-                return;
-            }
-            appliedPromo = { code, ...promo };
-            localStorage.setItem('budMasterPromo', JSON.stringify(appliedPromo));
-            document.getElementById('promo-input').value = '';
-            renderPromoStatus();
-            updateCartTotals();
-        }
-
-        // Скасувати промокод
-        function removePromo() {
-            appliedPromo = null;
-            localStorage.removeItem('budMasterPromo');
-            renderPromoStatus();
-            updateCartTotals();
-        }
-
-        // Рендер плашки активного промокоду
-        function renderPromoStatus() {
-            const status = document.getElementById('promo-status');
-            if (!status) return;
-            if (!appliedPromo) { status.innerHTML = ''; return; }
-            status.innerHTML = `
-                <div class="promo-applied">
-                    <span><i class="fa fa-tag"></i> Промокод <strong>${appliedPromo.code}</strong> (${appliedPromo.label})</span>
-                    <button type="button" onclick="removePromo()" title="Скасувати"><i class="fa fa-times"></i></button>
-                </div>`;
-        }
-
-        // Перерахунок підсумкових сум (товари / знижка / доставка / разом)
-        function updateCartTotals() {
-            const summary = document.getElementById('cart-summary');
-            const warn = document.getElementById('min-order-warn');
-            const submitBtn = document.querySelector('.checkout-submit-btn');
-            if (!summary) return;
-
-            const subtotal = cart.reduce((s, i) => s + i.price * i.quantity, 0);
-            const delivery = getDeliveryCost();
-
-            let discount = 0;
-            if (appliedPromo) {
-                if (appliedPromo.type === 'percent') discount = Math.round(subtotal * appliedPromo.value / 100);
-                else discount = Math.min(appliedPromo.value, subtotal);
-            }
-
-            const total = Math.max(0, subtotal - discount + delivery);
-
-            summary.innerHTML = `
-                <div class="summary-row"><span>Товарів:</span><span>${subtotal} грн</span></div>
-                ${discount > 0 ? `<div class="summary-row" style="color:#16a34a;"><span>Знижка:</span><span>−${discount} грн</span></div>` : ''}
-                <div class="summary-row"><span>Доставка:</span><span>${delivery === 0 ? 'безкоштовно' : delivery + ' грн'}</span></div>
-                <div class="summary-row total"><span>Разом:</span><span class="cart-total-price">${total} грн</span></div>
-            `;
-
-            // Якщо менше мін. замовлення — блокуємо кнопку
-            if (subtotal > 0 && subtotal < MIN_ORDER) {
-                warn.innerHTML = `<div class="min-order-warning"><i class="fa fa-exclamation-circle"></i> Мінімальна сума замовлення: ${MIN_ORDER} грн. Додайте ще на ${MIN_ORDER - subtotal} грн.</div>`;
-                if (submitBtn) submitBtn.disabled = true;
-            } else {
-                warn.innerHTML = '';
-                if (submitBtn) submitBtn.disabled = false;
-            }
-        }
-
-        // Рендер списку товарів у кошику
+        // Рендер кошика (список товарів + підсумок без доставки)
         function renderCartPage() {
             const container = document.getElementById('cart-items-container');
+            const footer = document.getElementById('cart-footer');
             if (!container) return;
             cart = JSON.parse(localStorage.getItem('budMasterCart')) || [];
 
@@ -198,13 +49,11 @@
                         <h3 class="empty-cart-title">Ваш кошик порожній</h3>
                         <a href="shop.html" class="btn-primary">До каталогу</a>
                     </div>`;
-                document.getElementById('cart-summary').innerHTML = '';
-                document.getElementById('min-order-warn').innerHTML = '';
+                if (footer) footer.style.display = 'none';
                 return;
             }
 
-            let html = '<h3 class="cart-items-title">Ваші товари</h3>';
-
+            let html = '';
             cart.forEach(item => {
                 const itemTotal = item.price * item.quantity;
                 const promoBadge = item.promo ? '<span class="cart-promo-badge">Знижка</span>' : '';
@@ -225,15 +74,33 @@
                         <button class="cart-control-btn" type="button" onclick="changeQty('${item.id}', 1)">+</button>
                     </div>
                     <div class="cart-item-total">${itemTotal} грн</div>
-                    <i class="fa fa-trash cart-delete-icon" onclick="removeFromCart('${item.id}')" title="Видалити"></i>
+                    <button class="cart-delete-btn" type="button" onclick="removeFromCart('${item.id}')" title="Видалити">
+                        <i class="fa fa-trash"></i>
+                    </button>
                 </div>`;
             });
 
             container.innerHTML = html;
-            updateCartTotals();
+
+            // Підрахунок суми
+            const subtotal = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+            document.getElementById('cart-subtotal-value').textContent = subtotal + ' грн';
+
+            // Кнопка оформлення — блокуємо при мін. сумі
+            const goBtn = document.getElementById('goto-checkout-btn');
+            if (subtotal < MIN_ORDER) {
+                goBtn.classList.add('disabled');
+                goBtn.setAttribute('aria-disabled', 'true');
+                goBtn.onclick = (e) => { e.preventDefault(); showToast(`Мінімальна сума: ${MIN_ORDER} грн`); };
+            } else {
+                goBtn.classList.remove('disabled');
+                goBtn.removeAttribute('aria-disabled');
+                goBtn.onclick = null;
+            }
+
+            if (footer) footer.style.display = '';
         }
 
-        // Видалення товару з кошика
         function removeFromCart(id) {
             cart = cart.filter(c => c.id !== id);
             localStorage.setItem('budMasterCart', JSON.stringify(cart));
@@ -241,26 +108,17 @@
             renderCartPage();
         }
 
-        // Зміна кількості товару (+/-)
         function changeQty(id, delta) {
             const item = cart.find(c => c.id === id);
-            if (item) {
-                item.quantity += delta;
-                if (item.quantity <= 0) {
-                    removeFromCart(id);
-                } else {
-                    localStorage.setItem('budMasterCart', JSON.stringify(cart));
-                    updateCartBadge();
-                    renderCartPage();
-                }
-            }
+            if (!item) return;
+            item.quantity += delta;
+            if (item.quantity <= 0) { removeFromCart(id); return; }
+            localStorage.setItem('budMasterCart', JSON.stringify(cart));
+            updateCartBadge();
+            renderCartPage();
         }
 
-        // Запуск рендеру кошика та промокоду після завантаження
-        document.addEventListener('DOMContentLoaded', () => {
-            renderCartPage();
-            renderPromoStatus();
-        });
+        document.addEventListener('DOMContentLoaded', renderCartPage);
     </script>
 </body>
 

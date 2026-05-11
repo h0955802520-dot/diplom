@@ -996,6 +996,44 @@ function closeNewsletterModal() {
 }
 
 // ============================================
+// МОДАЛКИ ПОВЕРНЕННЯ ТОВАРУ (services.html)
+// ============================================
+function openReturnChoiceModal() {
+    closeReturnModals();
+    const m = document.getElementById('returnChoiceModal');
+    if (m) m.style.display = 'flex';
+}
+
+function chooseReturnEmail() {
+    window.location.href = 'mailto:returns@budmaster.ua?subject=' + encodeURIComponent('Повернення товару');
+    closeReturnModals();
+}
+
+function openReturnForm() {
+    closeReturnModals();
+    const m = document.getElementById('returnFormModal');
+    if (m) {
+        m.style.display = 'flex';
+        if (typeof initPhoneMask === 'function') initPhoneMask();
+    }
+}
+
+function submitReturnForm(event) {
+    event.preventDefault();
+    event.target.reset();
+    closeReturnModals();
+    const m = document.getElementById('returnSuccessModal');
+    if (m) m.style.display = 'flex';
+}
+
+function closeReturnModals() {
+    ['returnChoiceModal', 'returnFormModal', 'returnSuccessModal'].forEach(id => {
+        const m = document.getElementById(id);
+        if (m) m.style.display = 'none';
+    });
+}
+
+// ============================================
 // ЖИВИЙ ПОШУК
 // ============================================
 function initLiveSearch() {
@@ -1455,10 +1493,10 @@ function injectFooter() {
     </div>
     <div id="newsletterModal" class="modal-overlay" onclick="if(event.target===this)closeNewsletterModal()">
         <div class="modal-content">
-            <i class="fa fa-envelope-open-text" style="color: var(--primary);"></i>
-            <h2>Ви підписані!</h2>
+            <i class="fa fa-check-circle newsletter-check"></i>
+            <h2>Ви підписані</h2>
             <p class="modal-desc">Дякуємо! Адресу <strong class="newsletter-email"></strong> додано до розсилки. Найближчим часом ви отримаєте першого листа з добіркою корисних матеріалів.</p>
-            <button class="btn-primary btn-full" onclick="closeNewsletterModal()">Чудово!</button>
+            <button class="btn-primary btn-full" onclick="closeNewsletterModal()">Продовжити</button>
         </div>
     </div>
     <footer class="site-footer">

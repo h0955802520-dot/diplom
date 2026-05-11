@@ -1,7 +1,7 @@
 # Резюме диалога — БудМайстер (диплом)
 
 ## Контекст
-Репо: `/home/user/diplom`, ветка `claude/competitor-analysis-redesign-3aKr8`. Лендинг-каталог стройматериалов на чистом HTML/CSS/JS (без фреймворков). 10 страниц: `index, shop, product, cart, about, contacts, services, business, blog, article`.
+Репо: `/home/user/diplom`, ветка `claude/competitor-analysis-redesign-3aKr8`. **Интернет-магазин** строительных материалов на чистом HTML/CSS/JS (без фреймворков). 10 страниц: `index, shop, product, cart, about, contacts, services, business, blog, article`.
 
 ## Архитектура
 - **`js/js.js`** (~1500 строк) — монолит. Содержит: данные товаров (`productsData`), `injectHeader()` / `injectFooter()` (хедер и футер инжектятся динамически на все страницы через `<div id="header-placeholder">` / `<div id="footer-placeholder">`), render-функции (`renderShop`, `renderProductPage`, `renderCartPage`, `renderBlogList`, `renderArticlePage`), хелперы (`showToast`, `subscribeNewsletter`, `initScrollTopBtn`, `initLiveSearch`, `initPhoneMask`, `initHeroSlider`, `initEscClose`, `initCookieBanner` — последний я добавил).

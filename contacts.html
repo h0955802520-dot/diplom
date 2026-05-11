@@ -1,84 +1,61 @@
 <!DOCTYPE html>
-<html lang="ukr">
+<html lang="uk">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Контакти — БудМайстер</title>
-    <link rel="stylesheet" href="css/style.css">
+    <meta name="description" content="Контакти БудМайстер: телефон, адреса, склади у Києві, Львові, Дніпрі. Форма зворотного зв'язку.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
-    <div class="top-bar">
-        <div class="container">
-            <div class="top-info">
-                <span><i class="fa fa-phone"></i> +380 (44) 555 12 34</span>
-                <span><i class="fa fa-clock"></i> Пн-Сб 8:00-20:00, Нд 9:00-17:00</span>
-                <span><i class="fa fa-warehouse"></i> Склади: Київ · Львів · Дніпро</span>
-                <span class="free-delivery"><i class="fa fa-truck"></i> Безкоштовна доставка від 5000 грн</span>
-            </div>
-        </div>
-    </div>
+    <div id="header-placeholder"></div>
 
-    <header>
-        <div class="container">
-            <a href="index.html" class="logo">Буд<span>Майстер</span></a>
-
-            <nav id="menu">
-                <form class="search-box" onsubmit="handleSearch(event)">
-                    <input type="text" placeholder="Пошук матеріалів..." required>
-                    <button type="submit"><i class="fa fa-search"></i></button>
-                </form>
-
-                <a href="shop.html?wish=1" class="wishlist-header" title="Обране">
-                    <i class="fa fa-heart"></i>
-                    <span class="wishlist-count">0</span>
-                </a>
-
-                <a href="cart.html" class="cart">
-                    <i class="fa fa-shopping-cart"></i>
-                    <span class="cart-count">0</span>
-                </a>
-
-                <ul>
-                    <li><a href="index.html">Головна</a></li>
-                    <li><a href="about.html">Про нас</a></li>
-                    <li><a href="shop.html">Каталог</a></li>
-                    <li><a href="contacts.html">Контакти</a></li>
-                </ul>
+    <!-- HERO сторінки -->
+    <section class="page-hero">
+        <div class="page-hero-inner">
+            <nav class="breadcrumbs">
+                <a href="index.html">Головна</a> / <span>Контакти</span>
             </nav>
-
-            <div class="burger" onclick="toggleMenu()">
-                <i class="fa fa-bars"></i>
-                <i class="fa fa-times"></i>
-            </div>
+            <h1>Зв'яжіться <span style="color:var(--primary)">з нами</span></h1>
+            <p>Менеджери на зв'язку Пн-Сб з 8:00 до 20:00. Відповідаємо протягом 30 хвилин.</p>
         </div>
-    </header>
+    </section>
 
-    <section id="contacts" class="contacts" style="min-height: 70vh; padding-top: 100px;">
-        <h2 class="section-title">Зв'яжіться з нами</h2>
-        <div class="container">
+    <!-- Контакти + форма -->
+    <section class="contacts">
+        <div class="contacts-grid">
+            <!-- Лівий блок — інформація -->
             <div class="contact-info">
                 <h3>Наші контакти</h3>
                 <div class="info-item"><i class="fa fa-map-marker-alt"></i>
-                    <p>м. Київ, вул. Промислова, 25</p>
+                    <p>м. Київ, вул. Промислова, 25<br>(головний офіс та склад)</p>
                 </div>
                 <div class="info-item"><i class="fa fa-phone-alt"></i>
-                    <p>+380 (44) 555 12 34</p>
+                    <p><a href="tel:+380445551234">+380 (44) 555 12 34</a><br>гаряча лінія, безкоштовно</p>
                 </div>
                 <div class="info-item"><i class="fa fa-envelope"></i>
-                    <p>info@budmaster.ua</p>
+                    <p><a href="mailto:info@budmaster.ua">info@budmaster.ua</a><br>загальні питання</p>
+                </div>
+                <div class="info-item"><i class="fa fa-briefcase"></i>
+                    <p><a href="mailto:b2b@budmaster.ua">b2b@budmaster.ua</a><br>опт, юридичні особи</p>
                 </div>
                 <div class="info-item"><i class="fa fa-clock"></i>
-                    <p>Пн-Сб: 8:00 - 20:00, Нд: 9:00 - 17:00</p>
+                    <p>Пн-Сб: 8:00 - 20:00<br>Нд: 9:00 - 17:00</p>
                 </div>
                 <div class="info-item"><i class="fa fa-warehouse"></i>
                     <p>Склади: Київ, Львів, Дніпро</p>
                 </div>
             </div>
 
+            <!-- Правий блок — форма -->
             <form class="custom-form" onsubmit="processContactForm(event)">
+                <h3 style="color:var(--dark); margin-bottom:8px; font-size:22px; font-weight:800; text-transform:uppercase">Залишити заявку</h3>
+                <p style="color:var(--muted); font-size:14px; margin-bottom:8px">Заповніть форму — менеджер зв'яжеться з вами протягом 30 хвилин.</p>
                 <div class="form-row">
                     <input type="text" placeholder="Ім'я" required>
                     <input type="text" placeholder="Прізвище" required>
@@ -87,33 +64,24 @@
                     <input type="email" placeholder="Email" required>
                     <input type="tel" class="phone-mask" placeholder="+380" required>
                 </div>
-                <textarea placeholder="Опишіть ваш запит або потрібний матеріал..."></textarea>
-                <button type="submit" class="btn-primary"
-                    style="width: auto; align-self: flex-start;">Відправити заявку</button>
+                <select required>
+                    <option value="">Оберіть тему звернення</option>
+                    <option>Замовлення товару</option>
+                    <option>Опт / B2B</option>
+                    <option>Доставка</option>
+                    <option>Гарантія / повернення</option>
+                    <option>Інше</option>
+                </select>
+                <textarea placeholder="Опишіть ваш запит або потрібний матеріал..." required></textarea>
+                <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:var(--steel); cursor:pointer">
+                    <input type="checkbox" required> Згоден на обробку персональних даних
+                </label>
+                <button type="submit" class="btn-primary" style="align-self: flex-start;"><i class="fa fa-paper-plane"></i> Відправити заявку</button>
             </form>
         </div>
     </section>
 
-    <div id="successModal" class="modal-overlay">
-        <div class="modal-content">
-            <i class="fa fa-check-circle"></i>
-            <h2>Дякуємо!</h2>
-            <p class="modal-desc">Ми отримали вашу заявку. Менеджер зв'яжеться з вами протягом 30 хвилин.</p>
-            <button class="btn-primary btn-full" onclick="closeModal()">Закрити</button>
-        </div>
-    </div>
-
-    <footer>
-        <div class="container" style="flex-direction: column;">
-            <ul class="footer-links">
-                <li><a href="index.html">Головна</a></li>
-                <li><a href="about.html">Про нас</a></li>
-                <li><a href="shop.html">Каталог</a></li>
-                <li><a href="contacts.html">Контакти</a></li>
-            </ul>
-            <p class="copyright">&copy; 2026 БудМайстер. Будівельні матеріали та інструменти. Всі права захищені.</p>
-        </div>
-    </footer>
+    <div id="footer-placeholder"></div>
 
     <script src="js/js.js"></script>
 </body>

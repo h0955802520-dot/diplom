@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Для бізнесу — Опт, прораби, забудовники — БудМайстер</title>
+    <meta name="description" content="Особливі умови для прорабів, бригад та забудовників. Опт від 10 тонн, безготівка з ПДВ, особистий менеджер, відстрочка платежу.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div id="header-placeholder"></div>
+
+    <!-- HERO сторінки -->
+    <section class="page-hero">
+        <div class="page-hero-inner">
+            <nav class="breadcrumbs"><a href="index.html">Головна</a> / <span>Для бізнесу</span></nav>
+            <h1>Для прорабів, бригад <span style="color:var(--primary)">та забудовників</span></h1>
+            <p>Спеціальні ціни на опт, безготівковий розрахунок з ПДВ, особистий менеджер та відстрочка платежу до 30 днів.</p>
+        </div>
+    </section>
+
+    <!-- 6 переваг для B2B -->
+    <section class="business-features">
+        <h2 class="section-title">Чому з нами <span>працюють</span></h2>
+        <p class="section-subtitle">Понад 800 будівельних компаній та бригад вже обрали БудМайстер як основного постачальника</p>
+        <div class="bf-grid">
+            <div class="bf-card">
+                <div class="bf-icon"><i class="fa fa-tags"></i></div>
+                <h3>Опт від 10 тонн</h3>
+                <p>Спеціальні ціни на цемент, цеглу, газоблоки, металопрокат від великих обсягів. Чим більше — тим вигідніше.</p>
+            </div>
+            <div class="bf-card">
+                <div class="bf-icon"><i class="fa fa-file-invoice"></i></div>
+                <h3>Безготівка з ПДВ</h3>
+                <p>Виставимо рахунок-фактуру, надішлемо ТТН, акт виконаних робіт. Усі документи для бухгалтерії.</p>
+            </div>
+            <div class="bf-card">
+                <div class="bf-icon"><i class="fa fa-user-tie"></i></div>
+                <h3>Особистий менеджер</h3>
+                <p>Закріплений спеціаліст для вашого проєкту. Дзвінок або повідомлення в Viber/Telegram у будь-який час робочого дня.</p>
+            </div>
+            <div class="bf-card">
+                <div class="bf-icon"><i class="fa fa-clock-rotate-left"></i></div>
+                <h3>Відстрочка платежу</h3>
+                <p>До 30 днів для постійних клієнтів. Дозволяє не виймати оборотні кошти з обігу та чекати на надходження від замовника.</p>
+            </div>
+            <div class="bf-card">
+                <div class="bf-icon"><i class="fa fa-truck-fast"></i></div>
+                <h3>Доставка вантажівкою</h3>
+                <p>Власний автопарк до 20 тонн. Доставимо точно на об'єкт у вказаний час, з розвантаженням манипулятором.</p>
+            </div>
+            <div class="bf-card">
+                <div class="bf-icon"><i class="fa fa-handshake"></i></div>
+                <h3>Договір та гарантії</h3>
+                <p>Працюємо за договором. Гарантуємо ціни, строки, якість. У разі питань — оперативна реакція.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Форма B2B -->
+    <section class="business-form-section">
+        <h2 class="section-title">Стати <span>партнером</span></h2>
+        <p class="section-subtitle">Заповніть форму — менеджер зв'яжеться протягом 30 хвилин для обговорення умов співпраці.</p>
+        <div class="bfs-wrap">
+            <form class="custom-form" onsubmit="processContactForm(event)">
+                <div class="form-row">
+                    <input type="text" placeholder="Назва компанії" required>
+                    <input type="text" placeholder="Контактна особа" required>
+                </div>
+                <div class="form-row">
+                    <input type="email" placeholder="Email" required>
+                    <input type="tel" class="phone-mask" placeholder="+380" required>
+                </div>
+                <div class="form-row">
+                    <select required>
+                        <option value="">Тип діяльності</option>
+                        <option>Будівельна бригада</option>
+                        <option>Забудовник / девелопер</option>
+                        <option>Магазин / роздріб</option>
+                        <option>Виробник / переробник</option>
+                        <option>Інше</option>
+                    </select>
+                    <select required>
+                        <option value="">Орієнтовний обсяг закупівлі</option>
+                        <option>До 50 тис. грн / міс</option>
+                        <option>50–200 тис. грн / міс</option>
+                        <option>200–500 тис. грн / міс</option>
+                        <option>Понад 500 тис. грн / міс</option>
+                    </select>
+                </div>
+                <textarea placeholder="Коротко опишіть ваш проєкт або потреби..." required></textarea>
+                <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:var(--steel); cursor:pointer">
+                    <input type="checkbox" required> Згоден на обробку персональних даних
+                </label>
+                <button type="submit" class="btn-primary" style="align-self: flex-start;">
+                    <i class="fa fa-paper-plane"></i> Надіслати заявку
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="js/js.js"></script>
+</body>
+
+</html>

@@ -1,88 +1,97 @@
 <!DOCTYPE html>
-<html lang="ukr">
+<html lang="uk">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Про нас — БудМайстер</title>
-    <link rel="stylesheet" href="css/style.css">
+    <meta name="description" content="БудМайстер — провідний постачальник будівельних матеріалів в Україні. 12 років на ринку, 5000+ найменувань, склади в 3 містах.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
-    <div class="top-bar">
-        <div class="container">
-            <div class="top-info">
-                <span><i class="fa fa-phone"></i> +380 (44) 555 12 34</span>
-                <span><i class="fa fa-clock"></i> Пн-Сб 8:00-20:00, Нд 9:00-17:00</span>
-                <span><i class="fa fa-warehouse"></i> Склади: Київ · Львів · Дніпро</span>
-                <span class="free-delivery"><i class="fa fa-truck"></i> Безкоштовна доставка від 5000 грн</span>
-            </div>
-        </div>
-    </div>
+    <div id="header-placeholder"></div>
 
-    <header>
-        <div class="container">
-            <a href="index.html" class="logo">Буд<span>Майстер</span></a>
-
-            <nav id="menu">
-                <form class="search-box" onsubmit="handleSearch(event)">
-                    <input type="text" placeholder="Пошук матеріалів..." required>
-                    <button type="submit"><i class="fa fa-search"></i></button>
-                </form>
-
-                <a href="shop.html?wish=1" class="wishlist-header" title="Обране">
-                    <i class="fa fa-heart"></i>
-                    <span class="wishlist-count">0</span>
-                </a>
-
-                <a href="cart.html" class="cart">
-                    <i class="fa fa-shopping-cart"></i>
-                    <span class="cart-count">0</span>
-                </a>
-
-                <ul>
-                    <li><a href="index.html">Головна</a></li>
-                    <li><a href="about.html">Про нас</a></li>
-                    <li><a href="shop.html">Каталог</a></li>
-                    <li><a href="contacts.html">Контакти</a></li>
-                </ul>
+    <!-- HERO сторінки -->
+    <section class="page-hero">
+        <div class="page-hero-inner">
+            <nav class="breadcrumbs">
+                <a href="index.html">Головна</a> / <span>Про нас</span>
             </nav>
-
-            <div class="burger" onclick="toggleMenu()">
-                <i class="fa fa-bars"></i>
-                <i class="fa fa-times"></i>
-            </div>
+            <h1>Про компанію <span style="color:var(--primary)">БудМайстер</span></h1>
+            <p>12 років допомагаємо реалізовувати будівельні проєкти будь-якої складності — від ремонту квартири до зведення житлових комплексів.</p>
         </div>
-    </header>
+    </section>
 
-    <section id="about" class="about" style="padding: 100px 20px; min-height: 70vh;">
-        <div class="container">
+    <!-- Основний текст + фото -->
+    <section class="about-content">
+        <div class="about-grid">
             <div class="about-text">
-                <h2 class="section-title" style="text-align: left; font-size: 38px;">Про компанію БудМайстер</h2>
-                <p style="font-size: 17px; margin-bottom: 18px;"><strong>БудМайстер</strong> — провідний постачальник будівельних матеріалів та професійного інструменту в Україні. Понад 12 років ми забезпечуємо будівельні компанії, бригади та приватних замовників якісною продукцією за справедливими цінами.</p>
-                <p style="font-size: 17px; margin-bottom: 18px;">У нашому каталозі — більше 5000 найменувань: цемент, цегла, газоблоки, сухі будівельні суміші, металопрокат, лакофарбові матеріали, електро- та ручний інструмент від провідних світових брендів — Knauf, Bosch, Makita, Henkel, Sniezka, DeWalt, Cersanit.</p>
-                <p style="font-size: 17px; margin-bottom: 18px;">Власні склади у Києві, Львові та Дніпрі дозволяють відвантажувати замовлення в день оформлення. Працюємо як з юридичними, так і з фізичними особами, надаємо всі необхідні документи для звітності.</p>
-                <p style="font-size: 17px; margin-bottom: 18px;"><strong>Наша місія</strong> — зробити будівництво та ремонт простішим: пропонувати тільки сертифіковані матеріали, гарантувати точний строк доставки та безкоштовно консультувати щодо вибору і розрахунку.</p>
+                <h2>Хто ми</h2>
+                <p><strong>БудМайстер</strong> — провідний постачальник будівельних матеріалів та професійного інструменту в Україні. Понад 12 років ми забезпечуємо будівельні компанії, бригади та приватних замовників якісною продукцією за справедливими цінами.</p>
+                <p>У нашому каталозі — більше <strong>5000 найменувань</strong>: цемент, цегла, газоблоки, сухі будівельні суміші, металопрокат, лакофарбові матеріали, електро- та ручний інструмент від провідних світових брендів — Knauf, Bosch, Makita, Henkel, Sniezka, DeWalt, Ceresit.</p>
+                <p>Власні склади у Києві, Львові та Дніпрі дозволяють відвантажувати замовлення в день оформлення. Працюємо як з юридичними, так і з фізичними особами, надаємо всі необхідні документи для звітності.</p>
+                <p><strong>Наша місія</strong> — зробити будівництво та ремонт простішим: пропонувати тільки сертифіковані матеріали, гарантувати точний строк доставки та безкоштовно консультувати щодо вибору і розрахунку.</p>
             </div>
             <div class="about-image">
-                <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=900&q=80"
-                    alt="Будівельний майданчик">
+                <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=900&q=80" alt="Будівельний майданчик">
             </div>
         </div>
     </section>
 
-    <footer>
-        <div class="container" style="flex-direction: column;">
-            <ul class="footer-links">
-                <li><a href="index.html">Головна</a></li>
-                <li><a href="about.html">Про нас</a></li>
-                <li><a href="shop.html">Каталог</a></li>
-                <li><a href="contacts.html">Контакти</a></li>
-            </ul>
-            <p class="copyright">&copy; 2026 БудМайстер. Будівельні матеріали та інструменти. Всі права захищені.</p>
+    <!-- Статистика -->
+    <section class="stats-section">
+        <h2 class="section-title">БудМайстер у <span>цифрах</span></h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-num">12+</div>
+                <div class="stat-label">років на ринку</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num">5000+</div>
+                <div class="stat-label">найменувань товарів</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num">12000+</div>
+                <div class="stat-label">задоволених клієнтів</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num">3</div>
+                <div class="stat-label">склади в Україні</div>
+            </div>
         </div>
-    </footer>
+    </section>
+
+    <!-- Trust strip знизу -->
+    <section class="trust-strip" style="border-top: 1px solid var(--border)">
+        <div class="trust-inner">
+            <div class="trust-item">
+                <div class="trust-icon"><i class="fa fa-shield-halved"></i></div>
+                <div class="trust-text"><h4>Сертифіковано</h4><p>Усі товари ДСТУ</p></div>
+            </div>
+            <div class="trust-item">
+                <div class="trust-icon"><i class="fa fa-truck-fast"></i></div>
+                <div class="trust-text"><h4>Доставка від 24г</h4><p>Власний автопарк</p></div>
+            </div>
+            <div class="trust-item">
+                <div class="trust-icon"><i class="fa fa-tags"></i></div>
+                <div class="trust-text"><h4>Опт від 10 т</h4><p>Знижки бригадам</p></div>
+            </div>
+            <div class="trust-item">
+                <div class="trust-icon"><i class="fa fa-undo"></i></div>
+                <div class="trust-text"><h4>Повернення</h4><p>Протягом 14 днів</p></div>
+            </div>
+            <div class="trust-item">
+                <div class="trust-icon"><i class="fa fa-headset"></i></div>
+                <div class="trust-text"><h4>Консультація</h4><p>Безкоштовно</p></div>
+            </div>
+        </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
 
     <script src="js/js.js"></script>
 </body>

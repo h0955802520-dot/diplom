@@ -1,5 +1,40 @@
+/* ===========================================================================
+ * БУДМАЙСТЕР — main JS bundle
+ * ---------------------------------------------------------------------------
+ * Структура файлу (за порядком згори донизу):
+ *
+ *  1. БАЗА ТОВАРІВ (productsData) — 100 SKU + IMG-словник Unsplash URL
+ *  2. СТАН — cart / wishlist / recentlyViewed із localStorage
+ *  3. КОНСТАНТИ — PROMO_CODES, FREE_DELIVERY_THRESHOLD, MIN_ORDER
+ *  4. КОШИК — addToCart / updateCartBadge
+ *  5. ОБРАНЕ — toggleWishlist / updateWishlistBadge
+ *  6. НЕЩОДАВНО ПЕРЕГЛЯНУТІ — addToRecent
+ *  7. TOAST — повідомлення внизу праворуч (showToast)
+ *  8. КАРТКА ТОВАРУ HTML — productCardHTML(p) → string
+ *  9. ПОШУК — handleSearch (header-форма) + initLiveSearch (live-dropdown)
+ * 10. КОШИКОВІ — closeModal / processContactForm / processCheckout
+ * 11. РЕНДЕР ГОЛОВНОЇ — renderHomeSections + switchProductTab (табы)
+ * 12. HERO SLIDER — heroGoTo / heroNext / heroPrev / автозміна 6с
+ * 13. MEGA MENU — toggleMegaMenu / closeMegaMenu
+ * 14. MOBILE NAV — openMobileNav / closeMobileNav
+ * 15. AUTH MODAL — openAuthModal / closeAuthModal / switchAuthTab /
+ *                  switchRegMethod / submitLogin / submitRegister (заглушки)
+ * 16. КАТАЛОГ — renderShop (з фільтрами та пагінацією) + goToPage
+ * 17. ТОВАР — renderProductPage / changeProdQty / addProductToCart / switchTab
+ * 18. resetFilters — скидання усіх фільтрів каталогу
+ * 19. КАЛЬКУЛЯТОР — setCalcType / calcMaterials (4 типи робіт)
+ * 20. NEWSLETTER — subscribeNewsletter (заглушка)
+ * 21. MASKS / SCROLL-TOP / ESC-CLOSE — UI helpers
+ * 22. БЛОГ — BLOG_POSTS array + renderBlogList / filterBlogCat / renderArticlePage
+ * 23. INJECT HEADER/FOOTER — динамічна вставка шапки і підвалу на всі сторінки
+ * 24. DOMContentLoaded handler — оркеструє ініціалізацію
+ *
+ * Persistence — localStorage ключі: budMasterCart, budMasterWishlist,
+ * budMasterRecent, budMasterPromo. Готово до заміни на REST API на бекенді.
+ * =========================================================================== */
+
 // ============================================
-// БАЗА ТОВАРІВ (100 позицій)
+// 1. БАЗА ТОВАРІВ (100 позицій)
 // ============================================
 const IMG = {
     cement:   'https://images.unsplash.com/photo-1607582544501-71f5b3ce3a4e?auto=format&fit=crop&w=600&q=80',
@@ -239,7 +274,7 @@ function productCardHTML(p) {
             ${p.promo ? '<span class="discount-badge">ЗНИЖКА</span>' : ''}
             ${p.popular ? '<span class="popular-badge">ХІТ</span>' : ''}
             ${p.isNew && !p.popular ? '<span class="new-badge">НОВИНКА</span>' : ''}
-            <button class="wish-btn ${inWish ? 'active' : ''}" data-id="${p.id}" onclick="toggleWishlist('${p.id}', event)" title="В обране">
+            <button class="wish-btn ${inWish ? 'active' : ''}" data-id="${p.id}" onclick="toggleWishlist('${p.id}', event)" title="В обране" aria-label="Додати в обране">
                 <i class="fa fa-heart"></i>
             </button>
             <a href="product.html?id=${p.id}" class="product-card-link">
@@ -276,7 +311,7 @@ function handleSearch(event) {
         const sidebarSearch = document.getElementById('sidebar-search');
         if (sidebarSearch) sidebarSearch.value = query;
 
-        renderShop();
+        if (typeof renderShop === 'function') renderShop();
     } else {
         window.location.assign('shop.html?search=' + encodeURIComponent(query));
     }
@@ -289,7 +324,8 @@ function closeModal() {
 
 function processContactForm(event) {
     event.preventDefault();
-    document.getElementById('successModal').style.display = 'flex';
+    const modal = document.getElementById('successModal');
+    if (modal) modal.style.display = 'flex';
     event.target.reset();
 }
 
@@ -311,7 +347,8 @@ function processCheckout(event) {
         alert("Введіть коректний номер: +380 та 9 цифр"); return;
     }
 
-    document.getElementById('successModal').style.display = 'flex';
+    const modal = document.getElementById('successModal');
+    if (modal) modal.style.display = 'flex';
 
     cart = [];
     localStorage.setItem('budMasterCart', JSON.stringify(cart));
@@ -348,6 +385,234 @@ function renderHomeSections() {
         const sec = document.getElementById('recent-section');
         if (sec) sec.style.display = 'block';
     }
+}
+
+// Перемикання табів товарів на головній
+function switchProductTab(event, tabId) {
+    document.querySelectorAll('.ps-tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.ps-grid').forEach(g => g.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+    const target = document.getElementById(tabId);
+    if (target) target.classList.add('active');
+}
+
+// ============================================
+// HERO SLIDER
+// ============================================
+let heroIndex = 0;
+let heroTimer = null;
+
+function heroGoTo(index) {
+    const slides = document.querySelectorAll('.hero-slide');
+    const dots = document.querySelectorAll('.hero-dot');
+    if (!slides.length) return;
+    if (index < 0) index = slides.length - 1;
+    if (index >= slides.length) index = 0;
+    slides.forEach((s, i) => s.classList.toggle('active', i === index));
+    dots.forEach((d, i) => d.classList.toggle('active', i === index));
+    heroIndex = index;
+    resetHeroAuto();
+}
+
+function heroNext() { heroGoTo(heroIndex + 1); }
+function heroPrev() { heroGoTo(heroIndex - 1); }
+
+function resetHeroAuto() {
+    if (heroTimer) clearTimeout(heroTimer);
+    heroTimer = setTimeout(() => heroGoTo(heroIndex + 1), 6000);
+}
+
+function initHeroSlider() {
+    const slides = document.querySelectorAll('.hero-slide');
+    if (slides.length > 1) resetHeroAuto();
+}
+
+// ============================================
+// MEGA MENU
+// ============================================
+function toggleMegaMenu() {
+    const menu = document.getElementById('mega-menu');
+    const overlay = document.getElementById('mega-overlay');
+    const btn = document.getElementById('catalog-btn');
+    if (!menu || !overlay) return;
+    const isActive = menu.classList.contains('active');
+    if (isActive) closeMegaMenu();
+    else {
+        menu.classList.add('active');
+        overlay.classList.add('active');
+        if (btn) btn.classList.add('active');
+        document.body.classList.add('no-scroll');
+    }
+}
+
+function closeMegaMenu() {
+    const menu = document.getElementById('mega-menu');
+    const overlay = document.getElementById('mega-overlay');
+    const btn = document.getElementById('catalog-btn');
+    if (menu) menu.classList.remove('active');
+    if (overlay) overlay.classList.remove('active');
+    if (btn) btn.classList.remove('active');
+    document.body.classList.remove('no-scroll');
+}
+
+// ============================================
+// MOBILE NAV
+// ============================================
+function openMobileNav() {
+    const nav = document.getElementById('mobile-nav');
+    const overlay = document.getElementById('mobile-nav-overlay');
+    if (nav) nav.classList.add('active');
+    if (overlay) overlay.classList.add('active');
+    document.body.classList.add('no-scroll');
+}
+
+function closeMobileNav() {
+    const nav = document.getElementById('mobile-nav');
+    const overlay = document.getElementById('mobile-nav-overlay');
+    if (nav) nav.classList.remove('active');
+    if (overlay) overlay.classList.remove('active');
+    document.body.classList.remove('no-scroll');
+}
+
+// ============================================
+// AUTH MODAL
+// ============================================
+function openAuthModal(mode) {
+    const modal = document.getElementById('auth-modal');
+    if (!modal) return;
+    modal.classList.add('active');
+    document.body.classList.add('no-scroll');
+    switchAuthTab(mode || 'login');
+}
+
+function closeAuthModal() {
+    const modal = document.getElementById('auth-modal');
+    if (!modal) return;
+    modal.classList.remove('active');
+    document.body.classList.remove('no-scroll');
+    // Скидання форм
+    setTimeout(() => {
+        document.getElementById('auth-success').style.display = 'none';
+        document.getElementById('auth-login').style.display = 'flex';
+        document.getElementById('auth-register').style.display = 'none';
+        document.getElementById('tab-login-btn').classList.add('active');
+        document.getElementById('tab-reg-btn').classList.remove('active');
+        ['login-email', 'login-pass', 'reg-name', 'reg-email', 'reg-phone', 'reg-pass', 'reg-pass2'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = '';
+        });
+        const agree = document.getElementById('reg-agree');
+        if (agree) agree.checked = false;
+        const loginErr = document.getElementById('login-error');
+        if (loginErr) loginErr.style.display = 'none';
+        const regErr = document.getElementById('reg-error');
+        if (regErr) regErr.style.display = 'none';
+    }, 300);
+}
+
+function authOverlayClick(e) {
+    if (e.target.id === 'auth-modal') closeAuthModal();
+}
+
+function switchAuthTab(tab) {
+    const loginBtn = document.getElementById('tab-login-btn');
+    const regBtn = document.getElementById('tab-reg-btn');
+    const loginForm = document.getElementById('auth-login');
+    const regForm = document.getElementById('auth-register');
+    const success = document.getElementById('auth-success');
+    if (!loginBtn || !regBtn) return;
+
+    if (success) success.style.display = 'none';
+
+    if (tab === 'register') {
+        loginBtn.classList.remove('active');
+        regBtn.classList.add('active');
+        loginForm.style.display = 'none';
+        regForm.style.display = 'flex';
+    } else {
+        loginBtn.classList.add('active');
+        regBtn.classList.remove('active');
+        loginForm.style.display = 'flex';
+        regForm.style.display = 'none';
+    }
+}
+
+function switchRegMethod(method) {
+    const segEmail = document.getElementById('seg-email');
+    const segPhone = document.getElementById('seg-phone');
+    const emailField = document.getElementById('reg-email');
+    const phoneField = document.getElementById('reg-phone');
+    if (!segEmail || !segPhone) return;
+
+    if (method === 'phone') {
+        segEmail.classList.remove('active');
+        segPhone.classList.add('active');
+        emailField.style.display = 'none';
+        phoneField.style.display = '';
+        if (!phoneField.value) phoneField.value = '+380';
+    } else {
+        segEmail.classList.add('active');
+        segPhone.classList.remove('active');
+        emailField.style.display = '';
+        phoneField.style.display = 'none';
+    }
+}
+
+function showAuthError(boxId, message) {
+    const box = document.getElementById(boxId);
+    if (!box) return;
+    box.className = 'auth-error';
+    box.style.display = 'block';
+    box.textContent = message;
+}
+
+function hideAuthError(boxId) {
+    const box = document.getElementById(boxId);
+    if (box) box.style.display = 'none';
+}
+
+function submitLogin() {
+    hideAuthError('login-error');
+    const id = document.getElementById('login-email').value.trim();
+    const pass = document.getElementById('login-pass').value;
+    if (!id) { showAuthError('login-error', 'Вкажіть email або номер телефону'); return; }
+    if (!pass || pass.length < 4) { showAuthError('login-error', 'Введіть пароль (мін. 4 символи)'); return; }
+    // Заглушка — успіх
+    showSuccessAuth('Вхід виконано! Кабінет буде доступний у повній версії.');
+}
+
+function submitRegister() {
+    hideAuthError('reg-error');
+    const name = document.getElementById('reg-name').value.trim();
+    const isPhone = document.getElementById('seg-phone').classList.contains('active');
+    const email = document.getElementById('reg-email').value.trim();
+    const phone = document.getElementById('reg-phone').value.trim();
+    const pass = document.getElementById('reg-pass').value;
+    const pass2 = document.getElementById('reg-pass2').value;
+    const agree = document.getElementById('reg-agree').checked;
+
+    if (!name) { showAuthError('reg-error', 'Вкажіть ваше ім\'я'); return; }
+    if (isPhone) {
+        if (!phone || phone.length < 13) { showAuthError('reg-error', 'Введіть номер у форматі +380XXXXXXXXX'); return; }
+    } else {
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showAuthError('reg-error', 'Вкажіть коректний email'); return; }
+    }
+    if (!pass || pass.length < 6) { showAuthError('reg-error', 'Пароль має містити мінімум 6 символів'); return; }
+    if (pass !== pass2) { showAuthError('reg-error', 'Паролі не співпадають'); return; }
+    if (!agree) { showAuthError('reg-error', 'Підтвердіть згоду з умовами використання'); return; }
+
+    showSuccessAuth();
+}
+
+function showSuccessAuth(text) {
+    document.getElementById('auth-login').style.display = 'none';
+    document.getElementById('auth-register').style.display = 'none';
+    const success = document.getElementById('auth-success');
+    if (text) {
+        const sub = success.querySelector('.auth-sub');
+        if (sub) sub.textContent = text;
+    }
+    success.style.display = 'flex';
 }
 
 // ============================================
@@ -454,7 +719,7 @@ function renderPagination(totalPages) {
     if (!pag) return;
     if (totalPages <= 1) { pag.innerHTML = ''; return; }
 
-    let html = `<button class="pag-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="goToPage(${currentPage - 1})"><i class="fa fa-chevron-left"></i></button>`;
+    let html = `<button class="pag-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="goToPage(${currentPage - 1})" aria-label="Назад"><i class="fa fa-chevron-left"></i></button>`;
     for (let i = 1; i <= totalPages; i++) {
         if (i === 1 || i === totalPages || Math.abs(i - currentPage) <= 1) {
             html += `<button class="pag-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
@@ -462,7 +727,7 @@ function renderPagination(totalPages) {
             html += `<span class="pag-dots">...</span>`;
         }
     }
-    html += `<button class="pag-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="goToPage(${currentPage + 1})"><i class="fa fa-chevron-right"></i></button>`;
+    html += `<button class="pag-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="goToPage(${currentPage + 1})" aria-label="Вперед"><i class="fa fa-chevron-right"></i></button>`;
     pag.innerHTML = html;
 }
 
@@ -523,7 +788,7 @@ function renderProductPage() {
             <div class="product-detail-info">
                 <h1>${product.name}</h1>
                 <p class="prod-brand">Бренд: <strong>${brandLabels[product.brand] || '—'}</strong></p>
-                <p class="stock-line ${stockClass}"><i class="fa fa-circle"></i> ${stockLabel}</p>
+                <p class="prod-stock stock-line ${stockClass}"><i class="fa fa-circle"></i> ${stockLabel}</p>
                 <div class="prod-price-block">
                     ${product.oldPrice ? `<span class="old-price">${product.oldPrice} грн</span>` : ''}
                     <span class="prod-price">${product.price} грн</span>
@@ -532,9 +797,9 @@ function renderProductPage() {
                 <div class="prod-qty-row">
                     <label>Кількість:</label>
                     <div class="cart-controls">
-                        <button class="cart-control-btn" onclick="changeProdQty(-1)">-</button>
-                        <span class="cart-control-qty" id="prod-qty">1</span>
-                        <button class="cart-control-btn" onclick="changeProdQty(1)">+</button>
+                        <button class="cart-control-btn" type="button" onclick="changeProdQty(-1)" aria-label="Зменшити">−</button>
+                        <input type="text" inputmode="numeric" class="cart-control-input" id="prod-qty" value="1" aria-label="Кількість" oninput="sanitizeProdQty(this)" onblur="if(!this.value||parseInt(this.value)<1)this.value=1">
+                        <button class="cart-control-btn" type="button" onclick="changeProdQty(1)" aria-label="Збільшити">+</button>
                     </div>
                 </div>
 
@@ -589,7 +854,7 @@ function renderProductPage() {
         </div>
 
         <section class="related-products">
-            <h2 class="section-title">Схожі товари</h2>
+            <h2 class="section-title">Схожі <span>товари</span></h2>
             <div class="products-grid" id="related-grid"></div>
         </section>
     `;
@@ -601,14 +866,21 @@ function renderProductPage() {
 function changeProdQty(delta) {
     const el = document.getElementById('prod-qty');
     if (!el) return;
-    let q = parseInt(el.textContent) + delta;
+    let q = (parseInt(el.value, 10) || 1) + delta;
     if (q < 1) q = 1;
     if (q > 999) q = 999;
-    el.textContent = q;
+    el.value = q;
+}
+
+function sanitizeProdQty(el) {
+    let v = el.value.replace(/[^\d]/g, '');
+    if (v.length > 3) v = v.slice(0, 3);
+    el.value = v;
 }
 
 function addProductToCart(id) {
-    const qty = parseInt(document.getElementById('prod-qty').textContent) || 1;
+    const el = document.getElementById('prod-qty');
+    const qty = Math.max(1, parseInt(el && el.value, 10) || 1);
     addToCart(id, qty);
 }
 
@@ -616,7 +888,8 @@ function switchTab(event, tabId) {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
     event.currentTarget.classList.add('active');
-    document.getElementById(tabId).classList.add('active');
+    const target = document.getElementById(tabId);
+    if (target) target.classList.add('active');
 }
 
 // ============================================
@@ -631,7 +904,7 @@ function resetFilters() {
 
     ['f-type', 'f-category', 'f-price', 'f-brand', 'f-age'].forEach(id => {
         const el = document.getElementById(id);
-        if (el) el.value = el.options[0].value;
+        if (el && el.options) el.value = el.options[0].value;
     });
 
     ['f-promo', 'f-popular', 'f-wish'].forEach(id => {
@@ -654,6 +927,15 @@ function resetFilters() {
 // ============================================
 // КАЛЬКУЛЯТОР МАТЕРІАЛІВ
 // ============================================
+function setCalcType(event, type) {
+    document.querySelectorAll('.calc-tab-btn').forEach(b => b.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+    const hidden = document.getElementById('calc-type');
+    if (hidden) hidden.value = type;
+    const result = document.getElementById('calc-result');
+    if (result) result.innerHTML = '';
+}
+
 function calcMaterials() {
     const result = document.getElementById('calc-result');
     const type = document.getElementById('calc-type').value;
@@ -697,72 +979,81 @@ function calcMaterials() {
 function subscribeNewsletter(event) {
     event.preventDefault();
     const input = event.target.querySelector('input');
-    showToast(`Дякуємо! ${input.value} підписано на новини.`);
+    const email = input.value;
     event.target.reset();
+
+    const modal = document.getElementById('newsletterModal');
+    if (modal) {
+        const emailEl = modal.querySelector('.newsletter-email');
+        if (emailEl) emailEl.textContent = email;
+        modal.style.display = 'flex';
+    }
+}
+
+function closeNewsletterModal() {
+    const modal = document.getElementById('newsletterModal');
+    if (modal) modal.style.display = 'none';
 }
 
 // ============================================
-// ЗАПУСК
+// ЖИВИЙ ПОШУК
 // ============================================
-document.addEventListener('DOMContentLoaded', () => {
-    updateCartBadge();
-    updateWishlistBadge();
-    renderShop();
-    renderHomeSections();
-    renderProductPage();
-
-    // ЖИВИЙ ПОШУК
+function initLiveSearch() {
     const searchForm = document.querySelector('.search-box');
     const searchInput = document.querySelector('.search-box input');
+    if (!searchForm || !searchInput) return;
 
-    if (searchForm && searchInput) {
-        searchInput.setAttribute('autocomplete', 'off');
+    searchInput.setAttribute('autocomplete', 'off');
 
-        const resultsBox = document.createElement('div');
+    let resultsBox = searchForm.querySelector('.search-results-dropdown');
+    if (!resultsBox) {
+        resultsBox = document.createElement('div');
         resultsBox.className = 'search-results-dropdown';
         searchForm.appendChild(resultsBox);
-
-        searchInput.addEventListener('input', function () {
-            const query = this.value.toLowerCase().trim();
-            resultsBox.innerHTML = '';
-
-            if (query.length === 0) {
-                resultsBox.style.display = 'none';
-                return;
-            }
-
-            const matches = productsData.filter(p => p.name.toLowerCase().includes(query)).slice(0, 8);
-
-            if (matches.length > 0) {
-                matches.forEach(match => {
-                    const item = document.createElement('div');
-                    item.className = 'search-result-item';
-                    item.innerHTML = `
-                        <img src="${match.img}" alt="${match.name}">
-                        <div>
-                            <div>${match.name}</div>
-                            <div style="color: var(--accent); font-weight: bold; font-size: 13px;">${match.price} грн</div>
-                        </div>
-                    `;
-                    item.onclick = () => {
-                        window.location.assign(`product.html?id=${match.id}`);
-                    };
-                    resultsBox.appendChild(item);
-                });
-            } else {
-                resultsBox.innerHTML = '<div class="empty-search-dropdown">Товарів не знайдено</div>';
-            }
-            resultsBox.style.display = 'block';
-        });
-
-        document.addEventListener('click', (e) => {
-            if (!searchForm.contains(e.target)) {
-                resultsBox.style.display = 'none';
-            }
-        });
     }
 
-    // Маска телефону
+    searchInput.addEventListener('input', function () {
+        const query = this.value.toLowerCase().trim();
+        resultsBox.innerHTML = '';
+
+        if (query.length === 0) {
+            resultsBox.style.display = 'none';
+            return;
+        }
+
+        const matches = productsData.filter(p => p.name.toLowerCase().includes(query)).slice(0, 8);
+
+        if (matches.length > 0) {
+            matches.forEach(match => {
+                const item = document.createElement('a');
+                item.className = 'search-result-item';
+                item.href = `product.html?id=${match.id}`;
+                item.innerHTML = `
+                    <img src="${match.img}" alt="${match.name}">
+                    <div>
+                        <div>${match.name}</div>
+                        <div style="color: var(--accent); font-weight: bold; font-size: 13px;">${match.price} грн</div>
+                    </div>
+                `;
+                resultsBox.appendChild(item);
+            });
+        } else {
+            resultsBox.innerHTML = '<div class="empty-search-dropdown">Товарів не знайдено</div>';
+        }
+        resultsBox.style.display = 'block';
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!searchForm.contains(e.target)) {
+            resultsBox.style.display = 'none';
+        }
+    });
+}
+
+// ============================================
+// МАСКА ТЕЛЕФОНУ
+// ============================================
+function initPhoneMask() {
     document.querySelectorAll('.phone-mask').forEach(input => {
         input.addEventListener('focus', function () { if (this.value === '') this.value = '+380'; });
         input.addEventListener('input', function () {
@@ -772,10 +1063,15 @@ document.addEventListener('DOMContentLoaded', () => {
             this.value = val;
         });
     });
+}
 
-    // Кнопка Вгору
+// ============================================
+// КНОПКА ВГОРУ
+// ============================================
+function initScrollTopBtn() {
     const scrollTopBtn = document.createElement('button');
     scrollTopBtn.id = 'scrollTopBtn';
+    scrollTopBtn.setAttribute('aria-label', 'Прокрутити нагору');
     scrollTopBtn.innerHTML = '<i class="fa fa-arrow-up"></i>';
     document.body.appendChild(scrollTopBtn);
 
@@ -787,9 +1083,473 @@ document.addEventListener('DOMContentLoaded', () => {
     scrollTopBtn.addEventListener('click', () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     });
-});
-
-function toggleMenu() {
-    document.getElementById('menu').classList.toggle('active');
-    document.querySelector('.burger').classList.toggle('active');
 }
+
+// ============================================
+// COOKIE BANNER
+// ============================================
+function initCookieBanner() {
+    if (localStorage.getItem('budMasterCookiesAccepted') === '1') return;
+
+    const banner = document.createElement('div');
+    banner.id = 'cookieBanner';
+    banner.className = 'cookie-banner';
+    banner.setAttribute('role', 'region');
+    banner.setAttribute('aria-label', 'Повідомлення про файли cookie');
+    banner.innerHTML = `
+        <div class="cookie-banner-inner">
+            <div class="cookie-icon" aria-hidden="true">
+                <i class="fa fa-cookie-bite"></i>
+            </div>
+            <div class="cookie-text">
+                <strong>Ми використовуємо файли cookie</strong>
+                <p>Cookie допомагають нам покращувати роботу сайту, запам'ятовувати ваші вподобання та аналізувати відвідуваність. Продовжуючи користуватися сайтом, ви погоджуєтесь з нашою політикою конфіденційності.</p>
+            </div>
+            <div class="cookie-actions">
+                <button type="button" class="btn-primary" onclick="acceptCookies()">Прийняти всі</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(banner);
+    document.body.classList.add('has-cookie-banner');
+}
+
+function acceptCookies() {
+    localStorage.setItem('budMasterCookiesAccepted', '1');
+    const banner = document.getElementById('cookieBanner');
+    if (banner) {
+        banner.classList.add('hide');
+        setTimeout(() => banner.remove(), 250);
+    }
+    document.body.classList.remove('has-cookie-banner');
+}
+
+// ============================================
+// ЗАКРИТТЯ ПО ESC
+// ============================================
+function initEscClose() {
+    document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape') return;
+        const authModal = document.getElementById('auth-modal');
+        if (authModal && authModal.classList.contains('active')) { closeAuthModal(); return; }
+        const megaMenu = document.getElementById('mega-menu');
+        if (megaMenu && megaMenu.classList.contains('active')) { closeMegaMenu(); return; }
+        const mobileNav = document.getElementById('mobile-nav');
+        if (mobileNav && mobileNav.classList.contains('active')) { closeMobileNav(); return; }
+        const successModal = document.getElementById('successModal');
+        if (successModal && successModal.style.display === 'flex') { closeModal(); return; }
+    });
+}
+
+// ============================================
+// BLOG PAGE
+// ============================================
+const BLOG_POSTS = [
+    { id: 1, cat: 'Будівництво', date: '15 січня 2026', title: 'Як вибрати цемент для фундаменту', excerpt: 'Розглядаємо марки цементу, рекомендації виробників та лайфхаки досвідчених прорабів.', img: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=800&q=80' },
+    { id: 2, cat: 'Ремонт', date: '10 січня 2026', title: 'Шпаклівка стін: 7 типових помилок', excerpt: 'Покрокова інструкція для якісного шпаклювання та поради, як уникнути дефектів.', img: 'https://images.unsplash.com/photo-1581094288338-2314dddb7ece?auto=format&fit=crop&w=800&q=80' },
+    { id: 3, cat: 'Інструмент', date: '3 січня 2026', title: 'Топ-5 перфораторів 2026 року', excerpt: 'Огляд найкращих моделей Bosch, Makita, DeWalt — характеристики, ціни, плюси та мінуси.', img: 'https://images.unsplash.com/photo-1581244277943-fe4a9c777189?auto=format&fit=crop&w=800&q=80' },
+    { id: 4, cat: 'Будівництво', date: '28 грудня 2025', title: 'Газобетон чи цегла: що краще для будинку?', excerpt: 'Порівнюємо два популярних матеріали за ціною, теплоізоляцією, складністю кладки та довговічністю.', img: 'https://images.unsplash.com/photo-1530686577008-d6dd54e83b40?auto=format&fit=crop&w=800&q=80' },
+    { id: 5, cat: 'Ремонт', date: '20 грудня 2025', title: 'Як обрати фарбу для квартири: гайд від професіоналів', excerpt: 'Розбираємо типи фарб (латекс, акрил, силікон), де яку використовувати та скільки шарів робити.', img: 'https://images.unsplash.com/photo-1562259949-e8e7689d7828?auto=format&fit=crop&w=800&q=80' },
+    { id: 6, cat: 'Інструмент', date: '12 грудня 2025', title: 'Шуруповерт vs дриль: чим відрізняються?', excerpt: 'Поширені помилки при виборі — що купити для дому, а що для професійної роботи.', img: 'https://images.unsplash.com/photo-1426927308491-6380b6a9936f?auto=format&fit=crop&w=800&q=80' }
+];
+
+function blogCardHTML(post) {
+    return `
+        <a href="article.html?id=${post.id}" class="blog-card" data-cat="${post.cat}">
+            <img src="${post.img}" alt="${post.title}" loading="lazy">
+            <div class="blog-card-body">
+                <div class="blog-meta">
+                    <span class="blog-tag">${post.cat}</span>
+                    <span class="blog-date">${post.date}</span>
+                </div>
+                <h3>${post.title}</h3>
+                <p>${post.excerpt}</p>
+                <span class="blog-link">Читати <i class="fa fa-arrow-right"></i></span>
+            </div>
+        </a>
+    `;
+}
+
+function renderBlogList() {
+    const grid = document.getElementById('blog-list-grid');
+    if (!grid) return;
+    const cat = document.querySelector('.blog-cat-btn.active')?.dataset.cat || 'all';
+    const items = cat === 'all' ? BLOG_POSTS : BLOG_POSTS.filter(p => p.cat === cat);
+    grid.innerHTML = items.map(blogCardHTML).join('');
+}
+
+function filterBlogCat(event, cat) {
+    document.querySelectorAll('.blog-cat-btn').forEach(b => b.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+    event.currentTarget.dataset.cat = cat;
+    renderBlogList();
+}
+
+function renderArticlePage() {
+    const container = document.getElementById('article-container');
+    if (!container) return;
+    const id = parseInt(new URLSearchParams(window.location.search).get('id')) || 1;
+    const post = BLOG_POSTS.find(p => p.id === id) || BLOG_POSTS[0];
+    document.title = `${post.title} — БудМайстер`;
+
+    container.innerHTML = `
+        <nav class="breadcrumbs">
+            <a href="index.html">Головна</a> /
+            <a href="blog.html">Блог</a> /
+            <span>${post.title}</span>
+        </nav>
+        <div class="article-meta">
+            <span class="blog-tag">${post.cat}</span>
+            <span class="blog-date">${post.date}</span>
+        </div>
+        <h1>${post.title}</h1>
+        <img src="${post.img.replace('w=800', 'w=1200')}" alt="${post.title}" class="article-cover">
+        <div class="article-content">
+            <p>${post.excerpt} У цій статті ми детально розберемо ключові моменти, які допоможуть вам зробити правильний вибір та уникнути типових помилок під час будівництва й ремонту.</p>
+
+            <h2>Що варто знати перед початком</h2>
+            <p>Перед тим як приступити до робіт, важливо ретельно спланувати кожен етап. Помилки на початковому етапі коштують дорого і часто потребують повної переробки. Ось ключові моменти, на які варто звернути увагу:</p>
+            <ul>
+                <li><strong>Якість матеріалів</strong> — економія на матеріалах рідко окупається. Краще обирати перевірені бренди.</li>
+                <li><strong>Правильний розрахунок</strong> — використовуйте наш <a href="index.html#calc">калькулятор матеріалів</a> для точних обсягів.</li>
+                <li><strong>Умови зберігання</strong> — більшість будівельних матеріалів не люблять вологи й перепадів температур.</li>
+                <li><strong>Терміни придатності</strong> — особливо актуально для цементу, шпаклівок, фарб.</li>
+            </ul>
+
+            <h2>Покрокова інструкція</h2>
+            <p>Розглянемо весь процес поетапно — від підготовки до фінальної перевірки.</p>
+
+            <h3>Крок 1. Підготовка</h3>
+            <p>На цьому етапі підготуйте інструмент, очистіть робочу поверхню, забезпечте належне освітлення та вентиляцію. Не нехтуйте засобами індивідуального захисту.</p>
+
+            <h3>Крок 2. Виконання робіт</h3>
+            <p>Дотримуйтеся технології виробника матеріалу. Кожен виробник вказує оптимальні умови температури, вологості й товщини шару — не відхиляйтеся від цих рекомендацій.</p>
+
+            <h3>Крок 3. Контроль якості</h3>
+            <p>Після завершення робіт обов'язково перевірте якість. Якщо помітите дефекти — виправляйте їх одразу, не чекайте, поки матеріал застигне.</p>
+
+            <blockquote>«Якісно виконана робота — це не тільки про результат. Це про правильно підібрані матеріали, інструмент та чітке дотримання технології.» — Андрій К., прораб з 15-річним досвідом</blockquote>
+
+            <h2>Висновки</h2>
+            <p>Будівництво і ремонт — це складний процес, але з правильним підходом ви досягнете відмінного результату. Не соромтеся звертатися за консультацією до наших фахівців — це <strong>безкоштовно</strong>, а часу й нервів економить багато.</p>
+            <p>Усі необхідні матеріали ви можете замовити у нашому <a href="shop.html">каталозі</a> з доставкою по Україні від 24 годин.</p>
+        </div>
+    `;
+}
+
+// ============================================
+// ІН'ЄКЦІЯ ШАПКИ І ПІДВАЛУ (DRY для всіх сторінок)
+// ============================================
+// Вставляє повноцінний header (top-bar + sticky header + mega-menu + mobile nav)
+// у будь-яку сторінку, де є <div id="header-placeholder"></div>
+function injectHeader() {
+    const placeholder = document.getElementById('header-placeholder');
+    if (!placeholder) return;
+    placeholder.innerHTML = `
+    <div class="top-bar">
+        <div class="tb-inner">
+            <div class="tb-left">
+                <span class="tb-city"><i class="fa fa-map-marker-alt"></i> Київ <i class="fa fa-chevron-down" style="font-size:10px"></i></span>
+                <span><i class="fa fa-phone"></i> +380 (44) 555 12 34</span>
+                <span><i class="fa fa-clock"></i> Пн-Сб 8:00-20:00</span>
+                <span><i class="fa fa-warehouse"></i> Склади: Київ · Львів · Дніпро</span>
+            </div>
+            <div class="tb-right">
+                <span class="tb-free"><i class="fa fa-truck"></i> Безкоштовна доставка від 5000 грн</span>
+            </div>
+        </div>
+    </div>
+    <header class="site-header">
+        <div class="hdr-inner">
+            <a href="index.html" class="logo">Буд<span>Майстер</span></a>
+            <button class="catalog-btn" id="catalog-btn" onclick="toggleMegaMenu()" aria-label="Відкрити каталог">
+                <i class="fa fa-bars"></i> <span>Каталог</span>
+            </button>
+            <form class="search-box" onsubmit="handleSearch(event)">
+                <input type="text" placeholder="Пошук матеріалів, інструменту, брендів..." autocomplete="off" required>
+                <button type="submit" aria-label="Пошук"><i class="fa fa-search"></i></button>
+            </form>
+            <div class="hdr-actions">
+                <button class="hdr-icon" onclick="openAuthModal('login')" title="Особистий кабінет" aria-label="Вхід">
+                    <i class="fa fa-user"></i>
+                </button>
+                <a href="shop.html?wish=1" class="hdr-icon wishlist-header" title="Обране" data-mobile-hide>
+                    <i class="fa fa-heart"></i>
+                    <span class="wishlist-count">0</span>
+                </a>
+                <a href="cart.html" class="hdr-icon cart" title="Кошик">
+                    <i class="fa fa-shopping-cart"></i>
+                    <span class="cart-count">0</span>
+                </a>
+                <button class="hdr-mobile-nav-toggle" onclick="openMobileNav()" aria-label="Меню">
+                    <i class="fa fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+    <div class="mega-overlay" id="mega-overlay" onclick="closeMegaMenu()"></div>
+    <div class="mega-menu" id="mega-menu">
+        <div class="mega-inner">
+            <div class="mega-col">
+                <h4><i class="fa fa-cubes"></i> Цемент та суміші</h4>
+                <ul>
+                    <li><a href="shop.html?type=cement">Цемент ПЦ-400, ПЦ-500</a></li>
+                    <li><a href="shop.html?type=cement">Шпаклівки</a></li>
+                    <li><a href="shop.html?type=cement">Штукатурки</a></li>
+                    <li><a href="shop.html?type=cement">Клей плитковий</a></li>
+                    <li><a href="shop.html?type=cement">Гідроізоляція</a></li>
+                </ul>
+            </div>
+            <div class="mega-col">
+                <h4><i class="fa fa-th-large"></i> Цегла та блоки</h4>
+                <ul>
+                    <li><a href="shop.html?type=brick">Цегла червона</a></li>
+                    <li><a href="shop.html?type=brick">Цегла силікатна</a></li>
+                    <li><a href="shop.html?type=brick">Газоблоки</a></li>
+                    <li><a href="shop.html?type=brick">Керамоблоки</a></li>
+                    <li><a href="shop.html?type=brick">Шлакоблоки</a></li>
+                </ul>
+            </div>
+            <div class="mega-col">
+                <h4><i class="fa fa-screwdriver-wrench"></i> Інструмент</h4>
+                <ul>
+                    <li><a href="shop.html?type=tool">Перфоратори</a></li>
+                    <li><a href="shop.html?type=tool">Шуруповерти</a></li>
+                    <li><a href="shop.html?type=tool">Болгарки</a></li>
+                    <li><a href="shop.html?type=tool">Лазерні рівні</a></li>
+                    <li><a href="shop.html?type=tool">Ручний інструмент</a></li>
+                </ul>
+            </div>
+            <div class="mega-col">
+                <h4><i class="fa fa-paint-roller"></i> Фарби та лаки</h4>
+                <ul>
+                    <li><a href="shop.html?type=paint">Фарби інтер'єрні</a></li>
+                    <li><a href="shop.html?type=paint">Фарби фасадні</a></li>
+                    <li><a href="shop.html?type=paint">Грунтовки</a></li>
+                    <li><a href="shop.html?type=paint">Лаки та емалі</a></li>
+                    <li><a href="shop.html?type=paint">Антисептики</a></li>
+                </ul>
+            </div>
+            <a href="shop.html?promo=1" class="mega-promo" style="text-decoration:none">
+                <div>
+                    <span class="promo-tag">Акція тижня</span>
+                    <h3>-30% на інструмент Bosch, Makita, DeWalt</h3>
+                </div>
+                <span style="color:var(--primary); font-weight:700; font-size:14px; text-transform:uppercase">Перейти <i class="fa fa-arrow-right"></i></span>
+            </a>
+            <div class="mega-col">
+                <h4><i class="fa fa-bolt"></i> Електрика</h4>
+                <ul>
+                    <li><a href="shop.html?type=electric">Кабельна продукція</a></li>
+                    <li><a href="shop.html?type=electric">Розетки, вимикачі</a></li>
+                    <li><a href="shop.html?type=electric">Автомати, УЗО</a></li>
+                    <li><a href="shop.html?type=electric">Освітлення LED</a></li>
+                </ul>
+            </div>
+            <div class="mega-col">
+                <h4><i class="fa fa-industry"></i> Металопрокат</h4>
+                <ul>
+                    <li><a href="shop.html?type=metal">Арматура А500С</a></li>
+                    <li><a href="shop.html?type=metal">Профілі металеві</a></li>
+                    <li><a href="shop.html?type=metal">Труби профільні</a></li>
+                    <li><a href="shop.html?type=metal">Листовий метал</a></li>
+                </ul>
+            </div>
+            <div class="mega-col">
+                <h4><i class="fa fa-house-chimney"></i> Оздоблення</h4>
+                <ul>
+                    <li><a href="shop.html?type=finishing">Гіпсокартон Knauf</a></li>
+                    <li><a href="shop.html?type=finishing">Утеплювачі</a></li>
+                    <li><a href="shop.html?type=finishing">Профілі CD/UD</a></li>
+                    <li><a href="shop.html?type=finishing">Сітки, підвіси</a></li>
+                </ul>
+            </div>
+            <div class="mega-col">
+                <h4><i class="fa fa-tag"></i> Спецпропозиції</h4>
+                <ul>
+                    <li><a href="shop.html?promo=1">Усі акції</a></li>
+                    <li><a href="shop.html?popular=1">Хіти продажів</a></li>
+                    <li><a href="shop.html?sort=new">Новинки</a></li>
+                    <li><a href="business.html">Опт для бригад</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="mobile-nav-overlay" id="mobile-nav-overlay" onclick="closeMobileNav()"></div>
+    <nav class="mobile-nav" id="mobile-nav">
+        <div class="mobile-nav-header">
+            <a href="index.html" class="logo">Буд<span>Майстер</span></a>
+            <button class="mobile-nav-close" onclick="closeMobileNav()" aria-label="Закрити"><i class="fa fa-times"></i></button>
+        </div>
+        <ul>
+            <li><a href="index.html">Головна</a></li>
+            <li><a href="shop.html">Каталог</a></li>
+            <li><a href="services.html">Послуги</a></li>
+            <li><a href="business.html">Для бізнесу</a></li>
+            <li><a href="blog.html">Блог</a></li>
+            <li><a href="about.html">Про нас</a></li>
+            <li><a href="contacts.html">Контакти</a></li>
+        </ul>
+        <button class="btn-primary btn-full" onclick="closeMobileNav(); openAuthModal('login')">
+            <i class="fa fa-user"></i> Увійти
+        </button>
+    </nav>`;
+}
+
+// Вставляє mega-footer + auth modal + success modal у будь-яку сторінку,
+// де є <div id="footer-placeholder"></div>
+function injectFooter() {
+    const placeholder = document.getElementById('footer-placeholder');
+    if (!placeholder) return;
+    placeholder.innerHTML = `
+    <div class="auth-modal-overlay" id="auth-modal" onclick="authOverlayClick(event)">
+        <div class="auth-modal-box" role="dialog" aria-modal="true" aria-label="Авторизація">
+            <button class="auth-close" onclick="closeAuthModal()" aria-label="Закрити"><i class="fa fa-times"></i></button>
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="tab-login-btn" onclick="switchAuthTab('login')">Вхід</button>
+                <button class="auth-tab" id="tab-reg-btn" onclick="switchAuthTab('register')">Реєстрація</button>
+            </div>
+            <div id="auth-login" class="auth-form">
+                <h2>Вхід до кабінету</h2>
+                <p class="auth-sub">Введіть email або номер телефону</p>
+                <div id="login-error" style="display:none"></div>
+                <input type="text" placeholder="Email або +380..." class="auth-input" id="login-email" autocomplete="username">
+                <input type="password" placeholder="Пароль" class="auth-input" id="login-pass" autocomplete="current-password">
+                <div class="auth-row">
+                    <label class="auth-check"><input type="checkbox"> Запам'ятати мене</label>
+                    <button type="button" class="auth-link" onclick="showToast('Відновлення паролю — скоро буде!')">Забули пароль?</button>
+                </div>
+                <button class="btn-primary btn-full auth-submit" onclick="submitLogin()"><i class="fa fa-sign-in-alt"></i> Увійти</button>
+            </div>
+            <div id="auth-register" class="auth-form" style="display:none">
+                <h2>Реєстрація</h2>
+                <p class="auth-sub">Оберіть зручний спосіб реєстрації</p>
+                <div id="reg-error" style="display:none"></div>
+                <div class="auth-segmented">
+                    <button type="button" class="seg-btn active" id="seg-email" onclick="switchRegMethod('email')"><i class="fa fa-envelope"></i> За email</button>
+                    <button type="button" class="seg-btn" id="seg-phone" onclick="switchRegMethod('phone')"><i class="fa fa-phone"></i> За телефоном</button>
+                </div>
+                <input type="text" placeholder="Ім'я" class="auth-input" id="reg-name" autocomplete="given-name">
+                <input type="email" placeholder="Email" class="auth-input reg-email-field" id="reg-email" autocomplete="email">
+                <input type="tel" placeholder="+380" class="auth-input phone-mask reg-phone-field" id="reg-phone" autocomplete="tel" style="display:none">
+                <input type="password" placeholder="Пароль (мін. 6 символів)" class="auth-input" id="reg-pass" autocomplete="new-password">
+                <input type="password" placeholder="Повторіть пароль" class="auth-input" id="reg-pass2" autocomplete="new-password">
+                <label class="auth-check"><input type="checkbox" id="reg-agree"> Я погоджуюсь з умовами використання</label>
+                <button class="btn-primary btn-full auth-submit" onclick="submitRegister()"><i class="fa fa-user-plus"></i> Зареєструватись</button>
+            </div>
+            <div id="auth-success" class="auth-form" style="display:none; text-align:center">
+                <i class="fa fa-check-circle" style="font-size:60px; color:#16a34a; margin: 8px auto 16px"></i>
+                <h2>Дякуємо!</h2>
+                <p class="auth-sub">Особистий кабінет буде доступний після запуску повної версії сайту. Ми сповістимо вас на email.</p>
+                <button class="btn-primary btn-full" onclick="closeAuthModal()">Чудово!</button>
+            </div>
+        </div>
+    </div>
+    <div id="successModal" class="modal-overlay">
+        <div class="modal-content">
+            <i class="fa fa-check-circle"></i>
+            <h2>Дякуємо!</h2>
+            <p class="modal-desc">Ми отримали вашу заявку. Менеджер зв'яжеться з вами протягом 30 хвилин.</p>
+            <button class="btn-primary btn-full" onclick="closeModal()">Закрити</button>
+        </div>
+    </div>
+    <div id="newsletterModal" class="modal-overlay" onclick="if(event.target===this)closeNewsletterModal()">
+        <div class="modal-content">
+            <i class="fa fa-envelope-open-text" style="color: var(--primary);"></i>
+            <h2>Ви підписані!</h2>
+            <p class="modal-desc">Дякуємо! Адресу <strong class="newsletter-email"></strong> додано до розсилки. Найближчим часом ви отримаєте першого листа з добіркою корисних матеріалів.</p>
+            <button class="btn-primary btn-full" onclick="closeNewsletterModal()">Чудово!</button>
+        </div>
+    </div>
+    <footer class="site-footer">
+        <div class="footer-top">
+            <div class="footer-col">
+                <div class="footer-logo">Буд<span>Майстер</span></div>
+                <p class="footer-desc">Будівельні матеріали та інструменти — від фундаменту до фінішної обробки. 12 років на ринку, 5000+ найменувань, склади у 3 містах України.</p>
+                <div class="footer-social">
+                    <a href="#" class="social-btn" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-btn" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-btn" aria-label="Telegram"><i class="fab fa-telegram-plane"></i></a>
+                    <a href="#" class="social-btn" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                    <a href="#" class="social-btn" aria-label="Viber"><i class="fab fa-viber"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Каталог</h4>
+                <ul>
+                    <li><a href="shop.html?type=cement">Цемент та суміші</a></li>
+                    <li><a href="shop.html?type=brick">Цегла та блоки</a></li>
+                    <li><a href="shop.html?type=tool">Інструмент</a></li>
+                    <li><a href="shop.html?type=paint">Фарби та лаки</a></li>
+                    <li><a href="shop.html?type=metal">Металопрокат</a></li>
+                    <li><a href="shop.html?type=electric">Електрика</a></li>
+                    <li><a href="shop.html?type=finishing">Оздоблення</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Покупцям</h4>
+                <ul>
+                    <li><a href="services.html">Доставка та оплата</a></li>
+                    <li><a href="services.html#returns">Повернення товару</a></li>
+                    <li><a href="services.html#warranty">Гарантія</a></li>
+                    <li><a href="cart.html">Кошик</a></li>
+                    <li><a href="shop.html?wish=1">Обране</a></li>
+                    <li><a href="blog.html">Корисні статті</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Компанія</h4>
+                <ul>
+                    <li><a href="about.html">Про нас</a></li>
+                    <li><a href="business.html">Для бізнесу</a></li>
+                    <li><a href="blog.html">Блог</a></li>
+                    <li><a href="contacts.html">Контакти</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Контакти</h4>
+                <div class="footer-contact-item"><i class="fa fa-map-marker-alt"></i><span>м. Київ, вул. Промислова, 25</span></div>
+                <div class="footer-contact-item"><i class="fa fa-phone-alt"></i><a href="tel:+380445551234">+380 (44) 555 12 34</a></div>
+                <div class="footer-contact-item"><i class="fa fa-envelope"></i><a href="mailto:info@budmaster.ua">info@budmaster.ua</a></div>
+                <div class="footer-contact-item"><i class="fa fa-clock"></i><span>Пн-Сб: 8:00-20:00<br>Нд: 9:00-17:00</span></div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-bottom-inner">
+                <p>&copy; 2026 БудМайстер. Всі права захищені.</p>
+                <p>Склади: Київ · Львів · Дніпро</p>
+            </div>
+        </div>
+    </footer>`;
+}
+
+// ============================================
+// ЗАПУСК
+// ============================================
+// Викликається після завантаження DOM. Спершу інжектимо шапку та підвал
+// (бо інша логіка від них залежить), потім — вся інша ініціалізація.
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Інжект спільних блоків (header + footer + modals)
+    injectHeader();
+    injectFooter();
+
+    // 2. Базова ініціалізація стану (бейджі кошика та обраного)
+    updateCartBadge();
+    updateWishlistBadge();
+
+    // 3. Render-функції — викликаємо лише ті, що є на поточній сторінці
+    if (document.getElementById('shop-grid')) renderShop();
+    if (document.getElementById('popular-grid')) renderHomeSections();
+    if (document.getElementById('product-page-container')) renderProductPage();
+    if (document.getElementById('cart-items-container') && typeof renderCartPage === 'function') renderCartPage();
+    if (document.getElementById('blog-list-grid')) renderBlogList();
+    if (document.getElementById('article-container')) renderArticlePage();
+
+    // 4. UI-helpers (працюють для всіх сторінок)
+    initLiveSearch();
+    initPhoneMask();
+    initScrollTopBtn();
+    initHeroSlider();
+    initEscClose();
+    initCookieBanner();
+});

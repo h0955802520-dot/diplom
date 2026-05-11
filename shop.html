@@ -1,64 +1,24 @@
 <!DOCTYPE html>
-<html lang="ukr">
+<html lang="uk">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Каталог — БудМайстер</title>
-    <link rel="stylesheet" href="css/style.css">
+    <meta name="description" content="Повний каталог будівельних матеріалів та інструменту з фільтрами за категоріями, брендами, ціною.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
-    <div class="top-bar">
-        <div class="container">
-            <div class="top-info">
-                <span><i class="fa fa-phone"></i> +380 (44) 555 12 34</span>
-                <span><i class="fa fa-clock"></i> Пн-Сб 8:00-20:00, Нд 9:00-17:00</span>
-                <span><i class="fa fa-warehouse"></i> Склади: Київ · Львів · Дніпро</span>
-                <span class="free-delivery"><i class="fa fa-truck"></i> Безкоштовна доставка від 5000 грн</span>
-            </div>
-        </div>
-    </div>
-
-    <header>
-        <div class="container">
-            <a href="index.html" class="logo">Буд<span>Майстер</span></a>
-
-            <nav id="menu">
-                <form class="search-box" onsubmit="handleSearch(event)">
-                    <input type="text" placeholder="Пошук матеріалів..." required>
-                    <button type="submit"><i class="fa fa-search"></i></button>
-                </form>
-
-                <a href="shop.html?wish=1" class="wishlist-header" title="Обране">
-                    <i class="fa fa-heart"></i>
-                    <span class="wishlist-count">0</span>
-                </a>
-
-                <a href="cart.html" class="cart">
-                    <i class="fa fa-shopping-cart"></i>
-                    <span class="cart-count">0</span>
-                </a>
-
-                <ul>
-                    <li><a href="index.html">Головна</a></li>
-                    <li><a href="about.html">Про нас</a></li>
-                    <li><a href="shop.html">Каталог</a></li>
-                    <li><a href="contacts.html">Контакти</a></li>
-                </ul>
-            </nav>
-
-            <div class="burger" onclick="toggleMenu()">
-                <i class="fa fa-bars"></i>
-                <i class="fa fa-times"></i>
-            </div>
-        </div>
-    </header>
+    <div id="header-placeholder"></div>
 
     <div class="shop-layout">
-        <aside class="sidebar-filters custom-form">
-            <h3 style="margin-bottom: 20px;">Фільтри</h3>
+        <!-- Сайдбар з фільтрами -->
+        <aside class="sidebar-filters">
+            <h3>Фільтри</h3>
 
             <div class="filter-group">
                 <label>Пошук:</label>
@@ -135,15 +95,9 @@
             </div>
 
             <div class="filter-group" style="gap: 12px;">
-                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; text-transform: none;">
-                    <input type="checkbox" id="f-promo" onchange="renderShop()" style="width: auto;"> Акційні товари
-                </label>
-                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; text-transform: none;">
-                    <input type="checkbox" id="f-popular" onchange="renderShop()" style="width: auto;"> Хіти продажів
-                </label>
-                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; text-transform: none;">
-                    <input type="checkbox" id="f-wish" onchange="renderShop()" style="width: auto;"> Лише обране
-                </label>
+                <label class="filter-checkbox"><input type="checkbox" id="f-promo" onchange="renderShop()"> Акційні товари</label>
+                <label class="filter-checkbox"><input type="checkbox" id="f-popular" onchange="renderShop()"> Хіти продажів</label>
+                <label class="filter-checkbox"><input type="checkbox" id="f-wish" onchange="renderShop()"> Лише обране</label>
             </div>
 
             <button type="button" class="btn-outline btn-full" onclick="resetFilters()" style="margin-top: 12px;">
@@ -151,52 +105,32 @@
             </button>
         </aside>
 
+        <!-- Контент каталогу -->
         <div class="shop-content">
             <div class="shop-toolbar">
                 <span class="shop-count" id="shop-count">Знайдено: 0 товарів</span>
             </div>
-            <div class="products-grid" id="shop-grid" style="padding: 0; margin: 0;"></div>
+            <div class="products-grid" id="shop-grid"></div>
             <div class="pagination" id="pagination"></div>
         </div>
     </div>
 
-    <footer>
-        <div class="container" style="flex-direction: column;">
-            <ul class="footer-links">
-                <li><a href="index.html">Головна</a></li>
-                <li><a href="about.html">Про нас</a></li>
-                <li><a href="shop.html">Каталог</a></li>
-                <li><a href="contacts.html">Контакти</a></li>
-            </ul>
-            <p class="copyright">&copy; 2026 БудМайстер. Будівельні матеріали та інструменти. Всі права захищені.</p>
-        </div>
-    </footer>
+    <div id="footer-placeholder"></div>
 
     <script src="js/js.js"></script>
     <script>
-        // URL params: ?wish=1, ?promo=1, ?popular=1, ?sort=new, ?brand=...
+        // Підтримка URL-параметрів: ?wish=1, ?promo=1, ?popular=1, ?sort=new, ?brand=...
+        // Виставляємо чекбокси/select-и до того, як рендериться каталог.
         document.addEventListener('DOMContentLoaded', () => {
             const params = new URLSearchParams(location.search);
-            if (params.get('wish') === '1') {
-                const cb = document.getElementById('f-wish');
-                if (cb) { cb.checked = true; }
-            }
-            if (params.get('promo') === '1') {
-                const cb = document.getElementById('f-promo');
-                if (cb) { cb.checked = true; }
-            }
-            if (params.get('popular') === '1') {
-                const cb = document.getElementById('f-popular');
-                if (cb) { cb.checked = true; }
-            }
-            if (params.get('sort')) {
-                const sel = document.getElementById('f-price');
-                if (sel) { sel.value = params.get('sort'); }
-            }
-            if (params.get('brand')) {
-                const sel = document.getElementById('f-brand');
-                if (sel) { sel.value = params.get('brand'); }
-            }
+            const setCheckbox = (id) => { const el = document.getElementById(id); if (el) el.checked = true; };
+            const setSelect = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
+
+            if (params.get('wish') === '1') setCheckbox('f-wish');
+            if (params.get('promo') === '1') setCheckbox('f-promo');
+            if (params.get('popular') === '1') setCheckbox('f-popular');
+            if (params.get('sort')) setSelect('f-price', params.get('sort'));
+            if (params.get('brand')) setSelect('f-brand', params.get('brand'));
             renderShop();
         });
     </script>

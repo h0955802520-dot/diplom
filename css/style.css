@@ -38,7 +38,7 @@
  * Усі breakpoints: 1024 / 900 / 768 / 700 / 600 / 480 / 420.
  * =========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+@import url('../vendor/inter.css');
 
 :root {
     /* Колірна палітра (без змін) */

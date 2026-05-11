@@ -54,14 +54,6 @@
         </div>
     </section>
 
-    <!-- Якорі для швидкої навігації -->
-    <ul class="service-anchor-list">
-        <li><a href="#delivery"><i class="fa fa-truck"></i> Доставка</a></li>
-        <li><a href="#payment"><i class="fa fa-credit-card"></i> Оплата</a></li>
-        <li><a href="#warranty"><i class="fa fa-shield-halved"></i> Гарантія</a></li>
-        <li><a href="#returns"><i class="fa fa-undo"></i> Повернення</a></li>
-    </ul>
-
     <!-- Деталі по кожній послузі -->
     <div class="service-block" id="delivery">
         <h2><i class="fa fa-truck-fast"></i> Способи доставки</h2>
@@ -108,7 +100,71 @@
             <li>Товар не належить до переліку, що не підлягає поверненню (індивідуально замовлені суміші, нарізаний кабель, тощо).</li>
         </ul>
         <p>Повернення коштів — протягом 5 робочих днів на рахунок, з якого здійснювалась оплата.</p>
-        <p style="margin-top:20px"><a href="contacts.html" class="btn-primary"><i class="fa fa-envelope"></i> Зв'язатись з нами</a></p>
+        <p style="margin-top:20px"><button type="button" class="btn-primary" onclick="openReturnChoiceModal()"><i class="fa fa-undo"></i> Оформити повернення</button></p>
+    </div>
+
+    <!-- Modal: вибір способу повернення -->
+    <div id="returnChoiceModal" class="modal-overlay" onclick="if(event.target===this)closeReturnModals()">
+        <div class="modal-content return-choice">
+            <h2>Як вам зручніше?</h2>
+            <p class="modal-desc">Оберіть зручний спосіб оформлення повернення товару.</p>
+            <div class="return-choice-buttons">
+                <button type="button" class="return-choice-btn" onclick="chooseReturnEmail()">
+                    <i class="fa fa-envelope"></i>
+                    <span class="return-choice-title">Написати на пошту</span>
+                    <span class="return-choice-desc">returns@budmaster.ua</span>
+                </button>
+                <button type="button" class="return-choice-btn" onclick="openReturnForm()">
+                    <i class="fa fa-file-pen"></i>
+                    <span class="return-choice-title">Заповнити форму</span>
+                    <span class="return-choice-desc">Менеджер зв'яжеться протягом дня</span>
+                </button>
+            </div>
+            <button type="button" class="return-modal-close" onclick="closeReturnModals()" aria-label="Закрити"><i class="fa fa-times"></i></button>
+        </div>
+    </div>
+
+    <!-- Modal: форма повернення -->
+    <div id="returnFormModal" class="modal-overlay" onclick="if(event.target===this)closeReturnModals()">
+        <div class="modal-content return-form-modal">
+            <h2>Форма повернення товару</h2>
+            <p class="modal-desc">Заповніть дані — менеджер зв'яжеться з вами протягом робочого дня.</p>
+            <form class="custom-form return-form" onsubmit="submitReturnForm(event)">
+                <div class="form-row">
+                    <input type="text" placeholder="Ім'я та прізвище" required>
+                    <input type="tel" class="phone-mask" placeholder="+380" required>
+                </div>
+                <div class="form-row">
+                    <input type="email" placeholder="Email" required>
+                    <input type="text" placeholder="Номер замовлення" required>
+                </div>
+                <input type="text" placeholder="Назва товару, який повертаєте" required>
+                <select required>
+                    <option value="">Причина повернення</option>
+                    <option>Не підійшов / передумав</option>
+                    <option>Виробничий брак</option>
+                    <option>Пошкоджено при доставці</option>
+                    <option>Прийшов не той товар</option>
+                    <option>Інше</option>
+                </select>
+                <textarea placeholder="Коментар (опціонально)"></textarea>
+                <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:var(--steel); cursor:pointer">
+                    <input type="checkbox" required> Згоден на обробку персональних даних
+                </label>
+                <button type="submit" class="btn-primary"><i class="fa fa-paper-plane"></i> Надіслати заявку</button>
+            </form>
+            <button type="button" class="return-modal-close" onclick="closeReturnModals()" aria-label="Закрити"><i class="fa fa-times"></i></button>
+        </div>
+    </div>
+
+    <!-- Modal: успішне надсилання -->
+    <div id="returnSuccessModal" class="modal-overlay" onclick="if(event.target===this)closeReturnModals()">
+        <div class="modal-content">
+            <i class="fa fa-check-circle newsletter-check"></i>
+            <h2>Заявку прийнято</h2>
+            <p class="modal-desc">Менеджер зв'яжеться з вами протягом робочого дня для уточнення деталей повернення.</p>
+            <button class="btn-primary btn-full" onclick="closeReturnModals()">Продовжити</button>
+        </div>
     </div>
 
     <div id="footer-placeholder"></div>

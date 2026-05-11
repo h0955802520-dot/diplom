@@ -788,7 +788,7 @@ function renderProductPage() {
             <div class="product-detail-info">
                 <h1>${product.name}</h1>
                 <p class="prod-brand">Бренд: <strong>${brandLabels[product.brand] || '—'}</strong></p>
-                <p class="stock-line ${stockClass}" style="justify-content:flex-start"><i class="fa fa-circle"></i> ${stockLabel}</p>
+                <p class="prod-stock stock-line ${stockClass}"><i class="fa fa-circle"></i> ${stockLabel}</p>
                 <div class="prod-price-block">
                     ${product.oldPrice ? `<span class="old-price">${product.oldPrice} грн</span>` : ''}
                     <span class="prod-price">${product.price} грн</span>
@@ -797,9 +797,9 @@ function renderProductPage() {
                 <div class="prod-qty-row">
                     <label>Кількість:</label>
                     <div class="cart-controls">
-                        <button class="cart-control-btn" onclick="changeProdQty(-1)" aria-label="Зменшити">-</button>
-                        <span class="cart-control-qty" id="prod-qty">1</span>
-                        <button class="cart-control-btn" onclick="changeProdQty(1)" aria-label="Збільшити">+</button>
+                        <button class="cart-control-btn" type="button" onclick="changeProdQty(-1)" aria-label="Зменшити">−</button>
+                        <input type="text" inputmode="numeric" class="cart-control-input" id="prod-qty" value="1" aria-label="Кількість" oninput="sanitizeProdQty(this)" onblur="if(!this.value||parseInt(this.value)<1)this.value=1">
+                        <button class="cart-control-btn" type="button" onclick="changeProdQty(1)" aria-label="Збільшити">+</button>
                     </div>
                 </div>
 
@@ -866,14 +866,21 @@ function renderProductPage() {
 function changeProdQty(delta) {
     const el = document.getElementById('prod-qty');
     if (!el) return;
-    let q = parseInt(el.textContent) + delta;
+    let q = (parseInt(el.value, 10) || 1) + delta;
     if (q < 1) q = 1;
     if (q > 999) q = 999;
-    el.textContent = q;
+    el.value = q;
+}
+
+function sanitizeProdQty(el) {
+    let v = el.value.replace(/[^\d]/g, '');
+    if (v.length > 3) v = v.slice(0, 3);
+    el.value = v;
 }
 
 function addProductToCart(id) {
-    const qty = parseInt(document.getElementById('prod-qty').textContent) || 1;
+    const el = document.getElementById('prod-qty');
+    const qty = Math.max(1, parseInt(el && el.value, 10) || 1);
     addToCart(id, qty);
 }
 
@@ -972,8 +979,20 @@ function calcMaterials() {
 function subscribeNewsletter(event) {
     event.preventDefault();
     const input = event.target.querySelector('input');
-    showToast(`Дякуємо! ${input.value} підписано на новини.`);
+    const email = input.value;
     event.target.reset();
+
+    const modal = document.getElementById('newsletterModal');
+    if (modal) {
+        const emailEl = modal.querySelector('.newsletter-email');
+        if (emailEl) emailEl.textContent = email;
+        modal.style.display = 'flex';
+    }
+}
+
+function closeNewsletterModal() {
+    const modal = document.getElementById('newsletterModal');
+    if (modal) modal.style.display = 'none';
 }
 
 // ============================================
@@ -1064,6 +1083,45 @@ function initScrollTopBtn() {
     scrollTopBtn.addEventListener('click', () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     });
+}
+
+// ============================================
+// COOKIE BANNER
+// ============================================
+function initCookieBanner() {
+    if (localStorage.getItem('budMasterCookiesAccepted') === '1') return;
+
+    const banner = document.createElement('div');
+    banner.id = 'cookieBanner';
+    banner.className = 'cookie-banner';
+    banner.setAttribute('role', 'region');
+    banner.setAttribute('aria-label', 'Повідомлення про файли cookie');
+    banner.innerHTML = `
+        <div class="cookie-banner-inner">
+            <div class="cookie-icon" aria-hidden="true">
+                <i class="fa fa-cookie-bite"></i>
+            </div>
+            <div class="cookie-text">
+                <strong>Ми використовуємо файли cookie</strong>
+                <p>Cookie допомагають нам покращувати роботу сайту, запам'ятовувати ваші вподобання та аналізувати відвідуваність. Продовжуючи користуватися сайтом, ви погоджуєтесь з нашою політикою конфіденційності.</p>
+            </div>
+            <div class="cookie-actions">
+                <button type="button" class="btn-primary" onclick="acceptCookies()">Прийняти всі</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(banner);
+    document.body.classList.add('has-cookie-banner');
+}
+
+function acceptCookies() {
+    localStorage.setItem('budMasterCookiesAccepted', '1');
+    const banner = document.getElementById('cookieBanner');
+    if (banner) {
+        banner.classList.add('hide');
+        setTimeout(() => banner.remove(), 250);
+    }
+    document.body.classList.remove('has-cookie-banner');
 }
 
 // ============================================
@@ -1395,6 +1453,14 @@ function injectFooter() {
             <button class="btn-primary btn-full" onclick="closeModal()">Закрити</button>
         </div>
     </div>
+    <div id="newsletterModal" class="modal-overlay" onclick="if(event.target===this)closeNewsletterModal()">
+        <div class="modal-content">
+            <i class="fa fa-envelope-open-text" style="color: var(--primary);"></i>
+            <h2>Ви підписані!</h2>
+            <p class="modal-desc">Дякуємо! Адресу <strong class="newsletter-email"></strong> додано до розсилки. Найближчим часом ви отримаєте першого листа з добіркою корисних матеріалів.</p>
+            <button class="btn-primary btn-full" onclick="closeNewsletterModal()">Чудово!</button>
+        </div>
+    </div>
     <footer class="site-footer">
         <div class="footer-top">
             <div class="footer-col">
@@ -1446,12 +1512,6 @@ function injectFooter() {
                 <div class="footer-contact-item"><i class="fa fa-phone-alt"></i><a href="tel:+380445551234">+380 (44) 555 12 34</a></div>
                 <div class="footer-contact-item"><i class="fa fa-envelope"></i><a href="mailto:info@budmaster.ua">info@budmaster.ua</a></div>
                 <div class="footer-contact-item"><i class="fa fa-clock"></i><span>Пн-Сб: 8:00-20:00<br>Нд: 9:00-17:00</span></div>
-                <div class="footer-payments">
-                    <span class="pay-icon">VISA</span>
-                    <span class="pay-icon">MasterCard</span>
-                    <span class="pay-icon">Готівка</span>
-                    <span class="pay-icon">Безготівка</span>
-                </div>
             </div>
         </div>
         <div class="footer-bottom">
@@ -1491,4 +1551,5 @@ document.addEventListener('DOMContentLoaded', () => {
     initScrollTopBtn();
     initHeroSlider();
     initEscClose();
+    initCookieBanner();
 });

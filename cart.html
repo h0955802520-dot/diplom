@@ -22,14 +22,10 @@
         <div class="cart-checkout-wrapper">
             <form class="cart-checkout-form" onsubmit="processCheckout(event)">
                 <h3 class="checkout-title">Оформлення замовлення</h3>
-                <div class="form-row" style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
-                    <input type="text" placeholder="Ім'я" required>
-                    <input type="text" placeholder="Прізвище" required>
-                </div>
-                <div class="form-row" style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
-                    <input type="email" placeholder="Email" required>
-                    <input type="tel" id="checkoutPhone" class="phone-mask" placeholder="+380" required>
-                </div>
+                <input type="text" placeholder="Ім'я" required>
+                <input type="text" placeholder="Прізвище" required>
+                <input type="email" placeholder="Email" required>
+                <input type="tel" id="checkoutPhone" class="phone-mask" placeholder="+380" required>
                 <input type="text" placeholder="Місто та відділення Нової Пошти" required>
 
                 <div class="delivery-block">
@@ -58,8 +54,26 @@
                     </div>
                 </div>
 
+                <div class="payment-block">
+                    <h4><i class="fa fa-credit-card"></i> Спосіб оплати</h4>
+                    <div class="payment-options">
+                        <label>
+                            <input type="radio" name="payment" value="cash" checked>
+                            <span><i class="fa fa-money-bill-wave"></i> Готівка при отриманні</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="payment" value="card">
+                            <span><i class="fa fa-credit-card"></i> Картка (Visa / MasterCard)</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="payment" value="cashless">
+                            <span><i class="fa fa-file-invoice"></i> Безготівковий розрахунок</span>
+                        </label>
+                    </div>
+                </div>
+
                 <div class="promo-row">
-                    <input type="text" id="promo-input" placeholder="Промокод (BUD10, NEW2026...)">
+                    <input type="text" id="promo-input" placeholder="Промокод">
                     <button type="button" onclick="applyPromo()">Застосувати</button>
                 </div>
                 <div id="promo-status"></div>

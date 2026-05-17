@@ -21,11 +21,17 @@
 - localStorage для кошика, обраного, нещодавно переглянутих
 - Зображення товарів — Unsplash CDN
 
-### Запланований бек (обговорюється)
-- **Варіант A:** Django + Django REST Framework + PostgreSQL (плюс — готова адмінка)
-- **Варіант B:** Laravel + Filament + PostgreSQL (якщо обираємо PHP)
-- Аутентифікація: session cookies
-- ORM + міграції
+### Бекенд (Python)
+- **Python 3.12** — мова розробки бекенду
+- **Django 5.x** — основний фреймворк (ORM, міграції, вбудована адмінка)
+- **Django REST Framework (DRF)** — побудова REST API
+- **PostgreSQL** — реляційна база даних
+- **Simple JWT** — аутентифікація через JWT-токени
+- **django-cors-headers** — CORS для зв'язку фронту та API
+- **Pillow** — обробка зображень товарів
+- **python-dotenv** — управління змінними середовища
+- **gunicorn** — WSGI-сервер для продакшену
+- **Docker + Docker Compose** — контейнеризація для локального запуску та деплою
 
 ### Деплой (запланований)
 - **Фронт** → Vercel

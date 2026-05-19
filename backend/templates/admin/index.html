@@ -91,51 +91,59 @@
 (function() {
   const ctx = document.getElementById('revenueChart');
   if (!ctx) return;
-  const isDark = document.documentElement.classList.contains('dark');
-  new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: {{ revenue_chart.labels|safe }},
-      datasets: [{
-        label: 'Виручка, грн',
-        data: {{ revenue_chart.data|safe }},
-        borderColor: '#f59e0b',
-        backgroundColor: 'rgba(245, 158, 11, 0.15)',
-        borderWidth: 2.5,
-        tension: 0.3,
-        fill: true,
-        pointBackgroundColor: '#f59e0b',
-        pointRadius: 4,
-        pointHoverRadius: 6,
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          callbacks: {
-            label: function(ctx) { return ctx.parsed.y.toLocaleString('uk-UA') + ' грн'; }
+  let chart;
+  function buildChart() {
+    const isDark = document.documentElement.classList.contains('dark');
+    if (chart) chart.destroy();
+    chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: {{ revenue_chart.labels|safe }},
+        datasets: [{
+          label: 'Виручка, грн',
+          data: {{ revenue_chart.data|safe }},
+          borderColor: '#f59e0b',
+          backgroundColor: 'rgba(245, 158, 11, 0.15)',
+          borderWidth: 2.5,
+          tension: 0.3,
+          fill: true,
+          pointBackgroundColor: '#f59e0b',
+          pointRadius: 4,
+          pointHoverRadius: 6,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function(c) { return c.parsed.y.toLocaleString('uk-UA') + ' грн'; }
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              color: isDark ? '#cbd5e1' : '#64748b',
+              callback: function(v) { return v.toLocaleString('uk-UA') + ' грн'; }
+            },
+            grid: { color: isDark ? '#334155' : '#e2e8f0' }
+          },
+          x: {
+            ticks: { color: isDark ? '#cbd5e1' : '#64748b' },
+            grid: { display: false }
           }
         }
-      },
-      scales: {
-        y: {
-          beginAtZero: true,
-          ticks: {
-            color: isDark ? '#cbd5e1' : '#64748b',
-            callback: function(v) { return v.toLocaleString('uk-UA') + ' грн'; }
-          },
-          grid: { color: isDark ? '#334155' : '#e2e8f0' }
-        },
-        x: {
-          ticks: { color: isDark ? '#cbd5e1' : '#64748b' },
-          grid: { display: false }
-        }
       }
-    }
-  });
+    });
+  }
+  buildChart();
+  // Перебудовуємо графік при зміні теми (наш кастомний event + спостерігач за класом)
+  window.addEventListener('budmaster:theme', buildChart);
+  new MutationObserver(buildChart).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 })();
 </script>
 {% endblock %}

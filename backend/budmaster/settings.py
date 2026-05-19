@@ -189,6 +189,8 @@ UNFOLD = {
     "SHOW_VIEW_ON_SITE": True,
     "SHOW_BACK_BUTTON": True,
     "THEME": None,  # None = користувач може перемикати dark/light
+    "STYLES": [],
+    "SCRIPTS": [lambda request: "/static/admin/budmaster-admin.js"],
     "COLORS": {
         # primary — амбер (як --primary на фронті)
         "primary": {

@@ -87,6 +87,27 @@ class Command(BaseCommand):
             BlogPost.objects.all().delete()
             PromoCode.objects.all().delete()
 
+        # --- автоматично створюємо дефолтного адміна (admin/admin12345) ---
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        admin, created = User.objects.get_or_create(
+            username="admin",
+            defaults={
+                "email": "admin@budmaster.local",
+                "is_staff": True,
+                "is_superuser": True,
+                "first_name": "Адмін",
+            },
+        )
+        if created:
+            admin.set_password("admin12345")
+            admin.save()
+            self.stdout.write(self.style.SUCCESS(
+                "Створено адміна: admin / admin12345 → /admin/ або login з головної."
+            ))
+        else:
+            self.stdout.write("Адмін 'admin' вже існує — пароль не змінено.")
+
         products_data = json.loads(products_file.read_text(encoding="utf-8"))
         blog_data = json.loads(blog_file.read_text(encoding="utf-8"))
         self.stdout.write(f"Завантажено: {len(products_data)} товарів, {len(blog_data)} постів")

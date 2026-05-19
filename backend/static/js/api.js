@@ -120,11 +120,73 @@ window.BudMasterAPI = (() => {
         });
     }
 
+    // ---- auth -----------------------------------------------------------
+    const TOKEN_KEY = 'budMasterAccessToken';
+    const REFRESH_KEY = 'budMasterRefreshToken';
+    const USER_KEY = 'budMasterUser';
+
+    function getAccessToken() { return localStorage.getItem(TOKEN_KEY); }
+    function getUser() {
+        try { return JSON.parse(localStorage.getItem(USER_KEY)); } catch { return null; }
+    }
+    function isAuthenticated() { return !!getAccessToken(); }
+    function isStaff() {
+        const u = getUser();
+        return !!(u && (u.is_staff || u.is_superuser));
+    }
+
+    function _storeAuth(data) {
+        if (data.access) localStorage.setItem(TOKEN_KEY, data.access);
+        if (data.refresh) localStorage.setItem(REFRESH_KEY, data.refresh);
+        if (data.user) localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+    }
+
+    function _clearAuth() {
+        localStorage.removeItem(TOKEN_KEY);
+        localStorage.removeItem(REFRESH_KEY);
+        localStorage.removeItem(USER_KEY);
+    }
+
+    async function login(credentials) {
+        // credentials: { username, password }  (username = email/phone/login)
+        const data = await request('/auth/login/', {
+            method: 'POST',
+            credentials: 'include',   // дозволяємо cookie для Django session
+            body: JSON.stringify(credentials),
+        });
+        _storeAuth(data);
+        return data;
+    }
+
+    async function register(payload) {
+        const data = await request('/auth/register/', {
+            method: 'POST',
+            credentials: 'include',
+            body: JSON.stringify(payload),
+        });
+        _storeAuth(data);
+        return data;
+    }
+
+    async function logout() {
+        try {
+            await request('/auth/logout/', { method: 'POST', credentials: 'include' });
+        } catch (_) { /* ignore */ }
+        _clearAuth();
+    }
+
     return {
         BASE,
         fetchAllProducts,
         fetchProduct,
         fetchAllBlogPosts,
         validatePromo,
+        login,
+        register,
+        logout,
+        getAccessToken,
+        getUser,
+        isAuthenticated,
+        isStaff,
     };
 })();

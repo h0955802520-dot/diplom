@@ -336,6 +336,68 @@ button { font-family: inherit; }
     color: var(--dark);
 }
 
+/* Стан користувача у шапці (.hdr-user-state) — або кнопка входу, або ім'я+вихід */
+.hdr-user-state {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.hdr-user-state.authenticated {
+    background: rgba(245, 158, 11, 0.12);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    border-radius: var(--radius-md, 6px);
+    padding: 4px 10px;
+}
+
+.hdr-user-name {
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.hdr-user-name i { color: var(--primary); margin-right: 6px; }
+
+.hdr-user-admin, .hdr-user-logout {
+    color: white;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 4px 6px;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+}
+
+.hdr-user-admin:hover, .hdr-user-logout:hover {
+    color: var(--primary);
+    background: rgba(255,255,255,0.08);
+}
+
+@media (max-width: 768px) {
+    .hdr-user-state.authenticated {
+        padding: 3px 8px;
+        gap: 4px;
+    }
+    .hdr-user-name {
+        max-width: 70px;
+        font-size: 12px;
+    }
+    .hdr-user-name i { display: none; }
+}
+
+@media (max-width: 480px) {
+    .hdr-user-name { display: none; }
+    .hdr-user-state.authenticated { background: none; border: none; padding: 0; }
+}
+
 .hdr-mobile-nav-toggle {
     display: none;
     background: none;

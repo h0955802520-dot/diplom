@@ -434,18 +434,35 @@ function hideAuthError(boxId) {
     if (box) box.style.display = 'none';
 }
 
-function submitLogin() {
+async function submitLogin() {
     hideAuthError('login-error');
+    const btn = document.querySelector('#auth-login .auth-submit');
     const id = document.getElementById('login-email').value.trim();
     const pass = document.getElementById('login-pass').value;
     if (!id) { showAuthError('login-error', 'Вкажіть email або номер телефону'); return; }
     if (!pass || pass.length < 4) { showAuthError('login-error', 'Введіть пароль (мін. 4 символи)'); return; }
-    // Заглушка — успіх
-    showSuccessAuth('Вхід виконано! Кабінет буде доступний у повній версії.');
+
+    if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Вхід...'; }
+    try {
+        const data = await BudMasterAPI.login({ username: id, password: pass });
+        // Якщо staff/superuser — одразу в адмінку
+        if (data.user && (data.user.is_staff || data.user.is_superuser)) {
+            window.location.href = '/admin/';
+            return;
+        }
+        // Звичайний користувач: оновлюємо UI, поки кабінет не зроблений
+        updateUserHeader();
+        showSuccessAuth(`Вітаємо, ${data.user.first_name || data.user.username}! Кабінет з'явиться найближчим часом.`);
+    } catch (err) {
+        showAuthError('login-error', err.message || 'Помилка входу');
+    } finally {
+        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa fa-sign-in-alt"></i> Увійти'; }
+    }
 }
 
-function submitRegister() {
+async function submitRegister() {
     hideAuthError('reg-error');
+    const btn = document.querySelector('#auth-register .auth-submit');
     const name = document.getElementById('reg-name').value.trim();
     const isPhone = document.getElementById('seg-phone').classList.contains('active');
     const email = document.getElementById('reg-email').value.trim();
@@ -464,7 +481,65 @@ function submitRegister() {
     if (pass !== pass2) { showAuthError('reg-error', 'Паролі не співпадають'); return; }
     if (!agree) { showAuthError('reg-error', 'Підтвердіть згоду з умовами використання'); return; }
 
-    showSuccessAuth();
+    if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Створюємо...'; }
+    try {
+        const data = await BudMasterAPI.register({
+            name: name,
+            email: isPhone ? '' : email,
+            phone: isPhone ? phone : '',
+            password: pass,
+        });
+        // Тільки що зареєстрований — точно не staff. Оновлюємо хедер.
+        updateUserHeader();
+        showSuccessAuth(`Вітаємо, ${data.user.first_name || name}! Реєстрація успішна.`);
+    } catch (err) {
+        let msg = err.message || 'Помилка реєстрації';
+        // DRF може віддати помилки полями
+        if (err.body && typeof err.body === 'object') {
+            const parts = [];
+            for (const [k, v] of Object.entries(err.body)) {
+                parts.push(`${k}: ${Array.isArray(v) ? v.join(', ') : v}`);
+            }
+            if (parts.length) msg = parts.join(' · ');
+        }
+        showAuthError('reg-error', msg);
+    } finally {
+        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa fa-user-plus"></i> Зареєструватись'; }
+    }
+}
+
+// ============================================
+// UI: показ юзера в шапці + logout
+// ============================================
+function updateUserHeader() {
+    document.querySelectorAll('.hdr-user-state').forEach(el => {
+        const user = BudMasterAPI.getUser();
+        if (user) {
+            const label = user.first_name || user.username || 'Кабінет';
+            const adminLink = (user.is_staff || user.is_superuser)
+                ? `<a href="/admin/" class="hdr-user-admin" title="Адмінка"><i class="fa fa-cog"></i></a>`
+                : '';
+            el.innerHTML = `
+                <span class="hdr-user-name"><i class="fa fa-user-check"></i> ${label}</span>
+                ${adminLink}
+                <button class="hdr-user-logout" onclick="logoutUser()" title="Вийти"><i class="fa fa-sign-out-alt"></i></button>
+            `;
+            el.classList.add('authenticated');
+        } else {
+            el.innerHTML = `
+                <button class="hdr-icon" onclick="openAuthModal('login')" title="Особистий кабінет" aria-label="Вхід">
+                    <i class="fa fa-user"></i>
+                </button>
+            `;
+            el.classList.remove('authenticated');
+        }
+    });
+}
+
+async function logoutUser() {
+    await BudMasterAPI.logout();
+    updateUserHeader();
+    showToast('Ви вийшли з акаунту');
 }
 
 function showSuccessAuth(text) {
@@ -1164,9 +1239,11 @@ function injectHeader() {
                 <button type="submit" aria-label="Пошук"><i class="fa fa-search"></i></button>
             </form>
             <div class="hdr-actions">
-                <button class="hdr-icon" onclick="openAuthModal('login')" title="Особистий кабінет" aria-label="Вхід">
-                    <i class="fa fa-user"></i>
-                </button>
+                <div class="hdr-user-state">
+                    <button class="hdr-icon" onclick="openAuthModal('login')" title="Особистий кабінет" aria-label="Вхід">
+                        <i class="fa fa-user"></i>
+                    </button>
+                </div>
                 <a href="shop.html?wish=1" class="hdr-icon wishlist-header" title="Обране" data-mobile-hide>
                     <i class="fa fa-heart"></i>
                     <span class="wishlist-count">0</span>
@@ -1478,9 +1555,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     injectHeader();
     injectFooter();
 
-    // 2. Базова ініціалізація стану (бейджі кошика та обраного)
+    // 2. Базова ініціалізація стану (бейджі кошика, обраного, юзер у шапці)
     updateCartBadge();
     updateWishlistBadge();
+    updateUserHeader();
 
     // 3. UI-helpers (працюють для всіх сторінок, не залежать від даних)
     initLiveSearch();

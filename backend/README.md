@@ -1,6 +1,8 @@
-# БудМайстер — Backend (Django + DRF)
+# БудМайстер — інтегрований Django-проєкт
 
-REST API для інтернет-магазину будівельних матеріалів. Стек: **Python 3.12 + Django 5 + DRF + PostgreSQL + Simple JWT**.
+Інтернет-магазин будівельних матеріалів. **Один Django-процес подає і фронт, і REST API** — підходить для звичайного хостингу (VPS / shared hosting з Python).
+
+Стек: **Python 3.12 + Django 5 + DRF + PostgreSQL + Simple JWT + WhiteNoise**.
 
 ---
 
@@ -8,19 +10,29 @@ REST API для інтернет-магазину будівельних мат�
 
 ```
 backend/
-├── budmaster/          # Django project (settings, urls, wsgi)
+├── budmaster/                  # Django project (settings, urls, wsgi)
 ├── apps/
-│   ├── accounts/       # кастомний User + JWT-аутентифікація
-│   ├── catalog/        # товари, категорії, бренди, типи, відгуки
-│   ├── cart/           # кошик + обране (wishlist)
-│   ├── orders/         # замовлення, промокоди
-│   └── blog/           # статті, категорії блогу
+│   ├── accounts/               # кастомний User + JWT
+│   ├── catalog/                # товари, категорії, бренди, типи, відгуки
+│   ├── cart/                   # кошик + обране
+│   ├── orders/                 # замовлення, промокоди
+│   └── blog/                   # статті, категорії блогу
+├── templates/
+│   └── pages/                  # HTML-сторінки фронту (index, shop, …)
+├── static/
+│   ├── css/style.css
+│   ├── js/api.js, js.js
+│   ├── img/, vendor/
+├── staticfiles/                # збирається через collectstatic (gitignored)
+├── media/                      # завантажені файли (gitignored)
 ├── Dockerfile
-├── docker-compose.yml  # backend + Postgres
+├── docker-compose.yml          # web (Django+gunicorn) + db (Postgres)
 ├── requirements.txt
 ├── .env.example
 └── manage.py
 ```
+
+URL-схема: `/` → `index.html`, `/shop.html` → каталог, `/api/...` → REST, `/admin/` → Django Admin, `/static/...` → CSS/JS/img.
 
 ---
 
@@ -31,75 +43,97 @@ backend/
 ```bash
 cd backend
 
-# 1. Створити venv та поставити залежності
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 
-# 2. (опційно) .env — для SQLite можна не створювати, дефолти підійдуть
-cp .env.example .env
-
-# 3. Міграції
+cp .env.example .env             # опційно
 python manage.py migrate
-
-# 4. Сидинг — заливає 100 товарів, 6 постів, 3 промокоди з js/js.js
-python manage.py seed_data
-
-# 5. Суперюзер для адмінки
+python manage.py seed_data       # 100 товарів, 6 постів, 3 промокоди
 python manage.py createsuperuser
 
-# 6. Запуск
 python manage.py runserver 8001
 ```
 
-Адмінка: <http://127.0.0.1:8001/admin/>
-Health: <http://127.0.0.1:8001/api/health/>
+Відкрити:
+- Сайт: <http://127.0.0.1:8001/>
+- Каталог: <http://127.0.0.1:8001/shop.html>
+- Адмінка: <http://127.0.0.1:8001/admin/>
+- API: <http://127.0.0.1:8001/api/health/>
 
 ### Варіант 2. PostgreSQL через Docker Compose
 
 ```bash
 cd backend
-cp .env.example .env   # за бажанням підправити SECRET_KEY, CORS
+cp .env.example .env
 docker compose up --build
 ```
 
-- Postgres підніметься на `localhost:5432`
-- API — на `http://localhost:8001`
-- При першому старті `Dockerfile` автоматично виконає `migrate` і `seed_data`
-
-Створити суперюзера в контейнері:
+- API + фронт → <http://localhost:8000>
+- Postgres → `localhost:5432`
+- При першому старті: `collectstatic` під час build, потім `migrate` + `seed_data` + `gunicorn`
 
 ```bash
-docker compose exec backend python manage.py createsuperuser
+docker compose exec web python manage.py createsuperuser
+docker compose down              # зберегти дані
+docker compose down -v           # знести Postgres-том теж
 ```
 
-Зупинити:
+---
 
-```bash
-docker compose down            # зберегти дані
-docker compose down -v         # знести й Postgres-том теж
-```
+## Production deploy
+
+### На VPS з nginx + systemd (типовий звичайний хостинг)
+
+1. `git clone … && cd diplom/backend`
+2. `python3 -m venv .venv && .venv/bin/pip install -r requirements.txt`
+3. У `.env` виставити:
+   ```
+   DJANGO_SECRET_KEY=<довгий випадковий рядок>
+   DJANGO_DEBUG=False
+   DJANGO_ALLOWED_HOSTS=budmaster.example.com
+   DATABASE_URL=postgres://user:pass@localhost/budmaster
+   ```
+4. `.venv/bin/python manage.py migrate && seed_data && collectstatic --noinput`
+5. systemd unit для gunicorn:
+   ```
+   ExecStart=/opt/budmaster/.venv/bin/gunicorn budmaster.wsgi:application \
+            --bind unix:/run/budmaster.sock --workers 3
+   ```
+6. nginx як reverse-proxy:
+   ```nginx
+   server {
+       listen 80;
+       server_name budmaster.example.com;
+
+       location /static/ { alias /opt/budmaster/backend/staticfiles/; }
+       location /media/  { alias /opt/budmaster/backend/media/; }
+       location / {
+           proxy_pass http://unix:/run/budmaster.sock;
+           proxy_set_header Host $host;
+           proxy_set_header X-Forwarded-For $remote_addr;
+           proxy_set_header X-Forwarded-Proto $scheme;
+       }
+   }
+   ```
+
+WhiteNoise теж може роздавати статику без nginx — для маленьких проектів цього досить.
+
+### На shared hosting з cPanel/Passenger
+
+Завантажити репозиторій, в Passenger вказати `budmaster/wsgi.py` як WSGI-application, прокинути env-змінні, запустити `python manage.py migrate && collectstatic`.
 
 ---
 
 ## Корисні команди
 
 ```bash
-# Перегенерувати міграції після правки моделей
 python manage.py makemigrations
 python manage.py migrate
-
-# Перезалити дані з js.js (idempotent, оновлює існуючі)
-python manage.py seed_data
-
-# Жорстке перезаливання (видалить товари/блог/промокоди)
-python manage.py seed_data --flush
-
-# Django shell
+python manage.py seed_data            # idempotent
+python manage.py seed_data --flush    # жорстке перезаливання
+python manage.py collectstatic        # перед деплоєм
 python manage.py shell
-
-# Запустити тести (коли з’являться)
-python manage.py test
 ```
 
 ---
@@ -111,52 +145,35 @@ python manage.py test
 ### Auth (`/api/auth/`)
 | Метод | URL | Опис |
 |-------|-----|------|
-| POST  | `register/`  | Реєстрація (username, email, password) |
+| POST  | `register/`  | Реєстрація |
 | POST  | `login/`     | JWT login → `{ access, refresh }` |
 | POST  | `refresh/`   | Оновлення access-токена |
-| GET / PATCH | `me/`  | Профіль поточного юзера (потрібен Bearer) |
+| GET / PATCH | `me/`  | Профіль (Bearer) |
 
 ### Каталог (`/api/catalog/`)
-| URL | Опис |
-|-----|------|
-| `products/`                | Список товарів (фільтри: `type`, `category`, `brand`, `age`, `price_min`, `price_max`, `promo`, `popular`, `is_new`, `in_stock`; `search=`, `ordering=`, `page=`) |
-| `products/<slug>/`         | Деталі товару |
-| `products/<slug>/similar/` | До 4 схожих товарів того ж типу |
-| `products/<slug>/reviews/` | GET/POST відгуків (POST потребує auth) |
-| `categories/`              | construction / finishing |
-| `types/`                   | cement, brick, tool, paint, metal, electric, finishing |
-| `brands/`                  | Knauf, Bosch, Makita … |
-| `reviews/`                 | CRUD відгуків |
+- `products/` — фільтри: `type`, `category`, `brand`, `age`, `price_min`, `price_max`, `promo`, `popular`, `is_new`, `in_stock`; `search=`, `ordering=`, `page=`
+- `products/<slug>/` — деталі
+- `products/<slug>/similar/` — схожі
+- `products/<slug>/reviews/` — GET/POST відгуків
+- `categories/`, `types/`, `brands/`, `reviews/`
 
 ### Кошик (`/api/cart/`)
-| Метод | URL | Опис |
-|-------|-----|------|
-| GET    | `/`             | Поточний кошик |
-| POST   | `/`             | Додати: `{ product_id, quantity }` |
-| DELETE | `/`             | Очистити кошик |
-| PATCH  | `/items/<id>/`  | Змінити кількість (0 → видалення) |
-| DELETE | `/items/<id>/`  | Видалити позицію |
-| GET    | `/wishlist/`    | Список обраного |
-| POST   | `/wishlist/toggle/` | Перемкнути обране для `product_id` |
+- GET / POST / DELETE на `/` — отримати / додати / очистити
+- PATCH / DELETE на `/items/<id>/`
+- `/wishlist/` — CRUD обраного
+- `/wishlist/toggle/` — `{ product_id }`
 
 ### Замовлення (`/api/orders/`)
-| Метод | URL | Опис |
-|-------|-----|------|
-| POST | `/`              | Створити замовлення (із кошика або переданого `items[]`) |
-| GET  | `/`              | Список своїх замовлень (auth) |
-| GET  | `/<id>/`         | Деталі замовлення |
-| POST | `/promo/check/`  | Перевірити промокод: `{ code, subtotal }` |
+- POST `/` — створити (з кошика або переданого `items[]`)
+- GET `/` та `/<id>/`
+- POST `/promo/check/` — `{ code, subtotal }`
 
 ### Блог (`/api/blog/`)
-| URL | Опис |
-|-----|------|
-| `posts/`         | Список статей (фільтр `category__slug=`) |
-| `posts/<slug>/`  | Стаття |
-| `categories/`    | Категорії блогу |
+- `posts/`, `posts/<slug>/`, `categories/`
 
 ---
 
-## Промокоди (засіяні з фронту)
+## Промокоди (засіяні)
 
 | Код      | Знижка       | Мін. замовлення |
 |----------|--------------|-----------------|
@@ -166,53 +183,40 @@ python manage.py test
 
 ---
 
-## Швидкий тест API
+## Швидкий тест
 
 ```bash
-# health
 curl http://127.0.0.1:8001/api/health/
-
-# каталог
 curl "http://127.0.0.1:8001/api/catalog/products/?type=cement&promo=true&page_size=5"
-
-# реєстрація + логін
-curl -X POST http://127.0.0.1:8001/api/auth/register/ \
-  -H "Content-Type: application/json" \
-  -d '{"username":"ivan","email":"i@i.com","password":"Pa$$word2026!"}'
 
 TOKEN=$(curl -s -X POST http://127.0.0.1:8001/api/auth/login/ \
   -H "Content-Type: application/json" \
-  -d '{"username":"ivan","password":"Pa$$word2026!"}' \
+  -d '{"username":"<u>","password":"<p>"}' \
   | python3 -c "import json,sys;print(json.load(sys.stdin)['access'])")
 
-# додати в кошик
 curl -X POST http://127.0.0.1:8001/api/cart/ \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" -H "Authorization: Bearer $TOKEN" \
   -d '{"product_id":1,"quantity":2}'
-
-# промокод
-curl -X POST http://127.0.0.1:8001/api/orders/promo/check/ \
-  -H "Content-Type: application/json" \
-  -d '{"code":"BUD10","subtotal":1000}'
 ```
 
 ---
 
-## CORS
+## Як це працює
 
-За замовчуванням дозволені origin'и (з `.env.example`):
-- `http://localhost:8000`, `http://127.0.0.1:8000` (фронт через `python3 -m http.server 8000`)
-- `http://localhost:5500`, `http://127.0.0.1:5500` (Live Server у VSCode)
+1. Користувач відкриває `/shop.html` → Django повертає `templates/pages/shop.html`.
+2. У HTML підключені `/static/js/api.js` і `/static/js/js.js`.
+3. `js.js` у `DOMContentLoaded` викликає `BudMasterAPI.fetchAllProducts()` → `fetch('/api/catalog/products/')`.
+4. Бек повертає JSON, фронт рендерить.
+5. CORS НЕ потрібен — один origin.
 
-Змінити — у `.env` через `CORS_ALLOWED_ORIGINS`.
+Якщо API недоступне, фронт показує червоний банер «Не вдалося завантажити дані з сервера» з кнопкою Повторити.
 
 ---
 
-## Що далі
+## Що далі (планується)
 
-- [ ] Уточнити модель замовлення під формат checkout (адреси, отримувач)
-- [ ] Тести (pytest або стандартний `manage.py test`)
-- [ ] Інтеграція фронту: замінити `productsData` у `js/js.js` на `fetch('/api/catalog/products/')`
-- [ ] CI (GitHub Actions)
-- [ ] Деплой бека на Railway/Render
+- [ ] Кастомна адмін-панель у стилі сайту (товари, заказы, промокоди, статистика, повернення, форми, блог із текстовим редактором, користувачі з категоріями regular/wholesale/partner)
+- [ ] Особистий кабінет користувача (профіль, історія замовлень, обране, адреси)
+- [ ] Реальна auth-модалка на фронті з мерджем гостьового кошика
+- [ ] Кастомні ціни для wholesale/partner
+- [ ] Тести

@@ -1,18 +1,19 @@
 /* ===========================================================================
  * БУДМАЙСТЕР — API client
  * ---------------------------------------------------------------------------
- * Обгортка над REST-бекендом (Django + DRF) на localhost:8001/api.
- * Перетворює серверні поля у формат, який очікує фронт (legacy_id → id,
- * old_price → oldPrice, is_new → isNew). Всі цифри парсяться в Number.
+ * Обгортка над REST-бекендом (Django + DRF). Бек і фронт працюють на одному
+ * домені, тому базовий URL — відносний /api. Перетворює серверні поля у
+ * формат, який очікує фронт (legacy_id → id, old_price → oldPrice,
+ * is_new → isNew). Всі цифри парсяться в Number.
  *
  * Глобальний об’єкт `BudMasterAPI` доступний у всіх скриптах сторінки;
  * api.js підключається ПЕРЕД js.js і checkout-інлайнами.
  *
  * Базову адресу можна перевизначити до завантаження api.js:
- *     <script>window.BUDMASTER_API_BASE = '/api';</script>
+ *     <script>window.BUDMASTER_API_BASE = 'https://api.example.com/api';</script>
  * =========================================================================== */
 window.BudMasterAPI = (() => {
-    const BASE = window.BUDMASTER_API_BASE || 'http://localhost:8001/api';
+    const BASE = window.BUDMASTER_API_BASE || '/api';
 
     // ---- мапери "бек → фронт" -----------------------------------------------
     function mapProduct(p) {
@@ -49,8 +50,16 @@ window.BudMasterAPI = (() => {
     }
 
     // ---- низькорівневий fetch з обробкою помилок ----------------------------
+    /** Якщо path абсолютний (http…) або вже містить BASE — використовуємо як є,
+     *  інакше додаємо префікс BASE. Це підтримує і пагінаційний `next` від DRF
+     *  (абсолютний URL), і відносні шляхи на кшталт `/catalog/products/`. */
     async function request(path, opts = {}) {
-        const url = path.startsWith('http') ? path : `${BASE}${path}`;
+        let url;
+        if (path.startsWith('http') || path.startsWith(BASE + '/') || path === BASE) {
+            url = path;
+        } else {
+            url = `${BASE}${path.startsWith('/') ? '' : '/'}${path}`;
+        }
         const r = await fetch(url, {
             headers: { 'Content-Type': 'application/json', ...(opts.headers || {}) },
             ...opts,

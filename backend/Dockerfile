@@ -17,6 +17,9 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 
 COPY . /app/
 
+# Збираємо статику в /app/staticfiles (whitenoise роздаватиме її в проді)
+RUN DJANGO_SECRET_KEY=build DJANGO_DEBUG=False python manage.py collectstatic --noinput
+
 EXPOSE 8000
 
 CMD ["sh", "-c", "python manage.py migrate --noinput && python manage.py seed_data && gunicorn budmaster.wsgi:application --bind 0.0.0.0:8000 --workers 3"]

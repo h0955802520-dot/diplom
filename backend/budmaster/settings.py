@@ -34,6 +34,13 @@ ALLOWED_HOSTS = env_list("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1")
 
 
 INSTALLED_APPS = [
+    # Unfold (modern admin theme) — має йти ПЕРЕД django.contrib.admin
+    "unfold",
+    "unfold.contrib.filters",
+    "unfold.contrib.forms",
+    "unfold.contrib.inlines",
+    "unfold.contrib.import_export",
+
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -46,6 +53,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "corsheaders",
     "django_filters",
+    "django_ckeditor_5",
 
     # local
     "apps.accounts",
@@ -53,6 +61,7 @@ INSTALLED_APPS = [
     "apps.cart",
     "apps.orders",
     "apps.blog",
+    "apps.submissions",
 ]
 
 MIDDLEWARE = [
@@ -102,6 +111,8 @@ else:
 
 
 AUTH_USER_MODEL = "accounts.User"
+LOGIN_REDIRECT_URL = "/admin/"
+LOGIN_URL = "/admin/login/"
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
@@ -165,3 +176,141 @@ SIMPLE_JWT = {
 # окремий піддомен для API. Залишаємо налаштування для гнучкості.
 CORS_ALLOWED_ORIGINS = env_list("CORS_ALLOWED_ORIGINS", "")
 CORS_ALLOW_CREDENTIALS = True
+
+
+# ===== django-unfold (admin theme) =====
+# Палітра збігається з фронтом: амбер #f59e0b + темна сталь #1e293b
+UNFOLD = {
+    "SITE_TITLE": "БудМайстер — Адмін",
+    "SITE_HEADER": "БудМайстер",
+    "SITE_SUBHEADER": "Панель адміністратора",
+    "SITE_URL": "/",
+    "SHOW_HISTORY": True,
+    "SHOW_VIEW_ON_SITE": True,
+    "SHOW_BACK_BUTTON": True,
+    "THEME": None,  # None = користувач може перемикати dark/light
+    "COLORS": {
+        # primary — амбер (як --primary на фронті)
+        "primary": {
+            "50":  "255 251 235",
+            "100": "254 243 199",
+            "200": "253 230 138",
+            "300": "252 211 77",
+            "400": "251 191 36",
+            "500": "245 158 11",
+            "600": "217 119 6",
+            "700": "180 83 9",
+            "800": "146 64 14",
+            "900": "120 53 15",
+            "950": "69 26 3",
+        },
+        "font": {
+            "subtle-light": "var(--color-base-500)",
+            "subtle-dark": "var(--color-base-400)",
+            "default-light": "var(--color-base-600)",
+            "default-dark": "var(--color-base-300)",
+            "important-light": "var(--color-base-900)",
+            "important-dark": "var(--color-base-100)",
+        },
+    },
+    "SIDEBAR": {
+        "show_search": True,
+        "show_all_applications": True,
+        "navigation": [
+            {
+                "title": "Огляд",
+                "separator": True,
+                "items": [
+                    {
+                        "title": "Дашборд",
+                        "icon": "dashboard",
+                        "link": "/admin/",
+                    },
+                ],
+            },
+            {
+                "title": "Магазин",
+                "separator": True,
+                "items": [
+                    {"title": "Товари", "icon": "inventory_2", "link": "/admin/catalog/product/"},
+                    {"title": "Категорії", "icon": "category", "link": "/admin/catalog/category/"},
+                    {"title": "Типи товарів", "icon": "label", "link": "/admin/catalog/producttype/"},
+                    {"title": "Бренди", "icon": "verified", "link": "/admin/catalog/brand/"},
+                    {"title": "Відгуки", "icon": "rate_review", "link": "/admin/catalog/review/"},
+                ],
+            },
+            {
+                "title": "Продажі",
+                "separator": True,
+                "items": [
+                    {"title": "Замовлення", "icon": "receipt_long", "link": "/admin/orders/order/"},
+                    {"title": "Повернення", "icon": "assignment_return", "link": "/admin/orders/returnrequest/"},
+                    {"title": "Промокоди", "icon": "sell", "link": "/admin/orders/promocode/"},
+                ],
+            },
+            {
+                "title": "Контент",
+                "separator": True,
+                "items": [
+                    {"title": "Статті блогу", "icon": "article", "link": "/admin/blog/blogpost/"},
+                    {"title": "Категорії блогу", "icon": "folder", "link": "/admin/blog/blogcategory/"},
+                ],
+            },
+            {
+                "title": "Заявки",
+                "separator": True,
+                "items": [
+                    {"title": "Контактні форми", "icon": "contact_mail", "link": "/admin/submissions/contactsubmission/"},
+                    {"title": "Підписки на розсилку", "icon": "mail", "link": "/admin/submissions/newslettersubscription/"},
+                ],
+            },
+            {
+                "title": "Користувачі",
+                "separator": True,
+                "items": [
+                    {"title": "Клієнти", "icon": "group", "link": "/admin/accounts/user/"},
+                ],
+            },
+        ],
+    },
+    "DASHBOARD_CALLBACK": "apps.accounts.dashboard.dashboard_callback",
+}
+
+
+# ===== django-ckeditor-5 (rich text editor for blog) =====
+CKEDITOR_5_CONFIGS = {
+    "default": {
+        "toolbar": [
+            "heading", "|",
+            "bold", "italic", "link", "bulletedList", "numberedList", "|",
+            "blockQuote", "imageUpload", "|",
+            "undo", "redo",
+        ],
+    },
+    "blog": {
+        "blockToolbar": ["paragraph", "heading1", "heading2", "heading3", "|", "bulletedList", "numberedList", "|", "blockQuote"],
+        "toolbar": [
+            "heading", "|",
+            "outdent", "indent", "|",
+            "bold", "italic", "link", "underline", "strikethrough", "highlight", "|",
+            "bulletedList", "numberedList", "todoList", "|",
+            "code", "blockQuote", "codeBlock", "|",
+            "imageUpload", "insertImage", "mediaEmbed", "|",
+            "alignment", "|",
+            "horizontalLine", "removeFormat", "|",
+            "undo", "redo",
+        ],
+        "image": {
+            "toolbar": ["imageTextAlternative", "imageStyle:alignLeft", "imageStyle:alignRight", "imageStyle:alignCenter", "imageStyle:side"],
+            "styles": ["full", "side", "alignLeft", "alignRight", "alignCenter"],
+        },
+        "heading": {
+            "options": [
+                {"model": "paragraph", "title": "Параграф", "class": "ck-heading_paragraph"},
+                {"model": "heading2", "view": "h2", "title": "Заголовок 2", "class": "ck-heading_heading2"},
+                {"model": "heading3", "view": "h3", "title": "Заголовок 3", "class": "ck-heading_heading3"},
+            ],
+        },
+    },
+}
+CKEDITOR_5_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"

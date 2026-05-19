@@ -28,6 +28,8 @@ class ProductListSerializer(serializers.ModelSerializer):
     img = serializers.SerializerMethodField()
     discount_percent = serializers.IntegerField(read_only=True)
     stock_status = serializers.CharField(read_only=True)
+    price = serializers.SerializerMethodField()
+    tier = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
@@ -49,7 +51,19 @@ class ProductListSerializer(serializers.ModelSerializer):
             "is_new",
             "img",
             "discount_percent",
+            "tier",
         )
+
+    def _user(self):
+        request = self.context.get("request")
+        return request.user if request else None
+
+    def get_price(self, obj: Product):
+        return obj.price_for(self._user())
+
+    def get_tier(self, obj: Product) -> str:
+        user = self._user()
+        return getattr(user, "tier", "regular") if user and user.is_authenticated else "regular"
 
     def get_img(self, obj: Product) -> str:
         if obj.image:

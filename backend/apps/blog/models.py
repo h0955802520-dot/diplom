@@ -1,4 +1,5 @@
 from django.db import models
+from django_ckeditor_5.fields import CKEditor5Field
 
 
 class BlogCategory(models.Model):
@@ -21,7 +22,7 @@ class BlogPost(models.Model):
     slug = models.SlugField(max_length=255, unique=True)
     date_label = models.CharField("Дата (текст)", max_length=64, blank=True)
     excerpt = models.TextField("Короткий опис")
-    content = models.TextField("Повний текст", blank=True)
+    content = CKEditor5Field("Повний текст", config_name="blog", blank=True)
     image_url = models.URLField("URL зображення", max_length=500, blank=True)
     image = models.ImageField(upload_to="blog/", blank=True, null=True)
     published_at = models.DateTimeField(auto_now_add=True)

@@ -116,3 +116,49 @@ class OrderItem(models.Model):
     @property
     def line_total(self):
         return self.price * self.quantity
+
+
+class ReturnRequest(models.Model):
+    PENDING = "pending"
+    APPROVED = "approved"
+    REJECTED = "rejected"
+    REFUNDED = "refunded"
+    STATUS_CHOICES = (
+        (PENDING, "На розгляді"),
+        (APPROVED, "Прийнято"),
+        (REJECTED, "Відхилено"),
+        (REFUNDED, "Повернено"),
+    )
+
+    REASON_CHOICES = (
+        ("defect", "Брак / пошкодження"),
+        ("wrong", "Не відповідає опису"),
+        ("size", "Не підійшов розмір/тип"),
+        ("changed_mind", "Передумав"),
+        ("other", "Інше"),
+    )
+
+    order_item = models.ForeignKey(
+        OrderItem, on_delete=models.CASCADE, related_name="returns", verbose_name="Позиція замовлення"
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name="return_requests"
+    )
+    quantity = models.PositiveIntegerField("Кількість", default=1)
+    reason = models.CharField("Причина", max_length=20, choices=REASON_CHOICES, default="other")
+    comment = models.TextField("Коментар клієнта", blank=True)
+    status = models.CharField("Статус", max_length=12, choices=STATUS_CHOICES, default=PENDING)
+    admin_note = models.TextField("Примітка адміна", blank=True)
+    refund_amount = models.DecimalField(
+        "Сума повернення", max_digits=10, decimal_places=2, null=True, blank=True
+    )
+    created_at = models.DateTimeField("Створено", auto_now_add=True)
+    processed_at = models.DateTimeField("Опрацьовано", null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Запит на повернення"
+        verbose_name_plural = "Запити на повернення"
+        ordering = ("-created_at",)
+
+    def __str__(self) -> str:
+        return f"Повернення #{self.pk} — {self.order_item.name}"

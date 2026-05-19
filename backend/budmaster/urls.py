@@ -19,6 +19,7 @@ api_v1 = [
     path("cart/", include("apps.cart.urls")),
     path("orders/", include("apps.orders.urls")),
     path("blog/", include("apps.blog.urls")),
+    path("submissions/", include("apps.submissions.urls")),
 ]
 
 
@@ -46,6 +47,7 @@ frontend_pages = [
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include(api_v1)),
+    path("ckeditor5/", include("django_ckeditor_5.urls")),
 ] + frontend_pages
 
 if settings.DEBUG:

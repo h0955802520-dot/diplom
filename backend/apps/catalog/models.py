@@ -56,8 +56,16 @@ class Product(models.Model):
     name = models.CharField("Назва", max_length=255)
     slug = models.SlugField(max_length=255, unique=True)
 
-    price = models.DecimalField("Ціна", max_digits=10, decimal_places=2)
+    price = models.DecimalField("Роздрібна ціна", max_digits=10, decimal_places=2)
     old_price = models.DecimalField("Стара ціна", max_digits=10, decimal_places=2, null=True, blank=True)
+    wholesale_price = models.DecimalField(
+        "Оптова ціна", max_digits=10, decimal_places=2, null=True, blank=True,
+        help_text="Ціна для клієнтів з tier=wholesale. Якщо не вказана — діє роздрібна.",
+    )
+    partner_price = models.DecimalField(
+        "Партнерська ціна", max_digits=10, decimal_places=2, null=True, blank=True,
+        help_text="Ціна для клієнтів з tier=partner. Якщо не вказана — діє оптова, потім роздрібна.",
+    )
 
     product_type = models.ForeignKey(ProductType, on_delete=models.PROTECT, related_name="products")
     category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name="products")
@@ -106,6 +114,18 @@ class Product(models.Model):
         if self.stock < 20:
             return "low"
         return "in"
+
+    def price_for(self, user):
+        """Повертає ціну для конкретного користувача залежно від його tier.
+        Fallback: partner → wholesale → retail."""
+        if user is None or not getattr(user, "is_authenticated", False):
+            return self.price
+        tier = getattr(user, "tier", "regular")
+        if tier == "partner" and self.partner_price is not None:
+            return self.partner_price
+        if tier in ("partner", "wholesale") and self.wholesale_price is not None:
+            return self.wholesale_price
+        return self.price
 
 
 class Review(models.Model):

@@ -1,0 +1,141 @@
+{% extends 'unfold/layouts/base_simple.html' %}
+{% load i18n unfold %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block title %}{% trans "Дашборд" %} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block branding %}
+  {% include 'unfold/helpers/site_branding.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+  <h1 class="text-2xl font-bold text-font-important-light dark:text-font-important-dark">Огляд магазину</h1>
+
+  {# === Головні KPI === #}
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    {% for k in kpis %}
+      <div class="border border-base-200 dark:border-base-700 rounded-lg p-5 bg-white dark:bg-base-900 shadow-sm">
+        <div class="flex items-start justify-between">
+          <div class="flex-1 min-w-0">
+            <p class="text-xs uppercase tracking-wider text-font-subtle-light dark:text-font-subtle-dark mb-2">{{ k.title }}</p>
+            <p class="text-2xl font-bold text-font-important-light dark:text-font-important-dark truncate">{{ k.value }}</p>
+            <p class="text-xs text-font-subtle-light dark:text-font-subtle-dark mt-1">{{ k.footer }}</p>
+          </div>
+          {% if k.icon %}
+            <span class="material-symbols-outlined text-primary-500 dark:text-primary-400 text-3xl">{{ k.icon }}</span>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  {# === Графік виручки === #}
+  <div class="border border-base-200 dark:border-base-700 rounded-lg p-5 bg-white dark:bg-base-900 shadow-sm">
+    <h2 class="text-lg font-semibold text-font-important-light dark:text-font-important-dark mb-4">Виручка за останні 7 днів</h2>
+    <div style="position: relative; height: 280px;">
+      <canvas id="revenueChart"></canvas>
+    </div>
+  </div>
+
+  {# === Вторинні KPI === #}
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+    {% for k in secondary_kpis %}
+      <div class="border border-base-200 dark:border-base-700 rounded-lg p-4 bg-white dark:bg-base-900 {% if k.highlight %}ring-2 ring-primary-400{% endif %}">
+        <p class="text-xs text-font-subtle-light dark:text-font-subtle-dark mb-1">{{ k.title }}</p>
+        <p class="text-xl font-semibold text-font-important-light dark:text-font-important-dark">{{ k.value }}</p>
+        {% if k.danger %}
+          <p class="text-xs text-red-600 dark:text-red-400 mt-1">{{ k.danger }} {{ k.danger_label }}</p>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+
+  {# === Топ товарів === #}
+  {% if top_products %}
+  <div class="border border-base-200 dark:border-base-700 rounded-lg bg-white dark:bg-base-900 shadow-sm overflow-hidden">
+    <div class="px-5 py-4 border-b border-base-200 dark:border-base-700">
+      <h2 class="text-lg font-semibold text-font-important-light dark:text-font-important-dark">Топ-5 товарів за продажами</h2>
+    </div>
+    <table class="w-full">
+      <thead class="bg-base-50 dark:bg-base-800">
+        <tr>
+          <th class="text-left text-xs uppercase tracking-wider text-font-subtle-light dark:text-font-subtle-dark px-5 py-3">Товар</th>
+          <th class="text-left text-xs uppercase tracking-wider text-font-subtle-light dark:text-font-subtle-dark px-5 py-3">Бренд</th>
+          <th class="text-right text-xs uppercase tracking-wider text-font-subtle-light dark:text-font-subtle-dark px-5 py-3">Залишок</th>
+          <th class="text-right text-xs uppercase tracking-wider text-font-subtle-light dark:text-font-subtle-dark px-5 py-3">Продано</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-base-100 dark:divide-base-800">
+        {% for p in top_products %}
+          <tr>
+            <td class="px-5 py-3">
+              <a href="/admin/catalog/product/{{ p.pk }}/change/" class="text-primary-600 dark:text-primary-400 hover:underline">{{ p.name }}</a>
+            </td>
+            <td class="px-5 py-3 text-font-default-light dark:text-font-default-dark">{{ p.brand.name }}</td>
+            <td class="px-5 py-3 text-right text-font-default-light dark:text-font-default-dark">{{ p.stock }}</td>
+            <td class="px-5 py-3 text-right font-semibold text-font-important-light dark:text-font-important-dark">{{ p.sold }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+(function() {
+  const ctx = document.getElementById('revenueChart');
+  if (!ctx) return;
+  const isDark = document.documentElement.classList.contains('dark');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: {{ revenue_chart.labels|safe }},
+      datasets: [{
+        label: 'Виручка, грн',
+        data: {{ revenue_chart.data|safe }},
+        borderColor: '#f59e0b',
+        backgroundColor: 'rgba(245, 158, 11, 0.15)',
+        borderWidth: 2.5,
+        tension: 0.3,
+        fill: true,
+        pointBackgroundColor: '#f59e0b',
+        pointRadius: 4,
+        pointHoverRadius: 6,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) { return ctx.parsed.y.toLocaleString('uk-UA') + ' грн'; }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            color: isDark ? '#cbd5e1' : '#64748b',
+            callback: function(v) { return v.toLocaleString('uk-UA') + ' грн'; }
+          },
+          grid: { color: isDark ? '#334155' : '#e2e8f0' }
+        },
+        x: {
+          ticks: { color: isDark ? '#cbd5e1' : '#64748b' },
+          grid: { display: false }
+        }
+      }
+    }
+  });
+})();
+</script>
+{% endblock %}

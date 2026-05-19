@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оформлення замовлення — БудМайстер</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="/static/vendor/fa/all.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+    <div id="header-placeholder"></div>
+
+    <div class="checkout-page-container">
+        <h2 class="checkout-page-title">Оформлення замовлення</h2>
+
+        <div class="checkout-grid">
+            <!-- Лівий блок — форма -->
+            <div class="cart-checkout-wrapper">
+                <form class="cart-checkout-form" onsubmit="processCheckout(event)">
+                    <h3 class="checkout-section-title">Контактні дані</h3>
+                    <div class="form-row">
+                        <input type="text" placeholder="Ім'я" required>
+                        <input type="text" placeholder="Прізвище" required>
+                    </div>
+                    <div class="form-row">
+                        <input type="email" placeholder="Email" required>
+                        <input type="tel" id="checkoutPhone" class="phone-mask" placeholder="+380" required>
+                    </div>
+
+                    <div class="delivery-block">
+                        <h4><i class="fa fa-truck"></i> Спосіб доставки</h4>
+                        <div class="delivery-options">
+                            <label>
+                                <input type="radio" name="delivery" value="pickup" checked required onchange="updateCartTotals()">
+                                <span>Самовивіз зі складу</span>
+                                <span class="delivery-price">безкоштовно</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="delivery" value="np" required onchange="updateCartTotals()">
+                                <span>Нова Пошта</span>
+                                <span class="delivery-price">~80 грн</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="delivery" value="courier" required onchange="updateCartTotals()">
+                                <span>Кур'єр по Києву</span>
+                                <span class="delivery-price">350 грн</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="delivery" value="truck" required onchange="updateCartTotals()">
+                                <span>Вантажне авто</span>
+                                <span class="delivery-price">від 800 грн</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="payment-block">
+                        <h4><i class="fa fa-credit-card"></i> Спосіб оплати</h4>
+                        <div class="payment-options">
+                            <label>
+                                <input type="radio" name="payment" value="cash" checked required>
+                                <span><i class="fa fa-money-bill-wave"></i> Готівка при отриманні</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="payment" value="card" required>
+                                <span><i class="fa fa-credit-card"></i> Картка (Visa / MasterCard)</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="payment" value="cashless" required>
+                                <span><i class="fa fa-file-invoice"></i> Безготівковий розрахунок</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <input type="text" placeholder="Місто та відділення Нової Пошти" required>
+
+                    <div class="promo-row">
+                        <input type="text" id="promo-input" placeholder="Промокод">
+                        <button type="button" onclick="applyPromo()">Застосувати</button>
+                    </div>
+                    <div id="promo-status"></div>
+
+                    <textarea class="checkout-comment" placeholder="Коментар до замовлення (необов'язково)"></textarea>
+
+                    <div id="min-order-warn"></div>
+
+                    <button type="submit" class="btn-primary btn-full checkout-submit-btn">
+                        <i class="fa fa-check"></i> Підтвердити замовлення
+                    </button>
+                </form>
+            </div>
+
+            <!-- Правий блок — резюме замовлення -->
+            <aside class="checkout-summary">
+                <h3 class="checkout-section-title">Ваше замовлення</h3>
+                <div id="checkout-items" class="checkout-items"></div>
+                <div class="cart-summary" id="cart-summary"></div>
+                <a href="cart.html" class="checkout-back-link"><i class="fa fa-arrow-left"></i> Повернутись до кошика</a>
+            </aside>
+        </div>
+    </div>
+
+    <!-- Modal: успішне замовлення -->
+    <div id="orderSuccessModal" class="modal-overlay" onclick="if(event.target===this)window.location.href='index.html'">
+        <div class="modal-content">
+            <i class="fa fa-check-circle newsletter-check"></i>
+            <h2>Заявку прийнято!</h2>
+            <p class="modal-desc">Менеджер зв'яжеться з вами найближчим часом для підтвердження замовлення.</p>
+            <a href="index.html" class="btn-primary btn-full"><i class="fa fa-house"></i> На Головну</a>
+        </div>
+    </div>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/js.js"></script>
+    <script>
+        let appliedPromo = JSON.parse(localStorage.getItem('budMasterPromo')) || null;
+
+        function getDeliveryCost() {
+            const opt = document.querySelector('input[name="delivery"]:checked');
+            if (!opt) return 0;
+            const v = opt.value;
+            const subtotal = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+            if (v === 'pickup') return 0;
+            if (v === 'np') return subtotal >= FREE_DELIVERY_THRESHOLD ? 0 : 80;
+            if (v === 'courier') return subtotal >= FREE_DELIVERY_THRESHOLD ? 0 : 350;
+            if (v === 'truck') return 800;
+            return 0;
+        }
+
+        async function applyPromo() {
+            const code = document.getElementById('promo-input').value.trim().toUpperCase();
+            const status = document.getElementById('promo-status');
+            if (!code) { status.innerHTML = ''; return; }
+            const subtotal = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+            status.innerHTML = '<div style="color:var(--muted);padding:8px;"><i class="fa fa-spinner fa-spin"></i> Перевіряємо…</div>';
+            try {
+                const data = await BudMasterAPI.validatePromo(code, subtotal);
+                appliedPromo = {
+                    code: data.code,
+                    type: data.type,
+                    value: Number(data.value),
+                    label: data.label,
+                };
+                localStorage.setItem('budMasterPromo', JSON.stringify(appliedPromo));
+                document.getElementById('promo-input').value = '';
+                renderPromoStatus();
+                updateCartTotals();
+            } catch (err) {
+                status.innerHTML = `<div class="min-order-warning"><i class="fa fa-exclamation-circle"></i> ${err.message}</div>`;
+            }
+        }
+
+        function removePromo() {
+            appliedPromo = null;
+            localStorage.removeItem('budMasterPromo');
+            renderPromoStatus();
+            updateCartTotals();
+        }
+
+        function renderPromoStatus() {
+            const status = document.getElementById('promo-status');
+            if (!status) return;
+            if (!appliedPromo) { status.innerHTML = ''; return; }
+            status.innerHTML = `
+                <div class="promo-applied">
+                    <span><i class="fa fa-tag"></i> Промокод <strong>${appliedPromo.code}</strong> (${appliedPromo.label})</span>
+                    <button type="button" onclick="removePromo()" title="Скасувати"><i class="fa fa-times"></i></button>
+                </div>`;
+        }
+
+        function renderCheckoutItems() {
+            const wrap = document.getElementById('checkout-items');
+            if (!wrap) return;
+            let html = '';
+            cart.forEach(item => {
+                html += `
+                    <div class="checkout-item">
+                        <img src="${item.img}" alt="${item.name}">
+                        <div class="checkout-item-info">
+                            <div class="checkout-item-name">${item.name}</div>
+                            <div class="checkout-item-meta">${item.quantity} × ${item.price} грн</div>
+                        </div>
+                        <div class="checkout-item-total">${item.price * item.quantity} грн</div>
+                    </div>`;
+            });
+            wrap.innerHTML = html;
+        }
+
+        function updateCartTotals() {
+            const summary = document.getElementById('cart-summary');
+            const warn = document.getElementById('min-order-warn');
+            const submitBtn = document.querySelector('.checkout-submit-btn');
+            if (!summary) return;
+
+            const subtotal = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+            const delivery = getDeliveryCost();
+            let discount = 0;
+            if (appliedPromo) {
+                if (appliedPromo.type === 'percent') discount = Math.round(subtotal * appliedPromo.value / 100);
+                else discount = Math.min(appliedPromo.value, subtotal);
+            }
+            const total = Math.max(0, subtotal - discount + delivery);
+
+            summary.innerHTML = `
+                <div class="summary-row"><span>Товарів:</span><span>${subtotal} грн</span></div>
+                ${discount > 0 ? `<div class="summary-row" style="color:#16a34a;"><span>Знижка:</span><span>−${discount} грн</span></div>` : ''}
+                <div class="summary-row"><span>Доставка:</span><span>${delivery === 0 ? 'безкоштовно' : delivery + ' грн'}</span></div>
+                <div class="summary-row total"><span>Разом:</span><span class="cart-total-price">${total} грн</span></div>
+            `;
+
+            if (subtotal > 0 && subtotal < MIN_ORDER) {
+                warn.innerHTML = `<div class="min-order-warning"><i class="fa fa-exclamation-circle"></i> Мінімальна сума замовлення: ${MIN_ORDER} грн.</div>`;
+                if (submitBtn) submitBtn.disabled = true;
+            } else {
+                warn.innerHTML = '';
+                if (submitBtn) submitBtn.disabled = false;
+            }
+        }
+
+        function processCheckout(event) {
+            event.preventDefault();
+            localStorage.removeItem('budMasterCart');
+            localStorage.removeItem('budMasterPromo');
+            cart = [];
+            updateCartBadge();
+            document.getElementById('orderSuccessModal').classList.add('active');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            cart = JSON.parse(localStorage.getItem('budMasterCart')) || [];
+            if (cart.length === 0) {
+                showToast('Кошик порожній — оберіть товари перед оформленням');
+                setTimeout(() => window.location.href = 'cart.html', 1200);
+                return;
+            }
+            renderCheckoutItems();
+            renderPromoStatus();
+            updateCartTotals();
+        });
+    </script>
+</body>
+
+</html>

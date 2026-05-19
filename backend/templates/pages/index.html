@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>БудМайстер — Будівельні матеріали та інструменти №1 в Україні</title>
+    <meta name="description" content="Інтернет-магазин будівельних матеріалів та професійного інструменту. Опт та роздріб, доставка по Україні, склади у Києві, Львові, Дніпрі.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://images.unsplash.com">
+    <link rel="stylesheet" href="/static/vendor/fa/all.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+    <!-- Шапка та підвал автоматично інжектяться через js.js -->
+    <div id="header-placeholder"></div>
+
+    <!-- ========== HERO SLIDER ========== -->
+    <section class="hero">
+        <div class="hero-slides" id="hero-slides">
+            <!-- Slide 1: основне позиціонування -->
+            <div class="hero-slide active">
+                <div class="hero-slide-inner">
+                    <div class="hero-content fade-in">
+                        <span class="hero-tag"><i class="fa fa-bolt"></i> №1 на ринку будматеріалів</span>
+                        <h1>Все для будівництва — <span>від фундаменту до даху</span></h1>
+                        <p>Понад 5000 найменувань матеріалів та інструменту. Опт і роздріб. Власні склади у Києві, Львові та Дніпрі. Доставка від 24 годин.</p>
+                        <div class="hero-buttons">
+                            <a href="shop.html" class="btn-primary"><i class="fa fa-th-large"></i> Перейти до каталогу</a>
+                            <a href="#calc" class="btn-secondary"><i class="fa fa-calculator"></i> Розрахувати матеріали</a>
+                        </div>
+                    </div>
+                    <div class="hero-image fade-in delay">
+                        <img src="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=900&q=80" alt="Будівельний майданчик">
+                    </div>
+                </div>
+            </div>
+            <!-- Slide 2: акція на інструмент -->
+            <div class="hero-slide">
+                <div class="hero-slide-inner">
+                    <div class="hero-content fade-in">
+                        <span class="hero-tag"><i class="fa fa-percent"></i> Акція тижня</span>
+                        <h1>Знижки до <span>-30%</span><br>на електроінструмент</h1>
+                        <p>Перфоратори, шуруповерти, болгарки від брендів Bosch, Makita, DeWalt, Hilti. Оригінал з гарантією виробника. Кількість обмежена.</p>
+                        <div class="hero-buttons">
+                            <a href="shop.html?promo=1" class="btn-primary"><i class="fa fa-fire"></i> До акційних товарів</a>
+                            <a href="shop.html?type=tool" class="btn-secondary">Усі інструменти</a>
+                        </div>
+                    </div>
+                    <div class="hero-image fade-in delay">
+                        <img src="https://images.unsplash.com/photo-1426927308491-6380b6a9936f?auto=format&fit=crop&w=900&q=80" alt="Електроінструмент">
+                    </div>
+                </div>
+            </div>
+            <!-- Slide 3: B2B напрямок -->
+            <div class="hero-slide">
+                <div class="hero-slide-inner">
+                    <div class="hero-content fade-in">
+                        <span class="hero-tag"><i class="fa fa-handshake"></i> Для прорабів та бригад</span>
+                        <h1>Оптові ціни, <span>безготівка з ПДВ</span></h1>
+                        <p>Особистий менеджер, кредитна лінія, доставка в день оформлення. Працюємо з юридичними та фізичними особами по всій Україні.</p>
+                        <div class="hero-buttons">
+                            <a href="business.html" class="btn-primary"><i class="fa fa-briefcase"></i> Стати партнером</a>
+                            <a href="contacts.html" class="btn-secondary">Зв'язатись</a>
+                        </div>
+                    </div>
+                    <div class="hero-image fade-in delay">
+                        <img src="https://images.unsplash.com/photo-1581094288338-2314dddb7ece?auto=format&fit=crop&w=900&q=80" alt="Бригада на об'єкті">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="hero-controls">
+            <button class="hero-arrow" onclick="heroPrev()" aria-label="Попередній"><i class="fa fa-chevron-left"></i></button>
+            <div class="hero-dots" id="hero-dots">
+                <button class="hero-dot active" onclick="heroGoTo(0)" aria-label="Слайд 1"></button>
+                <button class="hero-dot" onclick="heroGoTo(1)" aria-label="Слайд 2"></button>
+                <button class="hero-dot" onclick="heroGoTo(2)" aria-label="Слайд 3"></button>
+            </div>
+            <button class="hero-arrow" onclick="heroNext()" aria-label="Наступний"><i class="fa fa-chevron-right"></i></button>
+        </div>
+    </section>
+
+    <!-- ========== TRUST STRIP ========== -->
+    <section class="trust-strip">
+        <div class="trust-inner">
+            <div class="trust-item">
+                <div class="trust-icon"><i class="fa fa-truck-fast"></i></div>
+                <div class="trust-text">
+                    <h4>Доставка від 24г</h4>
+                    <p>По всій Україні власним автопарком</p>
+                </div>
+            </div>
+            <div class="trust-item">
+                <div class="trust-icon"><i class="fa fa-shield-halved"></i></div>
+                <div class="trust-text">
+                    <h4>Гарантія якості</h4>
+                    <p>Сертифіковані матеріали ДСТУ</p>
+                </div>
+            </div>
+            <div class="trust-item">
+                <div class="trust-icon"><i class="fa fa-tags"></i></div>
+                <div class="trust-text">
+                    <h4>Опт від 10 тонн</h4>
+                    <p>Знижки для бригад та забудовників</p>
+                </div>
+            </div>
+            <div class="trust-item">
+                <div class="trust-icon"><i class="fa fa-undo"></i></div>
+                <div class="trust-text">
+                    <h4>Повернення 14 днів</h4>
+                    <p>Без зайвих запитань</p>
+                </div>
+            </div>
+            <div class="trust-item">
+                <div class="trust-icon"><i class="fa fa-headset"></i></div>
+                <div class="trust-text">
+                    <h4>Консультація 24/7</h4>
+                    <p>Інженери на зв'язку</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== КАТЕГОРІЇ (8 плиток) ========== -->
+    <section class="categories">
+        <h2 class="section-title">Категорії <span>товарів</span></h2>
+        <p class="section-subtitle">Оберіть розділ — знайдіть саме те, що потрібно для вашого об'єкта</p>
+        <div class="categories-grid">
+            <a href="shop.html?type=cement" class="cat-card">
+                <div class="cat-card-img"><img src="https://images.unsplash.com/photo-1607582544501-71f5b3ce3a4e?auto=format&fit=crop&w=600&q=80" alt="Цемент та суміші" loading="lazy"></div>
+                <div class="cat-card-body"><h3>Цемент та суміші</h3><span class="cat-card-count">15</span></div>
+            </a>
+            <a href="shop.html?type=brick" class="cat-card">
+                <div class="cat-card-img"><img src="https://images.unsplash.com/photo-1530686577008-d6dd54e83b40?auto=format&fit=crop&w=600&q=80" alt="Цегла та блоки" loading="lazy"></div>
+                <div class="cat-card-body"><h3>Цегла та блоки</h3><span class="cat-card-count">13</span></div>
+            </a>
+            <a href="shop.html?type=tool" class="cat-card">
+                <div class="cat-card-img"><img src="https://images.unsplash.com/photo-1581244277943-fe4a9c777189?auto=format&fit=crop&w=600&q=80" alt="Інструмент" loading="lazy"></div>
+                <div class="cat-card-body"><h3>Інструмент</h3><span class="cat-card-count">27</span></div>
+            </a>
+            <a href="shop.html?type=paint" class="cat-card">
+                <div class="cat-card-img"><img src="https://images.unsplash.com/photo-1562259949-e8e7689d7828?auto=format&fit=crop&w=600&q=80" alt="Фарби та лаки" loading="lazy"></div>
+                <div class="cat-card-body"><h3>Фарби та лаки</h3><span class="cat-card-count">17</span></div>
+            </a>
+            <a href="shop.html?type=metal" class="cat-card">
+                <div class="cat-card-img"><img src="https://images.unsplash.com/photo-1517232117160-a51e4c1d3275?auto=format&fit=crop&w=600&q=80" alt="Металопрокат" loading="lazy"></div>
+                <div class="cat-card-body"><h3>Металопрокат</h3><span class="cat-card-count">11</span></div>
+            </a>
+            <a href="shop.html?type=electric" class="cat-card">
+                <div class="cat-card-img"><img src="https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&w=600&q=80" alt="Електрика" loading="lazy"></div>
+                <div class="cat-card-body"><h3>Електрика</h3><span class="cat-card-count">11</span></div>
+            </a>
+            <a href="shop.html?type=finishing" class="cat-card">
+                <div class="cat-card-img"><img src="https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?auto=format&fit=crop&w=600&q=80" alt="Оздоблення" loading="lazy"></div>
+                <div class="cat-card-body"><h3>Оздоблення</h3><span class="cat-card-count">6</span></div>
+            </a>
+            <a href="shop.html?promo=1" class="cat-card">
+                <div class="cat-card-img"><img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=600&q=80" alt="Усі акції" loading="lazy"></div>
+                <div class="cat-card-body"><h3>Усі акції</h3><span class="cat-card-count">-30%</span></div>
+            </a>
+        </div>
+    </section>
+
+    <!-- ========== ЗА ТИПОМ РОБІТ ========== -->
+    <section class="project-types">
+        <h2 class="section-title">Підбір <span>за типом робіт</span></h2>
+        <p class="section-subtitle">Швидко знайдіть усе необхідне для конкретного етапу будівництва чи ремонту</p>
+        <div class="pt-grid">
+            <a href="shop.html?type=cement" class="pt-card">
+                <div class="pt-icon"><i class="fa fa-mountain-city"></i></div>
+                <h4>Фундамент</h4>
+            </a>
+            <a href="shop.html?type=brick" class="pt-card">
+                <div class="pt-icon"><i class="fa fa-cubes-stacked"></i></div>
+                <h4>Кладка стін</h4>
+            </a>
+            <a href="shop.html?type=finishing" class="pt-card">
+                <div class="pt-icon"><i class="fa fa-house-chimney"></i></div>
+                <h4>Покрівля</h4>
+            </a>
+            <a href="shop.html?type=cement" class="pt-card">
+                <div class="pt-icon"><i class="fa fa-grip"></i></div>
+                <h4>Підлога</h4>
+            </a>
+            <a href="shop.html?type=paint" class="pt-card">
+                <div class="pt-icon"><i class="fa fa-paint-roller"></i></div>
+                <h4>Оздоблення</h4>
+            </a>
+            <a href="shop.html?type=electric" class="pt-card">
+                <div class="pt-icon"><i class="fa fa-bolt"></i></div>
+                <h4>Інженерія</h4>
+            </a>
+        </div>
+    </section>
+
+    <!-- ========== PROMO BANNERS ========== -->
+    <section class="promo-banners">
+        <div class="promo-grid">
+            <a href="shop.html?promo=1" class="banner-card banner-big" style="background-image: url('https://images.unsplash.com/photo-1530124566582-a618bc2615dc?auto=format&fit=crop&w=1200&q=80');">
+                <span class="banner-tag">Акція тижня</span>
+                <h3>Знижки до 30% на весь<br>будівельний інструмент</h3>
+                <p>Bosch, Makita, DeWalt — обмежений час</p>
+                <span class="banner-link">Перейти до акції <i class="fa fa-arrow-right"></i></span>
+            </a>
+            <a href="shop.html?type=cement" class="banner-card" style="background-image: url('https://images.unsplash.com/photo-1607582544501-71f5b3ce3a4e?auto=format&fit=crop&w=800&q=80');">
+                <span class="banner-tag">Опт</span>
+                <h3>Цемент від 10 тонн</h3>
+                <p>Спецціни для забудовників</p>
+                <span class="banner-link">Замовити <i class="fa fa-arrow-right"></i></span>
+            </a>
+            <a href="shop.html?type=paint" class="banner-card" style="background-image: url('https://images.unsplash.com/photo-1562259949-e8e7689d7828?auto=format&fit=crop&w=800&q=80');">
+                <span class="banner-tag">-15%</span>
+                <h3>Фарби Sniezka</h3>
+                <p>Промокод <strong>NEW2026</strong></p>
+                <span class="banner-link">Купити <i class="fa fa-arrow-right"></i></span>
+            </a>
+        </div>
+    </section>
+
+    <!-- ========== ТОВАРИ В ТАБАХ ========== -->
+    <section class="products-section">
+        <div class="ps-tabs">
+            <div class="ps-tabs-nav">
+                <button class="ps-tab-btn active" onclick="switchProductTab(event, 'tab-popular')"><i class="fa fa-fire"></i> <span>Хіти продажів</span></button>
+                <button class="ps-tab-btn" onclick="switchProductTab(event, 'tab-new')"><i class="fa fa-bolt"></i> <span>Новинки</span></button>
+                <button class="ps-tab-btn" onclick="switchProductTab(event, 'tab-promo')"><i class="fa fa-percent"></i> <span>Акції</span></button>
+            </div>
+            <a href="shop.html" class="view-all">Усі товари <i class="fa fa-arrow-right"></i></a>
+        </div>
+        <div class="ps-grid active" id="tab-popular"><div class="products-grid" id="popular-grid"></div></div>
+        <div class="ps-grid" id="tab-new"><div class="products-grid" id="new-grid"></div></div>
+        <div class="ps-grid" id="tab-promo"><div class="products-grid" id="promo-grid"></div></div>
+    </section>
+
+    <!-- ========== КАЛЬКУЛЯТОР ========== -->
+    <section id="calc" class="calc-section">
+        <h2 class="section-title">Калькулятор <span>матеріалів</span></h2>
+        <p class="section-subtitle">Введіть площу або об'єм робіт — отримайте орієнтовний перелік матеріалів та їх кількість</p>
+        <div class="calc-wrap">
+            <div class="calc-tabs-nav">
+                <button class="calc-tab-btn active" onclick="setCalcType(event, 'wall')"><i class="fa fa-cubes"></i> Кладка стіни</button>
+                <button class="calc-tab-btn" onclick="setCalcType(event, 'screed')"><i class="fa fa-grip-lines"></i> Стяжка підлоги</button>
+                <button class="calc-tab-btn" onclick="setCalcType(event, 'paint')"><i class="fa fa-paint-roller"></i> Фарбування</button>
+                <button class="calc-tab-btn" onclick="setCalcType(event, 'tile')"><i class="fa fa-th"></i> Укладка плитки</button>
+            </div>
+            <div class="calc-form">
+                <div class="calc-field">
+                    <label>Площа, м²</label>
+                    <input type="number" id="calc-area" placeholder="напр. 50" min="0" step="0.1">
+                </div>
+                <button class="btn-primary" onclick="calcMaterials()"><i class="fa fa-calculator"></i> Розрахувати</button>
+            </div>
+            <input type="hidden" id="calc-type" value="wall">
+            <div id="calc-result"></div>
+        </div>
+    </section>
+
+    <!-- ========== B2B BLOCK ========== -->
+    <section class="b2b-section">
+        <div class="b2b-card">
+            <div class="b2b-content">
+                <span class="b2b-tag"><i class="fa fa-handshake"></i> Для бізнесу</span>
+                <h2>Прораб? Бригадир? <span>Забудовник?</span></h2>
+                <p>Працюємо з юридичними та фізичними особами на особливих умовах. Знижки на опт, кредитна лінія, особистий менеджер, доставка в день замовлення.</p>
+                <ul class="b2b-features">
+                    <li><i class="fa fa-check"></i> Опт від 10 тонн — спеціальні ціни</li>
+                    <li><i class="fa fa-check"></i> Безготівковий розрахунок з ПДВ, договір</li>
+                    <li><i class="fa fa-check"></i> Особистий менеджер на проєкт</li>
+                    <li><i class="fa fa-check"></i> Кредитна лінія для постійних клієнтів</li>
+                    <li><i class="fa fa-check"></i> Відстрочка платежу до 30 днів</li>
+                </ul>
+                <a href="business.html" class="btn-primary"><i class="fa fa-briefcase"></i> Стати партнером</a>
+            </div>
+            <div class="b2b-image"></div>
+        </div>
+    </section>
+
+    <!-- ========== НЕЩОДАВНО ПЕРЕГЛЯНУТІ ========== -->
+    <section id="recent-section" class="recent-section">
+        <div class="section-header"><h2>Ви нещодавно дивились</h2></div>
+        <div class="products-grid" id="recent-grid"></div>
+    </section>
+
+    <!-- ========== БРЕНДИ ========== -->
+    <section class="brands-section">
+        <h2 class="section-title">Наші <span>бренди</span></h2>
+        <p class="section-subtitle">Працюємо тільки з офіційними дистриб'юторами провідних виробників</p>
+        <div class="brands-track">
+            <a href="shop.html?brand=knauf" class="brand-card">Knauf</a>
+            <a href="shop.html?brand=bosch" class="brand-card">Bosch</a>
+            <a href="shop.html?brand=makita" class="brand-card">Makita</a>
+            <a href="shop.html?brand=dewalt" class="brand-card">DeWalt</a>
+            <a href="shop.html?brand=henkel" class="brand-card">Henkel</a>
+            <a href="shop.html?brand=ceresit" class="brand-card">Ceresit</a>
+            <a href="shop.html?brand=sniezka" class="brand-card">Sniezka</a>
+            <a href="shop.html?brand=stanley" class="brand-card">Stanley</a>
+            <a href="shop.html?brand=hilti" class="brand-card">Hilti</a>
+            <a href="shop.html?brand=schneider" class="brand-card">Schneider</a>
+        </div>
+    </section>
+
+    <!-- ========== БЛОГ ========== -->
+    <section class="blog-section">
+        <div class="section-header">
+            <h2>Корисні поради</h2>
+            <a href="blog.html" class="view-all">Усі статті <i class="fa fa-arrow-right"></i></a>
+        </div>
+        <div class="blog-grid">
+            <a href="article.html?id=1" class="blog-card">
+                <img src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=600&q=80" alt="Як вибрати цемент" loading="lazy">
+                <div class="blog-card-body">
+                    <div class="blog-meta"><span class="blog-tag">Будівництво</span><span class="blog-date">15 січня 2026</span></div>
+                    <h3>Як вибрати цемент для фундаменту</h3>
+                    <p>Розглядаємо марки цементу, рекомендації виробників та лайфхаки досвідчених прорабів.</p>
+                    <span class="blog-link">Читати <i class="fa fa-arrow-right"></i></span>
+                </div>
+            </a>
+            <a href="article.html?id=2" class="blog-card">
+                <img src="https://images.unsplash.com/photo-1581094288338-2314dddb7ece?auto=format&fit=crop&w=600&q=80" alt="Шпаклівка стін" loading="lazy">
+                <div class="blog-card-body">
+                    <div class="blog-meta"><span class="blog-tag">Ремонт</span><span class="blog-date">10 січня 2026</span></div>
+                    <h3>Шпаклівка стін: 7 типових помилок</h3>
+                    <p>Покрокова інструкція для якісного шпаклювання та поради, як уникнути дефектів.</p>
+                    <span class="blog-link">Читати <i class="fa fa-arrow-right"></i></span>
+                </div>
+            </a>
+            <a href="article.html?id=3" class="blog-card">
+                <img src="https://images.unsplash.com/photo-1581244277943-fe4a9c777189?auto=format&fit=crop&w=600&q=80" alt="Топ перфораторів" loading="lazy">
+                <div class="blog-card-body">
+                    <div class="blog-meta"><span class="blog-tag">Інструмент</span><span class="blog-date">3 січня 2026</span></div>
+                    <h3>Топ-5 перфораторів 2026 року</h3>
+                    <p>Огляд найкращих моделей Bosch, Makita, DeWalt — характеристики, ціни, плюси та мінуси.</p>
+                    <span class="blog-link">Читати <i class="fa fa-arrow-right"></i></span>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <!-- ========== ВІДГУКИ ========== -->
+    <section class="reviews">
+        <h2 class="section-title">Відгуки <span>клієнтів</span></h2>
+        <p class="section-subtitle">Понад 12 000 успішно реалізованих проєктів за 12 років роботи</p>
+        <div class="reviews-grid">
+            <div class="review-card">
+                <div class="review-stars"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></div>
+                <p class="review-text">"Замовляли цемент і газоблок на будівництво будинку. Привезли точно у строк, ціни нижчі за конкурентів. Менеджер допоміг з розрахунком кількості. Рекомендую!"</p>
+                <div class="review-author">
+                    <div class="review-avatar">АК</div>
+                    <div class="review-author-info">
+                        <h4>Андрій Коваленко</h4>
+                        <span>Бригадир, Київ</span>
+                    </div>
+                    <span class="review-verified"><i class="fa fa-check"></i> Перевірено</span>
+                </div>
+            </div>
+            <div class="review-card">
+                <div class="review-stars"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-alt"></i></div>
+                <p class="review-text">"Купував перфоратор Bosch і набір інструменту. Все оригінальне, з гарантією. Доставили наступного дня в Львів. Працюю вже півроку — нарікань немає."</p>
+                <div class="review-author">
+                    <div class="review-avatar">ДШ</div>
+                    <div class="review-author-info">
+                        <h4>Дмитро Шевченко</h4>
+                        <span>Майстер, Львів</span>
+                    </div>
+                    <span class="review-verified"><i class="fa fa-check"></i> Перевірено</span>
+                </div>
+            </div>
+            <div class="review-card">
+                <div class="review-stars"><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></div>
+                <p class="review-text">"Робили ремонт квартири. Замовили фарби Sniezka, шпаклівку Knauf і ламінат — все доставлено акуратно. Якість на висоті, ціни приємні. Дуже задоволені."</p>
+                <div class="review-author">
+                    <div class="review-avatar">ІМ</div>
+                    <div class="review-author-info">
+                        <h4>Ірина Мельник</h4>
+                        <span>Замовниця, Дніпро</span>
+                    </div>
+                    <span class="review-verified"><i class="fa fa-check"></i> Перевірено</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== NEWSLETTER ========== -->
+    <section class="newsletter-section">
+        <div class="newsletter-wrap">
+            <div class="newsletter-text">
+                <h2><i class="fa fa-envelope"></i> Підпишіться на новини</h2>
+                <p>Знижки, нові надходження та корисні статті — раз на тиждень, без спаму</p>
+            </div>
+            <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+                <input type="email" placeholder="Ваш email" required>
+                <button type="submit">Підписатись</button>
+            </form>
+        </div>
+    </section>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/js.js"></script>
+</body>
+
+</html>

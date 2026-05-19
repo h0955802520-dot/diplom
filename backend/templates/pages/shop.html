@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Каталог — БудМайстер</title>
+    <meta name="description" content="Повний каталог будівельних матеріалів та інструменту з фільтрами за категоріями, брендами, ціною.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="/static/vendor/fa/all.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+    <div id="header-placeholder"></div>
+
+    <div class="shop-layout">
+        <!-- Сайдбар з фільтрами -->
+        <aside class="sidebar-filters">
+            <h3>Фільтри</h3>
+
+            <div class="filter-group">
+                <label>Пошук:</label>
+                <input type="text" id="sidebar-search" placeholder="Введіть назву..." oninput="renderShop()">
+            </div>
+
+            <div class="filter-group">
+                <label>Категорія:</label>
+                <select id="f-type" onchange="renderShop()">
+                    <option value="all">Всі категорії</option>
+                    <option value="cement">Цемент та суміші</option>
+                    <option value="brick">Цегла та блоки</option>
+                    <option value="tool">Інструменти</option>
+                    <option value="paint">Фарби та лаки</option>
+                    <option value="metal">Металопрокат</option>
+                    <option value="electric">Електрика</option>
+                    <option value="finishing">Оздоблення</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Тип робіт:</label>
+                <select id="f-category" onchange="renderShop()">
+                    <option value="all">Всі</option>
+                    <option value="construction">Будівництво</option>
+                    <option value="finishing">Оздоблення</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Сортування:</label>
+                <select id="f-price" onchange="renderShop()">
+                    <option value="default">За замовчуванням</option>
+                    <option value="low">Дешевше</option>
+                    <option value="high">Дорожче</option>
+                    <option value="new">Спочатку новинки</option>
+                    <option value="popular">Спочатку хіти</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Ціна, грн:</label>
+                <div class="price-range-row">
+                    <input type="number" id="f-price-min" placeholder="від" oninput="renderShop()">
+                    <input type="number" id="f-price-max" placeholder="до" oninput="renderShop()">
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label>Бренд:</label>
+                <select id="f-brand" onchange="renderShop()">
+                    <option value="all">Всі бренди</option>
+                    <option value="knauf">Knauf</option>
+                    <option value="bosch">Bosch</option>
+                    <option value="makita">Makita</option>
+                    <option value="dewalt">DeWalt</option>
+                    <option value="henkel">Henkel</option>
+                    <option value="ceresit">Ceresit</option>
+                    <option value="sniezka">Sniezka</option>
+                    <option value="stanley">Stanley</option>
+                    <option value="hilti">Hilti</option>
+                    <option value="schneider">Schneider Electric</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Фасування:</label>
+                <select id="f-age" onchange="renderShop()">
+                    <option value="all">Будь-яке</option>
+                    <option value="small">До 5 кг / шт</option>
+                    <option value="medium">5-25 кг</option>
+                    <option value="large">Понад 25 кг</option>
+                </select>
+            </div>
+
+            <div class="filter-group" style="gap: 12px;">
+                <label class="filter-checkbox"><input type="checkbox" id="f-promo" onchange="renderShop()"> Акційні товари</label>
+                <label class="filter-checkbox"><input type="checkbox" id="f-popular" onchange="renderShop()"> Хіти продажів</label>
+                <label class="filter-checkbox"><input type="checkbox" id="f-wish" onchange="renderShop()"> Лише обране</label>
+            </div>
+
+            <button type="button" class="btn-outline btn-full" onclick="resetFilters()" style="margin-top: 12px;">
+                <i class="fa fa-times"></i> Скинути фільтри
+            </button>
+        </aside>
+
+        <!-- Контент каталогу -->
+        <div class="shop-content">
+            <div class="shop-toolbar">
+                <span class="shop-count" id="shop-count">Знайдено: 0 товарів</span>
+            </div>
+            <div class="products-grid" id="shop-grid"></div>
+            <div class="pagination" id="pagination"></div>
+        </div>
+    </div>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/js.js"></script>
+    <script>
+        // Підтримка URL-параметрів: ?wish=1, ?promo=1, ?popular=1, ?sort=new, ?brand=...
+        // Виставляємо чекбокси/select-и до того, як рендериться каталог.
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(location.search);
+            const setCheckbox = (id) => { const el = document.getElementById(id); if (el) el.checked = true; };
+            const setSelect = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
+
+            if (params.get('wish') === '1') setCheckbox('f-wish');
+            if (params.get('promo') === '1') setCheckbox('f-promo');
+            if (params.get('popular') === '1') setCheckbox('f-popular');
+            if (params.get('sort')) setSelect('f-price', params.get('sort'));
+            if (params.get('brand')) setSelect('f-brand', params.get('brand'));
+            renderShop();
+        });
+    </script>
+</body>
+
+</html>

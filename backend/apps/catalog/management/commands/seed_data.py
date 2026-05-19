@@ -1,8 +1,9 @@
 """
-Seed the database with catalog data scraped from the legacy frontend
-(js/js.js): 100 products, 6 blog posts, 3 promo codes.
+Seed the database with catalog data, blog posts and promo codes.
 
-Idempotent — re-running updates existing records by legacy_id / slug.
+Source: bundled JSON fixtures in ``seed_data_files/`` (extracted from the
+original frontend ``js/js.js``). Idempotent — re-running updates existing
+records by legacy_id / code.
 
 Usage:
     python manage.py seed_data
@@ -10,10 +11,9 @@ Usage:
 """
 from __future__ import annotations
 
-import re
+import json
 from decimal import Decimal
 from pathlib import Path
-from typing import Any
 
 from django.core.management.base import BaseCommand
 from django.db import transaction
@@ -24,7 +24,7 @@ from apps.catalog.models import Brand, Category, Product, ProductType
 from apps.orders.models import PromoCode
 
 
-FRONTEND_JS = Path(__file__).resolve().parents[4].parent / "js" / "js.js"
+DATA_DIR = Path(__file__).resolve().parent / "seed_data_files"
 
 
 CATEGORY_NAMES = {
@@ -57,88 +57,6 @@ BRAND_NAMES = {
 }
 
 
-IMG_RE = re.compile(r"^\s*(\w+):\s*'([^']+)'\s*,?\s*$")
-PRODUCT_RE = re.compile(
-    r"\{\s*id:'(?P<id>\d+)',\s*"
-    r"name:'(?P<name>(?:[^'\\]|\\.)*)',\s*"
-    r"price:(?P<price>\d+(?:\.\d+)?),\s*"
-    r"(?:oldPrice:(?P<old>\d+(?:\.\d+)?),\s*)?"
-    r"type:'(?P<type>[^']+)',\s*"
-    r"category:'(?P<category>[^']+)',\s*"
-    r"age:'(?P<age>[^']+)',\s*"
-    r"brand:'(?P<brand>[^']+)',\s*"
-    r"stock:(?P<stock>\d+),\s*"
-    r"promo:(?P<promo>true|false),\s*"
-    r"popular:(?P<popular>true|false),\s*"
-    r"isNew:(?P<is_new>true|false),\s*"
-    r"img:IMG\.(?P<img>\w+)\s*\}",
-)
-BLOG_RE = re.compile(
-    r"\{\s*id:\s*(?P<id>\d+),\s*"
-    r"cat:\s*'(?P<cat>[^']+)',\s*"
-    r"date:\s*'(?P<date>[^']+)',\s*"
-    r"title:\s*'(?P<title>(?:[^'\\]|\\.)*)',\s*"
-    r"excerpt:\s*'(?P<excerpt>(?:[^'\\]|\\.)*)',\s*"
-    r"img:\s*'(?P<img>[^']+)'\s*\}",
-)
-
-
-def unescape_js(text: str) -> str:
-    return text.replace("\\'", "'").replace("\\\\", "\\")
-
-
-def parse_js_data(js_path: Path) -> tuple[dict[str, str], list[dict[str, Any]], list[dict[str, Any]]]:
-    source = js_path.read_text(encoding="utf-8")
-
-    img_block_match = re.search(r"const\s+IMG\s*=\s*\{([^}]+)\};", source)
-    if not img_block_match:
-        raise RuntimeError("Не знайдено IMG-словник у js.js")
-    img_map: dict[str, str] = {}
-    for line in img_block_match.group(1).splitlines():
-        m = IMG_RE.match(line)
-        if m:
-            img_map[m.group(1)] = m.group(2)
-
-    products = []
-    for m in PRODUCT_RE.finditer(source):
-        d = m.groupdict()
-        products.append(
-            {
-                "id": d["id"],
-                "name": unescape_js(d["name"]),
-                "price": Decimal(d["price"]),
-                "old_price": Decimal(d["old"]) if d["old"] else None,
-                "type": d["type"],
-                "category": d["category"],
-                "age": d["age"],
-                "brand": d["brand"],
-                "stock": int(d["stock"]),
-                "promo": d["promo"] == "true",
-                "popular": d["popular"] == "true",
-                "is_new": d["is_new"] == "true",
-                "img_key": d["img"],
-            }
-        )
-
-    blog_block_match = re.search(r"const\s+BLOG_POSTS\s*=\s*\[(.+?)\];", source, re.DOTALL)
-    blog_posts = []
-    if blog_block_match:
-        for m in BLOG_RE.finditer(blog_block_match.group(1)):
-            d = m.groupdict()
-            blog_posts.append(
-                {
-                    "id": int(d["id"]),
-                    "cat": unescape_js(d["cat"]),
-                    "date": unescape_js(d["date"]),
-                    "title": unescape_js(d["title"]),
-                    "excerpt": unescape_js(d["excerpt"]),
-                    "img": d["img"],
-                }
-            )
-
-    return img_map, products, blog_posts
-
-
 def make_unique_slug(model, base: str, *, instance_pk: int | None = None) -> str:
     slug = slugify(base, allow_unicode=False) or "item"
     candidate = slug
@@ -150,15 +68,17 @@ def make_unique_slug(model, base: str, *, instance_pk: int | None = None) -> str
 
 
 class Command(BaseCommand):
-    help = "Seed catalog (products, categories, brands), blog posts, and promo codes from legacy js/js.js"
+    help = "Seed catalog (products, categories, brands), blog posts, and promo codes from JSON fixtures"
 
     def add_arguments(self, parser):
         parser.add_argument("--flush", action="store_true", help="Wipe existing rows before seeding")
 
     @transaction.atomic
     def handle(self, *args, **opts):
-        if not FRONTEND_JS.exists():
-            self.stderr.write(f"Не знайдено фронт-файл: {FRONTEND_JS}")
+        products_file = DATA_DIR / "products.json"
+        blog_file = DATA_DIR / "blog.json"
+        if not products_file.exists() or not blog_file.exists():
+            self.stderr.write(f"Не знайдено фікстури в {DATA_DIR}")
             return
 
         if opts["flush"]:
@@ -167,8 +87,9 @@ class Command(BaseCommand):
             BlogPost.objects.all().delete()
             PromoCode.objects.all().delete()
 
-        img_map, products_data, blog_data = parse_js_data(FRONTEND_JS)
-        self.stdout.write(f"Знайдено в JS: {len(products_data)} товарів, {len(blog_data)} постів")
+        products_data = json.loads(products_file.read_text(encoding="utf-8"))
+        blog_data = json.loads(blog_file.read_text(encoding="utf-8"))
+        self.stdout.write(f"Завантажено: {len(products_data)} товарів, {len(blog_data)} постів")
 
         # --- довідники ---
         categories = {slug: Category.objects.get_or_create(slug=slug, defaults={"name": name})[0]
@@ -199,8 +120,8 @@ class Command(BaseCommand):
             defaults = {
                 "name": p["name"],
                 "slug": slug,
-                "price": p["price"],
-                "old_price": p["old_price"],
+                "price": Decimal(str(p["price"])),
+                "old_price": Decimal(str(p["old_price"])) if p["old_price"] is not None else None,
                 "product_type": ptype,
                 "category": cat,
                 "brand": brand,
@@ -209,7 +130,7 @@ class Command(BaseCommand):
                 "promo": p["promo"],
                 "popular": p["popular"],
                 "is_new": p["is_new"],
-                "image_url": img_map.get(p["img_key"], ""),
+                "image_url": p.get("image_url", ""),
             }
             obj, is_created = Product.objects.update_or_create(legacy_id=p["id"], defaults=defaults)
             created += int(is_created)
@@ -232,7 +153,7 @@ class Command(BaseCommand):
                 "slug": slug,
                 "date_label": post["date"],
                 "excerpt": post["excerpt"],
-                "image_url": post["img"],
+                "image_url": post.get("image_url", ""),
             }
             _, is_created = BlogPost.objects.update_or_create(legacy_id=post["id"], defaults=defaults)
             blog_created += int(is_created)
@@ -240,7 +161,7 @@ class Command(BaseCommand):
 
         self.stdout.write(f"Блог: створено {blog_created}, оновлено {blog_updated}")
 
-        # --- промокоди (PROMO_CODES в js.js) ---
+        # --- промокоди ---
         promos = [
             {"code": "BUD10", "type": PromoCode.PERCENT, "value": Decimal("10"), "label": "-10%"},
             {"code": "BUD500", "type": PromoCode.FIXED, "value": Decimal("500"), "label": "-500 грн", "min_order": Decimal("1000")},

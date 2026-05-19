@@ -115,6 +115,7 @@
 
     <div id="footer-placeholder"></div>
 
+    <script src="js/api.js"></script>
     <script src="js/js.js"></script>
     <script>
         let appliedPromo = JSON.parse(localStorage.getItem('budMasterPromo')) || null;
@@ -131,20 +132,27 @@
             return 0;
         }
 
-        function applyPromo() {
+        async function applyPromo() {
             const code = document.getElementById('promo-input').value.trim().toUpperCase();
             const status = document.getElementById('promo-status');
             if (!code) { status.innerHTML = ''; return; }
-            const promo = PROMO_CODES[code];
-            if (!promo) {
-                status.innerHTML = '<div class="min-order-warning"><i class="fa fa-exclamation-circle"></i> Промокод не знайдено</div>';
-                return;
+            const subtotal = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+            status.innerHTML = '<div style="color:var(--muted);padding:8px;"><i class="fa fa-spinner fa-spin"></i> Перевіряємо…</div>';
+            try {
+                const data = await BudMasterAPI.validatePromo(code, subtotal);
+                appliedPromo = {
+                    code: data.code,
+                    type: data.type,
+                    value: Number(data.value),
+                    label: data.label,
+                };
+                localStorage.setItem('budMasterPromo', JSON.stringify(appliedPromo));
+                document.getElementById('promo-input').value = '';
+                renderPromoStatus();
+                updateCartTotals();
+            } catch (err) {
+                status.innerHTML = `<div class="min-order-warning"><i class="fa fa-exclamation-circle"></i> ${err.message}</div>`;
             }
-            appliedPromo = { code, ...promo };
-            localStorage.setItem('budMasterPromo', JSON.stringify(appliedPromo));
-            document.getElementById('promo-input').value = '';
-            renderPromoStatus();
-            updateCartTotals();
         }
 
         function removePromo() {

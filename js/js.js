@@ -3,9 +3,11 @@
  * ---------------------------------------------------------------------------
  * Структура файлу (за порядком згори донизу):
  *
- *  1. БАЗА ТОВАРІВ (productsData) — 100 SKU + IMG-словник Unsplash URL
+ *  1. ДАНІ — productsData / BLOG_POSTS заповнюються асинхронно з REST-бекенду
+ *            через BudMasterAPI (див. js/api.js). До завершення завантаження
+ *            масиви порожні.
  *  2. СТАН — cart / wishlist / recentlyViewed із localStorage
- *  3. КОНСТАНТИ — PROMO_CODES, FREE_DELIVERY_THRESHOLD, MIN_ORDER
+ *  3. КОНСТАНТИ — FREE_DELIVERY_THRESHOLD, MIN_ORDER (бізнес-пороги UI)
  *  4. КОШИК — addToCart / updateCartBadge
  *  5. ОБРАНЕ — toggleWishlist / updateWishlistBadge
  *  6. НЕЩОДАВНО ПЕРЕГЛЯНУТІ — addToRecent
@@ -34,144 +36,11 @@
  * =========================================================================== */
 
 // ============================================
-// 1. БАЗА ТОВАРІВ (100 позицій)
+// 1. ДАНІ (заповнюються асинхронно з REST-бекенду через BudMasterAPI)
 // ============================================
-const IMG = {
-    cement:   'https://images.unsplash.com/photo-1607582544501-71f5b3ce3a4e?auto=format&fit=crop&w=600&q=80',
-    brick:    'https://images.unsplash.com/photo-1530686577008-d6dd54e83b40?auto=format&fit=crop&w=600&q=80',
-    block:    'https://images.unsplash.com/photo-1581244277943-fe4a9c777189?auto=format&fit=crop&w=600&q=80',
-    tool:     'https://images.unsplash.com/photo-1530124566582-a618bc2615dc?auto=format&fit=crop&w=600&q=80',
-    drill:    'https://images.unsplash.com/photo-1426927308491-6380b6a9936f?auto=format&fit=crop&w=600&q=80',
-    grinder:  'https://images.unsplash.com/photo-1572981779307-38b8cabb2407?auto=format&fit=crop&w=600&q=80',
-    paint:    'https://images.unsplash.com/photo-1562259949-e8e7689d7828?auto=format&fit=crop&w=600&q=80',
-    primer:   'https://images.unsplash.com/photo-1599619351208-3e6c839d6828?auto=format&fit=crop&w=600&q=80',
-    putty:    'https://images.unsplash.com/photo-1581094288338-2314dddb7ece?auto=format&fit=crop&w=600&q=80',
-    metal:    'https://images.unsplash.com/photo-1517232117160-a51e4c1d3275?auto=format&fit=crop&w=600&q=80',
-    rebar:    'https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=600&q=80',
-    electric: 'https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&w=600&q=80',
-    cable:    'https://images.unsplash.com/photo-1565008576549-57569a49371d?auto=format&fit=crop&w=600&q=80',
-    drywall:  'https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?auto=format&fit=crop&w=600&q=80',
-    site:     'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=600&q=80',
-    vacuum:   'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?auto=format&fit=crop&w=600&q=80',
-    measure:  'https://images.unsplash.com/photo-1581092335397-9583eb92d232?auto=format&fit=crop&w=600&q=80',
-    glue:     'https://images.unsplash.com/photo-1581092249320-1e8c2c2d9d99?auto=format&fit=crop&w=600&q=80'
-};
-
-const productsData = [
-    // ЦЕМЕНТ ТА СУМІШІ (1-15)
-    { id:'1',  name:'Цемент ПЦ-500 Д0 Knauf, 25 кг',           price:220,  oldPrice:260, type:'cement', category:'construction', age:'medium', brand:'knauf',   stock:340, promo:true,  popular:true,  isNew:false, img:IMG.cement },
-    { id:'2',  name:'Цемент ПЦ-400 Д20 Heidelberg, 25 кг',     price:185,  type:'cement', category:'construction', age:'medium', brand:'other',   stock:520, promo:false, popular:true,  isNew:false, img:IMG.cement },
-    { id:'3',  name:'Білий цемент Aalborg, 25 кг',             price:480,  type:'cement', category:'finishing',    age:'medium', brand:'other',   stock:80,  promo:false, popular:false, isNew:false, img:IMG.cement },
-    { id:'4',  name:'Клей плитковий Ceresit CM 11, 25 кг',     price:320,  type:'cement', category:'finishing',    age:'medium', brand:'ceresit', stock:210, promo:false, popular:true,  isNew:false, img:IMG.glue },
-    { id:'5',  name:'Клей плитковий Ceresit CM 17, 25 кг',     price:480,  oldPrice:560, type:'cement', category:'finishing',    age:'medium', brand:'ceresit', stock:140, promo:true,  popular:false, isNew:false, img:IMG.glue },
-    { id:'6',  name:'Шпаклівка Knauf Rotband Pasta, 18 кг',    price:580,  type:'cement', category:'finishing',    age:'medium', brand:'knauf',   stock:95,  promo:false, popular:false, isNew:true,  img:IMG.putty },
-    { id:'7',  name:'Шпаклівка стартова Knauf HP Start, 30 кг',price:340,  type:'cement', category:'finishing',    age:'large',  brand:'knauf',   stock:160, promo:false, popular:false, isNew:false, img:IMG.putty },
-    { id:'8',  name:'Шпаклівка фінішна Knauf HP Finish, 25 кг',price:380,  type:'cement', category:'finishing',    age:'medium', brand:'knauf',   stock:175, promo:false, popular:true,  isNew:false, img:IMG.putty },
-    { id:'9',  name:'Гіпсова штукатурка Knauf Rotband, 30 кг', price:420,  oldPrice:490, type:'cement', category:'finishing',    age:'large',  brand:'knauf',   stock:230, promo:true,  popular:true,  isNew:false, img:IMG.putty },
-    { id:'10', name:'Цементно-піщана суміш Ceresit, 25 кг',    price:180,  type:'cement', category:'construction', age:'medium', brand:'ceresit', stock:400, promo:false, popular:false, isNew:false, img:IMG.cement },
-    { id:'11', name:'Самовирівнююча підлога Henkel, 25 кг',    price:520,  type:'cement', category:'finishing',    age:'medium', brand:'henkel',  stock:110, promo:false, popular:false, isNew:true,  img:IMG.cement },
-    { id:'12', name:'Розчинна суміш для кладки М-100, 25 кг',  price:165,  type:'cement', category:'construction', age:'medium', brand:'other',   stock:380, promo:false, popular:false, isNew:false, img:IMG.cement },
-    { id:'13', name:'Гідроізоляція цементна Ceresit CR 65',    price:680,  type:'cement', category:'construction', age:'medium', brand:'ceresit', stock:60,  promo:false, popular:false, isNew:false, img:IMG.cement },
-    { id:'14', name:'Декоративна штукатурка короїд Sniezka',   price:850,  type:'cement', category:'finishing',    age:'medium', brand:'sniezka', stock:75,  promo:false, popular:false, isNew:true,  img:IMG.putty },
-    { id:'15', name:'Клей для газоблоку Knauf, 25 кг',         price:295,  type:'cement', category:'construction', age:'medium', brand:'knauf',   stock:185, promo:false, popular:false, isNew:false, img:IMG.cement },
-
-    // ЦЕГЛА ТА БЛОКИ (16-28)
-    { id:'16', name:'Цегла червона повнотіла М-150',           price:18,   type:'brick',  category:'construction', age:'medium', brand:'other', stock:12500, promo:false, popular:true,  isNew:false, img:IMG.brick },
-    { id:'17', name:'Цегла силікатна біла М-200',              price:14,   type:'brick',  category:'construction', age:'medium', brand:'other', stock:8800,  promo:false, popular:false, isNew:false, img:IMG.brick },
-    { id:'18', name:'Цегла лицьова клінкерна Roben',           price:42,   oldPrice:52,  type:'brick', category:'finishing',    age:'medium', brand:'other', stock:3200,  promo:true,  popular:false, isNew:false, img:IMG.brick },
-    { id:'19', name:'Газоблок AEROC EcoTerm 400x200x600',      price:95,   type:'brick',  category:'construction', age:'large',  brand:'other', stock:2400,  promo:false, popular:true,  isNew:false, img:IMG.block },
-    { id:'20', name:'Газоблок UDK 300x200x600',                price:78,   type:'brick',  category:'construction', age:'large',  brand:'other', stock:3100,  promo:false, popular:false, isNew:false, img:IMG.block },
-    { id:'21', name:'Газоблок Стоунлайт 200x200x600',          price:62,   oldPrice:72,  type:'brick', category:'construction', age:'large',  brand:'other', stock:4500,  promo:true,  popular:false, isNew:false, img:IMG.block },
-    { id:'22', name:'Шлакоблок 390x190x190',                   price:28,   type:'brick',  category:'construction', age:'large',  brand:'other', stock:6800,  promo:false, popular:false, isNew:false, img:IMG.block },
-    { id:'23', name:'Керамоблок Porotherm 38 P+W',             price:165,  type:'brick',  category:'construction', age:'large',  brand:'other', stock:1850,  promo:false, popular:false, isNew:false, img:IMG.brick },
-    { id:'24', name:'Керамоблок Porotherm 25 P+W',             price:128,  type:'brick',  category:'construction', age:'large',  brand:'other', stock:2300,  promo:false, popular:false, isNew:true,  img:IMG.brick },
-    { id:'25', name:'Цегла вогнетривка ШБ-5',                  price:48,   type:'brick',  category:'construction', age:'medium', brand:'other', stock:1450,  promo:false, popular:false, isNew:false, img:IMG.brick },
-    { id:'26', name:'Цегла декоративна гіперпресована',        price:22,   type:'brick',  category:'finishing',    age:'medium', brand:'other', stock:5600,  promo:false, popular:false, isNew:true,  img:IMG.brick },
-    { id:'27', name:'Пінобетонний блок D500 200x300x600',      price:58,   type:'brick',  category:'construction', age:'large',  brand:'other', stock:4200,  promo:false, popular:false, isNew:false, img:IMG.block },
-    { id:'28', name:'Цегла рваний камінь, рустікальна',        price:35,   oldPrice:42,  type:'brick', category:'finishing',    age:'medium', brand:'other', stock:2800,  promo:true,  popular:false, isNew:false, img:IMG.brick },
-
-    // ІНСТРУМЕНТ (29-55)
-    { id:'29', name:'Перфоратор Bosch GBH 2-26 SDS-plus',      price:5499, oldPrice:6299, type:'tool', category:'construction', age:'medium', brand:'bosch',  stock:18,  promo:true,  popular:true,  isNew:false, img:IMG.drill },
-    { id:'30', name:'Перфоратор Makita HR2470, 780 Вт',        price:4850, type:'tool',   category:'construction', age:'medium', brand:'makita',  stock:24,  promo:false, popular:true,  isNew:false, img:IMG.drill },
-    { id:'31', name:'Перфоратор DeWalt D25133K, SDS-plus',     price:5899, type:'tool',   category:'construction', age:'medium', brand:'dewalt',  stock:12,  promo:false, popular:false, isNew:true,  img:IMG.drill },
-    { id:'32', name:'Дриль ударний Makita HP1631, 710 Вт',     price:2899, oldPrice:3450, type:'tool', category:'construction', age:'small',  brand:'makita',  stock:36,  promo:true,  popular:false, isNew:false, img:IMG.drill },
-    { id:'33', name:'Дриль безударний Bosch GBM 6 RE',         price:1850, type:'tool',   category:'construction', age:'small',  brand:'bosch',   stock:48,  promo:false, popular:false, isNew:false, img:IMG.drill },
-    { id:'34', name:'Шуруповерт акум. Bosch GSR 12V-15',       price:3199, type:'tool',   category:'construction', age:'small',  brand:'bosch',   stock:42,  promo:false, popular:true,  isNew:false, img:IMG.drill },
-    { id:'35', name:'Шуруповерт акум. Makita DDF482',          price:4250, oldPrice:4990, type:'tool', category:'construction', age:'small',  brand:'makita',  stock:28,  promo:true,  popular:false, isNew:false, img:IMG.drill },
-    { id:'36', name:'Шуруповерт DeWalt DCD771, 18V',           price:5599, type:'tool',   category:'construction', age:'small',  brand:'dewalt',  stock:15,  promo:false, popular:false, isNew:true,  img:IMG.drill },
-    { id:'37', name:'Болгарка DeWalt DWE4257, 1500 Вт',        price:4250, oldPrice:4900, type:'tool', category:'construction', age:'medium', brand:'dewalt',  stock:22,  promo:true,  popular:true,  isNew:false, img:IMG.grinder },
-    { id:'38', name:'Болгарка Makita 9558HN, 840 Вт, 125 мм',  price:2150, type:'tool',   category:'construction', age:'small',  brand:'makita',  stock:55,  promo:false, popular:true,  isNew:false, img:IMG.grinder },
-    { id:'39', name:'Болгарка Bosch GWS 750-125',              price:2480, type:'tool',   category:'construction', age:'small',  brand:'bosch',   stock:38,  promo:false, popular:false, isNew:false, img:IMG.grinder },
-    { id:'40', name:'Болгарка Hilti AG 125-A22, акум.',        price:8950, type:'tool',   category:'construction', age:'medium', brand:'hilti',   stock:8,   promo:false, popular:false, isNew:true,  img:IMG.grinder },
-    { id:'41', name:'Лобзик Bosch PST 700 E, 500 Вт',          price:1850, type:'tool',   category:'construction', age:'small',  brand:'bosch',   stock:32,  promo:false, popular:false, isNew:false, img:IMG.tool },
-    { id:'42', name:'Циркулярна пила Makita 5008MG, 210 мм',   price:7299, oldPrice:8450, type:'tool', category:'construction', age:'medium', brand:'makita',  stock:14,  promo:true,  popular:false, isNew:false, img:IMG.tool },
-    { id:'43', name:'Пилосос будівельний Makita VC2512L',      price:5499, type:'tool',   category:'construction', age:'large',  brand:'makita',  stock:11,  promo:false, popular:false, isNew:false, img:IMG.vacuum },
-    { id:'44', name:'Пилосос Bosch GAS 18V-10 L, акум.',       price:7899, type:'tool',   category:'construction', age:'large',  brand:'bosch',   stock:9,   promo:false, popular:false, isNew:true,  img:IMG.vacuum },
-    { id:'45', name:'Молоток слюсарний 500 г, фіберглас',      price:280,  type:'tool',   category:'construction', age:'small',  brand:'stanley', stock:120, promo:false, popular:false, isNew:false, img:IMG.tool },
-    { id:'46', name:'Кувалда 3 кг з фіберглас. ручкою',        price:580,  type:'tool',   category:'construction', age:'medium', brand:'stanley', stock:65,  promo:false, popular:false, isNew:false, img:IMG.tool },
-    { id:'47', name:'Набір ключів комбінованих, 12 шт',        price:650,  type:'tool',   category:'construction', age:'small',  brand:'stanley', stock:78,  promo:false, popular:false, isNew:false, img:IMG.tool },
-    { id:'48', name:'Набір викруток Stanley FatMax, 8 шт',     price:780,  oldPrice:920,  type:'tool', category:'construction', age:'small',  brand:'stanley', stock:52,  promo:true,  popular:false, isNew:false, img:IMG.tool },
-    { id:'49', name:'Рулетка Stanley FatMax 5 м',              price:320,  type:'tool',   category:'construction', age:'small',  brand:'stanley', stock:140, promo:false, popular:false, isNew:false, img:IMG.measure },
-    { id:'50', name:'Рулетка Bosch Zamo III, лазерна 20 м',    price:2499, type:'tool',   category:'construction', age:'small',  brand:'bosch',   stock:38,  promo:false, popular:true,  isNew:true,  img:IMG.measure },
-    { id:'51', name:'Лазерний рівень Bosch GLL 2-15 G',        price:5899, oldPrice:6800, type:'tool', category:'construction', age:'small',  brand:'bosch',   stock:14,  promo:true,  popular:false, isNew:false, img:IMG.measure },
-    { id:'52', name:'Будівельний рівень Stanley FatMax, 60 см',price:480,  type:'tool',   category:'construction', age:'small',  brand:'stanley', stock:88,  promo:false, popular:false, isNew:false, img:IMG.measure },
-    { id:'53', name:'Степлер механічний Stanley TR250',        price:550,  type:'tool',   category:'construction', age:'small',  brand:'stanley', stock:72,  promo:false, popular:false, isNew:false, img:IMG.tool },
-    { id:'54', name:'Шліфмашина Bosch PSS 250 AE',             price:2399, type:'tool',   category:'finishing',    age:'small',  brand:'bosch',   stock:26,  promo:false, popular:false, isNew:false, img:IMG.tool },
-    { id:'55', name:'Тепловентилятор Hilti CT 10000',          price:8400, type:'tool',   category:'construction', age:'large',  brand:'hilti',   stock:6,   promo:false, popular:false, isNew:true,  img:IMG.tool },
-
-    // ФАРБИ ТА ЛАКИ (56-72)
-    { id:'56', name:'Фарба інтер\'єрна Sniezka Eco, 10 л',     price:850,  type:'paint', category:'finishing',    age:'medium', brand:'sniezka', stock:88,  promo:false, popular:true,  isNew:false, img:IMG.paint },
-    { id:'57', name:'Фарба фасадна Sniezka Acryl-Putz, 10 л',  price:1250, oldPrice:1450, type:'paint', category:'finishing',    age:'medium', brand:'sniezka', stock:64,  promo:true,  popular:false, isNew:false, img:IMG.paint },
-    { id:'58', name:'Фарба латексна Henkel Ceresit, 5 л',      price:680,  type:'paint', category:'finishing',    age:'medium', brand:'henkel',  stock:95,  promo:false, popular:false, isNew:false, img:IMG.paint },
-    { id:'59', name:'Емаль алкідна ПФ-115 біла, 2.8 кг',       price:340,  type:'paint', category:'finishing',    age:'small',  brand:'other',   stock:160, promo:false, popular:true,  isNew:false, img:IMG.paint },
-    { id:'60', name:'Лак паркетний Sniezka Supermal, 5 л',     price:1100, oldPrice:1300, type:'paint', category:'finishing',    age:'medium', brand:'sniezka', stock:42,  promo:true,  popular:false, isNew:false, img:IMG.paint },
-    { id:'61', name:'Лак яхтний Sniezka, 2.5 л',               price:780,  type:'paint', category:'finishing',    age:'small',  brand:'sniezka', stock:58,  promo:false, popular:false, isNew:false, img:IMG.paint },
-    { id:'62', name:'Грунтовка глибокого проникнення, 10 л',   price:480,  type:'paint', category:'finishing',    age:'medium', brand:'henkel',  stock:120, promo:false, popular:true,  isNew:false, img:IMG.primer },
-    { id:'63', name:'Грунтовка-концентрат Ceresit CT 17, 10 л',price:550,  type:'paint', category:'finishing',    age:'medium', brand:'ceresit', stock:98,  promo:false, popular:false, isNew:false, img:IMG.primer },
-    { id:'64', name:'Грунтовка адгезійна Knauf Betokontakt',   price:680,  type:'paint', category:'finishing',    age:'medium', brand:'knauf',   stock:74,  promo:false, popular:false, isNew:true,  img:IMG.primer },
-    { id:'65', name:'Антисептик деревозахисний Sniezka, 5 л',  price:580,  type:'paint', category:'finishing',    age:'medium', brand:'sniezka', stock:82,  promo:false, popular:false, isNew:false, img:IMG.paint },
-    { id:'66', name:'Колер-паста Sniezka, 100 мл',             price:65,   type:'paint', category:'finishing',    age:'small',  brand:'sniezka', stock:340, promo:false, popular:false, isNew:false, img:IMG.paint },
-    { id:'67', name:'Розчинник 646 ГОСТ, 1 л',                 price:85,   type:'paint', category:'finishing',    age:'small',  brand:'other',   stock:280, promo:false, popular:false, isNew:false, img:IMG.paint },
-    { id:'68', name:'Уайт-спірит Sniezka, 0.9 л',              price:75,   type:'paint', category:'finishing',    age:'small',  brand:'sniezka', stock:310, promo:false, popular:false, isNew:false, img:IMG.paint },
-    { id:'69', name:'Емаль молоткова Hammerite, 2.5 л',        price:1450, oldPrice:1690, type:'paint', category:'finishing',    age:'small',  brand:'other',   stock:48,  promo:true,  popular:false, isNew:true,  img:IMG.paint },
-    { id:'70', name:'Силіконова фарба фасадна Ceresit, 10 л',  price:1890, type:'paint', category:'finishing',    age:'medium', brand:'ceresit', stock:32,  promo:false, popular:false, isNew:true,  img:IMG.paint },
-    { id:'71', name:'Декоративна фарба під шовк Sniezka, 5 л', price:1280, type:'paint', category:'finishing',    age:'medium', brand:'sniezka', stock:38,  promo:false, popular:false, isNew:false, img:IMG.paint },
-    { id:'72', name:'Лак для каменю Ceresit CT 13, 5 л',       price:1150, type:'paint', category:'finishing',    age:'medium', brand:'ceresit', stock:44,  promo:false, popular:false, isNew:false, img:IMG.paint },
-
-    // МЕТАЛОПРОКАТ (73-83)
-    { id:'73', name:'Арматура А500С, 12 мм, 11.7 м',           price:320,  type:'metal',  category:'construction', age:'large',  brand:'other', stock:1240, promo:false, popular:true,  isNew:false, img:IMG.rebar },
-    { id:'74', name:'Арматура А500С, 10 мм, 11.7 м',           price:235,  type:'metal',  category:'construction', age:'large',  brand:'other', stock:1580, promo:false, popular:false, isNew:false, img:IMG.rebar },
-    { id:'75', name:'Арматура А500С, 14 мм, 11.7 м',           price:435,  type:'metal',  category:'construction', age:'large',  brand:'other', stock:980,  promo:false, popular:false, isNew:false, img:IMG.rebar },
-    { id:'76', name:'Профіль металевий CD-60 Knauf, 3 м',      price:145,  type:'metal',  category:'finishing',    age:'medium', brand:'knauf', stock:680,  promo:false, popular:true,  isNew:false, img:IMG.metal },
-    { id:'77', name:'Профіль UD-27 Knauf, 3 м',                price:95,   type:'metal',  category:'finishing',    age:'medium', brand:'knauf', stock:840,  promo:false, popular:false, isNew:false, img:IMG.metal },
-    { id:'78', name:'Куточок металевий 50x50x5, 6 м',          price:680,  type:'metal',  category:'construction', age:'large',  brand:'other', stock:160,  promo:false, popular:false, isNew:false, img:IMG.metal },
-    { id:'79', name:'Труба профільна 40x40x2, 6 м',            price:580,  oldPrice:680, type:'metal', category:'construction', age:'large',  brand:'other', stock:240,  promo:true,  popular:false, isNew:false, img:IMG.metal },
-    { id:'80', name:'Лист оцинкований 1x2 м, 0.5 мм',          price:780,  type:'metal',  category:'construction', age:'large',  brand:'other', stock:180,  promo:false, popular:false, isNew:false, img:IMG.metal },
-    { id:'81', name:'Сітка зварна 50x50, 1.5x2 м',             price:480,  type:'metal',  category:'construction', age:'large',  brand:'other', stock:320,  promo:false, popular:false, isNew:false, img:IMG.metal },
-    { id:'82', name:'Цвях будівельний 100 мм, 5 кг',           price:280,  type:'metal',  category:'construction', age:'medium', brand:'other', stock:420,  promo:false, popular:false, isNew:false, img:IMG.metal },
-    { id:'83', name:'Саморіз по металу 4.2x16, 1000 шт',       price:185,  type:'metal',  category:'finishing',    age:'small',  brand:'other', stock:560,  promo:false, popular:false, isNew:false, img:IMG.metal },
-
-    // ЕЛЕКТРИКА (84-94)
-    { id:'84', name:'Кабель ВВГ 3х2.5, 100 м',                 price:2400, oldPrice:2750, type:'electric', category:'construction', age:'large',  brand:'other',     stock:42,  promo:true,  popular:true,  isNew:false, img:IMG.cable },
-    { id:'85', name:'Кабель ВВГ 3х1.5, 100 м',                 price:1680, type:'electric', category:'construction', age:'large',  brand:'other',     stock:56,  promo:false, popular:true,  isNew:false, img:IMG.cable },
-    { id:'86', name:'Кабель ВВГ 3х4, 100 м',                   price:3850, type:'electric', category:'construction', age:'large',  brand:'other',     stock:28,  promo:false, popular:false, isNew:false, img:IMG.cable },
-    { id:'87', name:'Розетка з заземленням Schneider Electric',price:165,  oldPrice:210,  type:'electric', category:'finishing',    age:'small',  brand:'schneider', stock:340, promo:true,  popular:false, isNew:false, img:IMG.electric },
-    { id:'88', name:'Вимикач 1-кл. Schneider Sedna',           price:145,  type:'electric', category:'finishing',    age:'small',  brand:'schneider', stock:280, promo:false, popular:false, isNew:false, img:IMG.electric },
-    { id:'89', name:'Вимикач 2-кл. Schneider Asfora',          price:185,  type:'electric', category:'finishing',    age:'small',  brand:'schneider', stock:240, promo:false, popular:false, isNew:false, img:IMG.electric },
-    { id:'90', name:'Автомат 1P 16A Schneider Easy 9',         price:120,  type:'electric', category:'construction', age:'small',  brand:'schneider', stock:420, promo:false, popular:true,  isNew:false, img:IMG.electric },
-    { id:'91', name:'УЗО Schneider 2P 25A 30mA',               price:580,  type:'electric', category:'construction', age:'small',  brand:'schneider', stock:96,  promo:false, popular:false, isNew:true,  img:IMG.electric },
-    { id:'92', name:'Щит розподільчий на 12 модулів',          price:780,  type:'electric', category:'construction', age:'medium', brand:'schneider', stock:54,  promo:false, popular:false, isNew:false, img:IMG.electric },
-    { id:'93', name:'LED-світильник стельовий 18 Вт',          price:280,  type:'electric', category:'finishing',    age:'small',  brand:'other',     stock:185, promo:false, popular:false, isNew:true,  img:IMG.electric },
-    { id:'94', name:'Прожектор LED 50 Вт IP65',                price:680,  oldPrice:820,  type:'electric', category:'construction', age:'small',  brand:'other',     stock:78,  promo:true,  popular:false, isNew:true,  img:IMG.electric },
-
-    // ОЗДОБЛЕННЯ (95-100)
-    { id:'95',  name:'Гіпсокартон Knauf вологостійкий 12.5 мм', price:380,  type:'finishing', category:'finishing', age:'large',  brand:'knauf', stock:340, promo:false, popular:true,  isNew:false, img:IMG.drywall },
-    { id:'96',  name:'Гіпсокартон Knauf стандарт 9.5 мм',       price:280,  type:'finishing', category:'finishing', age:'large',  brand:'knauf', stock:520, promo:false, popular:false, isNew:false, img:IMG.drywall },
-    { id:'97',  name:'Утеплювач мінвата Knauf, 100 мм, 5 м²',   price:680,  oldPrice:780, type:'finishing', category:'finishing', age:'large',  brand:'knauf', stock:240, promo:true,  popular:true,  isNew:false, img:IMG.drywall },
-    { id:'98',  name:'Пінопласт ПСБ-С 25, 50 мм, 1x1 м',        price:185,  type:'finishing', category:'finishing', age:'medium', brand:'other', stock:680, promo:false, popular:false, isNew:false, img:IMG.drywall },
-    { id:'99',  name:'Сітка штукатурна склотканина, 50 м²',     price:480,  type:'finishing', category:'finishing', age:'medium', brand:'other', stock:160, promo:false, popular:false, isNew:false, img:IMG.drywall },
-    { id:'100', name:'Підвіс прямий для CD-профілю, 100 шт',    price:120,  type:'finishing', category:'finishing', age:'small',  brand:'knauf', stock:420, promo:false, popular:false, isNew:false, img:IMG.metal }
-];
+// До завершення fetch ці масиви порожні — render-функції викликаються
+// після bootstrap() у DOMContentLoaded handler-і.
+let productsData = [];
 
 // ============================================
 // СТАН: КОШИК / ВИБРАНІ / ПЕРЕГЛЯНУТІ
@@ -179,12 +48,6 @@ const productsData = [
 let cart = JSON.parse(localStorage.getItem('budMasterCart')) || [];
 let wishlist = JSON.parse(localStorage.getItem('budMasterWishlist')) || [];
 let recentlyViewed = JSON.parse(localStorage.getItem('budMasterRecent')) || [];
-
-const PROMO_CODES = {
-    'BUD10':    { type: 'percent', value: 10, label: '-10%' },
-    'BUD500':   { type: 'fixed',   value: 500, label: '-500 грн' },
-    'NEW2026':  { type: 'percent', value: 15, label: '-15%' }
-};
 
 const FREE_DELIVERY_THRESHOLD = 5000;
 const MIN_ORDER = 300;
@@ -1182,14 +1045,7 @@ function initEscClose() {
 // ============================================
 // BLOG PAGE
 // ============================================
-const BLOG_POSTS = [
-    { id: 1, cat: 'Будівництво', date: '15 січня 2026', title: 'Як вибрати цемент для фундаменту', excerpt: 'Розглядаємо марки цементу, рекомендації виробників та лайфхаки досвідчених прорабів.', img: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=800&q=80' },
-    { id: 2, cat: 'Ремонт', date: '10 січня 2026', title: 'Шпаклівка стін: 7 типових помилок', excerpt: 'Покрокова інструкція для якісного шпаклювання та поради, як уникнути дефектів.', img: 'https://images.unsplash.com/photo-1581094288338-2314dddb7ece?auto=format&fit=crop&w=800&q=80' },
-    { id: 3, cat: 'Інструмент', date: '3 січня 2026', title: 'Топ-5 перфораторів 2026 року', excerpt: 'Огляд найкращих моделей Bosch, Makita, DeWalt — характеристики, ціни, плюси та мінуси.', img: 'https://images.unsplash.com/photo-1581244277943-fe4a9c777189?auto=format&fit=crop&w=800&q=80' },
-    { id: 4, cat: 'Будівництво', date: '28 грудня 2025', title: 'Газобетон чи цегла: що краще для будинку?', excerpt: 'Порівнюємо два популярних матеріали за ціною, теплоізоляцією, складністю кладки та довговічністю.', img: 'https://images.unsplash.com/photo-1530686577008-d6dd54e83b40?auto=format&fit=crop&w=800&q=80' },
-    { id: 5, cat: 'Ремонт', date: '20 грудня 2025', title: 'Як обрати фарбу для квартири: гайд від професіоналів', excerpt: 'Розбираємо типи фарб (латекс, акрил, силікон), де яку використовувати та скільки шарів робити.', img: 'https://images.unsplash.com/photo-1562259949-e8e7689d7828?auto=format&fit=crop&w=800&q=80' },
-    { id: 6, cat: 'Інструмент', date: '12 грудня 2025', title: 'Шуруповерт vs дриль: чим відрізняються?', excerpt: 'Поширені помилки при виборі — що купити для дому, а що для професійної роботи.', img: 'https://images.unsplash.com/photo-1426927308491-6380b6a9936f?auto=format&fit=crop&w=800&q=80' }
-];
+let BLOG_POSTS = [];
 
 function blogCardHTML(post) {
     return `
@@ -1564,9 +1420,60 @@ function injectFooter() {
 // ============================================
 // ЗАПУСК
 // ============================================
-// Викликається після завантаження DOM. Спершу інжектимо шапку та підвал
-// (бо інша логіка від них залежить), потім — вся інша ініціалізація.
-document.addEventListener('DOMContentLoaded', () => {
+// Bootstrap: завантажує товари і блог з REST-бекенду, потім рендерить сторінку.
+// Шапка/футер інжектяться одразу (вони не потребують даних) — щоб не мигало.
+// Render-функції викликаються лише після того, як productsData/BLOG_POSTS
+// наповнились, або після помилки fetch (тоді показуємо банер).
+
+function pageNeedsProducts() {
+    return !!(
+        document.getElementById('shop-grid')
+        || document.getElementById('popular-grid')
+        || document.getElementById('product-page-container')
+    );
+}
+
+function pageNeedsBlog() {
+    return !!(
+        document.getElementById('blog-list-grid')
+        || document.getElementById('article-container')
+    );
+}
+
+function showApiErrorBanner(message) {
+    if (document.getElementById('api-error-banner')) return;
+    const banner = document.createElement('div');
+    banner.id = 'api-error-banner';
+    banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:#dc2626;color:#fff;padding:12px 20px;text-align:center;font-size:14px;font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,0.2);';
+    banner.innerHTML = `<i class="fa fa-exclamation-triangle" style="margin-right:8px;"></i> ${message} <button onclick="location.reload()" style="margin-left:16px;background:#fff;color:#dc2626;border:none;padding:6px 14px;border-radius:4px;font-weight:600;cursor:pointer;">Повторити</button>`;
+    document.body.appendChild(banner);
+    document.body.style.paddingTop = '52px';
+}
+
+async function bootstrapData() {
+    const tasks = [];
+    if (pageNeedsProducts()) {
+        tasks.push(
+            BudMasterAPI.fetchAllProducts()
+                .then(list => { productsData = list; })
+        );
+    }
+    if (pageNeedsBlog()) {
+        tasks.push(
+            BudMasterAPI.fetchAllBlogPosts()
+                .then(list => { BLOG_POSTS = list; })
+        );
+    }
+    if (tasks.length === 0) return;
+    try {
+        await Promise.all(tasks);
+    } catch (err) {
+        console.error('[BudMaster] Не вдалося завантажити дані з API:', err);
+        showApiErrorBanner(`Не вдалося завантажити дані з сервера (${err.message}). Перевірте, чи запущено бекенд на ${BudMasterAPI.BASE}.`);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
     // 1. Інжект спільних блоків (header + footer + modals)
     injectHeader();
     injectFooter();
@@ -1575,19 +1482,22 @@ document.addEventListener('DOMContentLoaded', () => {
     updateCartBadge();
     updateWishlistBadge();
 
-    // 3. Render-функції — викликаємо лише ті, що є на поточній сторінці
-    if (document.getElementById('shop-grid')) renderShop();
-    if (document.getElementById('popular-grid')) renderHomeSections();
-    if (document.getElementById('product-page-container')) renderProductPage();
-    if (document.getElementById('cart-items-container') && typeof renderCartPage === 'function') renderCartPage();
-    if (document.getElementById('blog-list-grid')) renderBlogList();
-    if (document.getElementById('article-container')) renderArticlePage();
-
-    // 4. UI-helpers (працюють для всіх сторінок)
+    // 3. UI-helpers (працюють для всіх сторінок, не залежать від даних)
     initLiveSearch();
     initPhoneMask();
     initScrollTopBtn();
     initHeroSlider();
     initEscClose();
     initCookieBanner();
+
+    // 4. Завантаження даних з бекенду (потрібно лише на сторінках, де є каталог чи блог)
+    await bootstrapData();
+
+    // 5. Render-функції — викликаємо лише ті, що є на поточній сторінці
+    if (document.getElementById('shop-grid')) renderShop();
+    if (document.getElementById('popular-grid')) renderHomeSections();
+    if (document.getElementById('product-page-container')) renderProductPage();
+    if (document.getElementById('cart-items-container') && typeof renderCartPage === 'function') renderCartPage();
+    if (document.getElementById('blog-list-grid')) renderBlogList();
+    if (document.getElementById('article-container')) renderArticlePage();
 });
